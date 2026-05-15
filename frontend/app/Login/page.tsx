@@ -1,9 +1,11 @@
 "use client";
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import React, { useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { Role } from "@/type/Login/type";
 import { RiAdminFill } from "react-icons/ri";
 import { Nunito } from "next/font/google";
+import { z } from "zod";
+
 const nunito = Nunito({
   subsets: ["latin"],
   weight: ["400", "600", "700", "800"],
@@ -42,10 +44,29 @@ const role: Role[] = [
   },
 ];
 
+const formSchema = z.object({
+  role: z.string().nonempty(),
+  username: z.string().min(1, "請輸入帳號").max(20),
+  password: z.string().min(1, "請輸入密碼").max(20),
+});
+
+type LoginForm = z.infer<typeof formSchema>;
+
 export function page() {
-  const { register, handleSubmit } = useForm();
   const [isRemember, setRememberAccount] = useState(false);
   const [isHiddenPassword, setHiddenPassword] = useState(true);
+
+  const { register, handleSubmit } = useForm<LoginForm>({
+    defaultValues: {
+      role: "Admin",
+      username: "",
+      password: "",
+    },
+  });
+  const SubmitFn: SubmitHandler<LoginForm> = (data) => console.log(data);
+  const onError: SubmitHandler<LoginForm> = (errors) => console.log(errors);
+
+  useEffect(() => {});
 
   return (
     <div className="login w-full h-full bg-gray-50 grid justify-center items-center">
@@ -60,12 +81,19 @@ export function page() {
           </p>
         </div>
 
-        <form className="login-form w-[600px] h-[350px] grid justify-center items-center">
+        <form
+          onSubmit={handleSubmit(SubmitFn)}
+          className="login-form w-[600px] h-[350px] grid justify-center items-center"
+        >
           <select
             className="w-full h-11 bg-gray-100 rounded-md"
             {...register("role")}
           >
-            <option className={`text-center`} value={"default"} disabled>
+            <option
+              className={`text-center`}
+              value={"default"}
+              disabled
+            >
               -- 請選擇帳戶角色 --
             </option>
             {role.map((Role) => {
@@ -73,7 +101,7 @@ export function page() {
                 <option
                   key={Role.code}
                   className={`role_item ${nunito.className} tracking-wide text-center`}
-                  role={Role.code}
+                  value={Role.code}
                 >
                   {Role.role_name}
                 </option>
@@ -126,7 +154,10 @@ export function page() {
             </div>
           </div>
 
-          <button className="w-[400px] h-11 bg-blue-500 text-white text-xl font-extrabold tracking-wide rounded-xl hover:bg-blue-700 hover:cursor-pointer">
+          <button
+            type="submit"
+            className="w-[400px] h-11 bg-blue-500 text-white text-xl font-extrabold tracking-wide rounded-xl hover:bg-blue-700 hover:cursor-pointer"
+          >
             Sign In
           </button>
         </form>
