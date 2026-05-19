@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Role } from "@/type/Login/type";
+import { Role } from "@/type/Login/user.login.type";
 import { RiAdminFill } from "react-icons/ri";
 import { Nunito } from "next/font/google";
 import { z } from "zod";

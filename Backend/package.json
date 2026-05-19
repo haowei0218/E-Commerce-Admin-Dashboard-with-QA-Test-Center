@@ -7,16 +7,33 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "dev": "tsx watch server.ts",
+    "build": "tsc",
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "@apollo/server": "^4.13.0",
+    "@graphql-tools/merge": "^9.1.9",
+    "@graphql-tools/schema": "^10.0.33",
     "@supabase/supabase-js": "^2.105.3",
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
-    "express": "^4.22.1",
-    "graphql": "^16.13.2",
+    "express": "^4.22.2",
+    "graphql": "^16.14.0",
     "graphql-tag": "^2.12.6",
+    "jsonwebtoken": "^9.0.3",
     "pg": "^8.20.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^4.17.25",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^25.9.0",
+    "@types/pg": "^8.20.0",
+    "tsx": "^4.22.2",
+    "typescript": "^6.0.3"
   }
 }
