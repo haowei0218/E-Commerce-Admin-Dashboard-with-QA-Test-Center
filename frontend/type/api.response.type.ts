@@ -1,5 +1,5 @@
-import { UserLoginResponse } from "./user.login.type"
+import { UserLoginResponse } from './user.login.type'
 
 export type Response = {
-    userLogin: UserLoginResponse
+  UserLogin: UserLoginResponse
 }

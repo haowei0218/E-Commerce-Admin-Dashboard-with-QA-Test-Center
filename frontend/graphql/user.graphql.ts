@@ -1,6 +1,4 @@
-import { gql } from "@apollo/client";
-
-const USER_LOGIN = gql`
+export const USER_LOGIN = `
   query UserLogin($account: String, $password: String) {
     UserLogin(account: $account, password: $password) {
       userProfile {
@@ -13,4 +11,4 @@ const USER_LOGIN = gql`
       token
     }
   }
-`;
+`
