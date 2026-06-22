@@ -1,8 +1,10 @@
 import { gql } from 'graphql-tag'
 import { mergeTypeDefs } from '@graphql-tools/merge'
-import { mergeUserTypeDefs } from './type/users/typeDefs.js'
-import { UserQueryDefs } from './query/users/queryDefs.js'
-import { UsersMutationDefs } from './mutation/users/mutationDefs.js'
+import { mergeUserTypeDefs } from './type/users.type.schema.js'
+import { UserQueryDefs } from './query/users.query.schema.js'
+import { UsersMutationDefs } from './mutation/users.mutation.schema.js'
+import { ActivityLogQueryDefs } from './query/activity-log.query.schema.js'
+import { ActivityLogsMutationDefs } from './mutation/activity-logs.mutation.schema.js'
 export const baseTypeDefs = gql`
  type Query{
   hello:String
@@ -12,5 +14,5 @@ export const baseTypeDefs = gql`
   hello:String
  }
 `
-export const mergeSchema = mergeTypeDefs([mergeUserTypeDefs, UserQueryDefs, UsersMutationDefs])
+export const mergeSchema = mergeTypeDefs([mergeUserTypeDefs, UserQueryDefs, UsersMutationDefs,ActivityLogQueryDefs,ActivityLogsMutationDefs])
 

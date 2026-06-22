@@ -1,7 +1,11 @@
 import { mergeResolvers } from '@graphql-tools/merge';
-import { MutationResolvers } from './mutation/users/resolvers.js';
-import { QueryResolvers } from './query/users/resolvers.js';
+import { UsersMutationResolvers } from './mutation/users.resolvers.js';
+import { UsersQueryResolvers } from './query/users.resolvers.js';
+import { ActivityLogsQueryResolvers } from './query/activity-logs.resolvers.js';
+import { ActivityLogsMutationResolvers } from './mutation/activity-logs.resolvers.js';
+
+ 
 
 export const MergeAllResolvers = mergeResolvers([
-  MutationResolvers, QueryResolvers
+  UsersMutationResolvers, UsersQueryResolvers,ActivityLogsQueryResolvers,ActivityLogsMutationResolvers
 ])
