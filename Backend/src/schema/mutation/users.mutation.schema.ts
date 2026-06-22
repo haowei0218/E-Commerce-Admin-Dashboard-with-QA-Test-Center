@@ -1,5 +1,5 @@
 import { gql } from 'graphql-tag'
-import { RegisterUserResponse } from '../../type/users/typeDefs.js'
+import { RegisterUserResponse } from '../type/users.type.schema.js'
 
 export const UsersMutationDefs = gql`
     ${RegisterUserResponse}
