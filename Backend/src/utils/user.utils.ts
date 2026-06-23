@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt'
 import jwt from "jsonwebtoken";
 import { throwGraphqlError } from "./error.utils.js";
 import { env } from "../env.local.js";
-import { RegisterUserResponse, UserInformation } from "../type/user.mutation.type.js";
+import { RegisterUserResponse, UpdateUserResponse, UserInformation } from "../type/user.mutation.type.js";
 import { ServerContext } from "../type/user.base.type.js";
 
 export async function userLogin({ account, password }: userLoginPayload, context: ServerContext): Promise<userLoginResponse> {
@@ -64,11 +64,21 @@ export async function registerUser({ name, email, password_hash, role_id, status
             INSERT INTO users (name,email,password_hash,role_id,status,create_at) values ($1,$2,$3,$4,$5,NOW()) 
             RETURNING id, name, email, role_id, status, create_at
             `, [name, email, hashPassword, role_id, status])
-        return { userInfo: result.rows[0] }
+        return { registerUserInfo: result.rows[0] }
     } catch (error: any) {
         if (error.code === "23505") {
             throwGraphqlError("Email already exists", "EMAIL_ALREADY_EXIST");
         }
+        throw error
+    }
+}
+
+export async function updateUser({ id, name, email, password_hash, role_id, status }: UserInformation, context: ServerContext): Promise<UpdateUserResponse> {
+    try {
+        const new_passwordHash = await bcrypt.hash(password_hash, 10) ?? ''
+        const result = await context.db.query(`UPDATE users SET name=$1 , email=$2 , password_hash=COALESCE($3, password_hash), , role_id=$4 , status=$5 WHERE id=$6 RETURNING id,name,email,role_id,status`, [name, email, new_passwordHash, role_id, status, id])
+        return { updateUserInfo: result.rows[0] }
+    } catch (error) {
         throw error
     }
 }
