@@ -26,13 +26,13 @@ export const UserLoginResponse = gql`
     userProfile: User
     token: String!
   }
-`;
+`; 
 
-export const RegisterUserResponse = gql`
-  type RegisterUserResponse {
-    userInfo: UserInformation
+export const UserResponse = gql`
+  type UserResponse {
+    userInfo: User
   }
 `;
 
 
-export const mergeUserTypeDefs = mergeTypeDefs([User, UserInformation, UserLoginResponse, RegisterUserResponse])
+export const mergeUserTypeDefs = mergeTypeDefs([User, UserInformation, UserLoginResponse, UserResponse])
