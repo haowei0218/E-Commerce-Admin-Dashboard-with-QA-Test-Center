@@ -1,7 +1,6 @@
 import { ActivityEvent, ActivityLogs } from "../type/activitylog.type.js";
 import { ServerContext } from "../type/user.base.type.js";
 import { throwGraphqlError } from "./error.utils.js";
-import { action } from "../type/activitylog.type.js";
 
 
 export function buildlogsMessage(username: string, action: string, data: string) {
@@ -41,7 +40,6 @@ export async function createActivityLog(
             [log.user_id, log.action, log.description],
         );
 
-        console.log('result : ',result)
         const event = result.rows[0];
 
         if (!event) {
@@ -51,8 +49,6 @@ export async function createActivityLog(
             );
         }
 
-        console.log('event : ',event)
-
         return {
             event,
             message: "success",
@@ -60,5 +56,4 @@ export async function createActivityLog(
     } catch (error) {
         throw error
     }
-
 }

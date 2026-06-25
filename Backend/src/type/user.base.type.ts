@@ -1,4 +1,5 @@
 import { Pool } from 'pg'
+import { ContextUserInfo, userInfo } from './user.mutation.type.js'
 
 export type user = {
     id: string
@@ -11,6 +12,7 @@ export type user = {
 export type ServerContext = {
     db: Pool;
     token: string | null
+    user: ContextUserInfo
 }
 
 export type RoleMap = {
