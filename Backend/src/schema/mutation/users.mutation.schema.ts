@@ -4,7 +4,9 @@ import { UserResponse } from '../type/users.type.schema.js'
 export const UsersMutationDefs = gql`
     ${UserResponse}
     type Mutation {
-        RegisterUser(name:String!,email:String,password_hash:String,role_id:Int,status:String!):UserResponse!
-        UpdateUser(name:String!,email:String,password_hash:String,role_id:Int,status:String!):UserResponse!
+        CreateUser(name:String!,email:String,password_hash:String,role_id:Int,status:String!):UserResponse!
+        UpdateUserProfile(id:String!,name:String!,email:String,password_hash:String):UserResponse!
+        DeActiveUser(id:String!,status:String):UserResponse!
+        ActiveUser(id:String!,status:String):UserResponse!
     }
 `

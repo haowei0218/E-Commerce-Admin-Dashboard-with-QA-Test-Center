@@ -3,7 +3,7 @@ import { RoleCode } from "./user.base.type.js"
 export type AccountStatus = "active" | "inactive"
 
 export type UserInformation = {
-    id?:string
+    id?: string
     name: string
     email: string
     password_hash: string
@@ -19,10 +19,25 @@ export type userInfo = {
     status: AccountStatus
 }
 
+export type ContextUserInfo = userInfo & {
+    role_code:string
+    manage_level:number
+}
+
+
 export type RegisterUserResponse = {
     registerUserInfo: userInfo
 }
 
 export type UpdateUserResponse = {
     updateUserInfo: userInfo
+}
+
+export type StatusPayload = {
+    id: string
+    status: AccountStatus
+}
+
+export type SetUserStatusResponse = {
+    setUserStatus: userInfo
 }

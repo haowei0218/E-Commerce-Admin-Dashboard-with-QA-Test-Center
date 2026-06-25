@@ -1,21 +1,25 @@
 import { GraphQLError } from "graphql";
 export const ErrorCodes = {
   FORBIDDEN: "FORBIDDEN",
-  UNAUTHORIZED: "UNAUTHORIZED",
+  UNAUTHENTICATED: "UNAUTHENTICATED",
   USER_NOT_FOUND: "USER_NOT_FOUND",
-  EMAIL_ALREADY_EXIST: "Email is already exist",
-  ACTIVITY_LOGS_FAILED:'Activity log return failed'
+  EMAIL_ALREADY_EXISTS: "EMAIL_ALREADY_EXISTS",
+  ACTIVITY_LOGS_FAILED: 'ACTIVITY_LOGS_FAILED',
+  ACCOUNT_INACTIVE: "ACCOUNT_INACTIVE",
+  INVALID_CREDENTIALS:"INVALID_CREDENTIALS"
 
 }
 
 export type errorCode = keyof typeof ErrorCodes
 
 export const errorMap: Record<errorCode, string> = {
-  FORBIDDEN: "Account is inactive",
-  UNAUTHORIZED: "Invalid email or password",
-  USER_NOT_FOUND: "Email is not exist in users",
-  EMAIL_ALREADY_EXIST: "Email is already exist",
-  ACTIVITY_LOGS_FAILED:'Activity log return failed'
+  UNAUTHENTICATED: "Authentication is required",
+  FORBIDDEN: "You do not have permission to perform this action",
+  INVALID_CREDENTIALS: "Invalid email or password",
+  USER_NOT_FOUND: "User not found",
+  EMAIL_ALREADY_EXISTS: "Email already exists",
+  ACTIVITY_LOGS_FAILED: "Failed to retrieve activity logs",
+  ACCOUNT_INACTIVE: "This account is inactive",
 };
 
 
