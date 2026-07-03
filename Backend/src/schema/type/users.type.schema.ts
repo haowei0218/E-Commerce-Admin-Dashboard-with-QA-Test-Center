@@ -26,7 +26,7 @@ export const UserLoginResponse = gql`
     userProfile: User
     token: String!
   }
-`; 
+`;
 
 export const UserResponse = gql`
   type UserResponse {
@@ -34,5 +34,11 @@ export const UserResponse = gql`
   }
 `;
 
+export const GetUsersResponse = gql`
+  type GetUsersResponse {
+    getUsers:[User]
+  }
+`
 
-export const mergeUserTypeDefs = mergeTypeDefs([User, UserInformation, UserLoginResponse, UserResponse])
+
+export const mergeUserTypeDefs = mergeTypeDefs([User, UserInformation, UserLoginResponse, UserResponse, GetUsersResponse])

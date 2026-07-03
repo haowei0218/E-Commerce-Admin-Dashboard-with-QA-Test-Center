@@ -20,7 +20,7 @@ export function verifyToken(token: string): JwtPayload | null {
 export async function requestPermission(targetUserId: string | undefined, context: ServerContext): Promise<{ requireManageUserStatus: boolean }> {
   try {
     if (!targetUserId) return { requireManageUserStatus: false }
-    const result = await context.db.query(`SELECT u.id,requireManageUserStatus.name,u.email,u.role_id,u.status,r.id AS role_code,r.manage_level FROM users AS u INNER JOIN roles AS r ON r.id=u.role_id WHERE u.id=$1`, [targetUserId])
+    const result = await context.db.query(`SELECT u.id,u.name,u.email,u.role_id,u.status,r.id AS role_code,r.manage_level FROM users AS u INNER JOIN roles AS r ON r.id=u.role_id WHERE u.id=$1`, [targetUserId])
     const targetUser: ContextUserInfo = result.rows[0]
     const operatorUser = context.user
 
