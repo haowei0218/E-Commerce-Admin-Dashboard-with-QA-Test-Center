@@ -20,8 +20,8 @@ export type userInfo = {
 }
 
 export type ContextUserInfo = userInfo & {
-    role_code:string
-    manage_level:number
+    role_code: string
+    manage_level: number
 }
 
 
@@ -40,4 +40,8 @@ export type StatusPayload = {
 
 export type SetUserStatusResponse = {
     setUserStatus: userInfo
+}
+
+export type ResetPasswordResponse = {
+    resetUser: userInfo
 }

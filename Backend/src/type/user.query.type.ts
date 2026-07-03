@@ -5,7 +5,15 @@ export type userLoginPayload = {
     password: string
 }
 
-export type userLoginResponse = {
+export type UserLoginResponse = {
     userProfile: user
     token: string
+}
+
+export type GetUsersResponse = {
+    getUsers: user[]
+}
+
+export type GetUserByIdResponse = {
+    userInfo: user
 }

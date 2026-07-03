@@ -1,8 +1,9 @@
 import { ServerContext } from "../../type/user.base.type.js"
 import { StatusPayload, UserInformation } from "../../type/user.mutation.type.js"
-import { setUserStatus, registerUser, updateUser } from "../../utils/user.utils.js"
+import { setUserStatus, registerUser, updateUser, resetPassword } from "../../utils/user.utils.js"
 import { createActivityLog } from "../../utils/activity-log.utils.js"
 import { requestPermission } from "../../auth.js"
+import { userInfo } from "node:os"
 
 export const UsersMutationResolvers = {
   Mutation: {
@@ -43,6 +44,15 @@ export const UsersMutationResolvers = {
       }
       return {
         userInfo: result.setUserStatus
+      }
+    },
+    ResetUserPassword: async (_parent: unknown, { id, password_hash }: Omit<UserInformation, 'role_id' | 'status' | 'name' | 'email'>, context: ServerContext) => {
+      const canManageUser = await requestPermission(id, context);
+      if (canManageUser) {
+        const result = await resetPassword(id ?? '', password_hash, context);
+        return {
+          userInfo: result.resetUser
+        }
       }
     }
   }

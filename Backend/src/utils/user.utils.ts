@@ -1,13 +1,13 @@
-import { userLoginPayload, userLoginResponse } from "../type/user.query.type.js";
+import { userLoginPayload, UserLoginResponse, GetUsersResponse, GetUserByIdResponse } from "../type/user.query.type.js";
 import { GraphQLError } from "graphql";
 import bcrypt from 'bcrypt'
 import jwt from "jsonwebtoken";
 import { throwGraphqlError } from "./error.utils.js";
 import { env } from "../env.local.js";
-import { SetUserStatusResponse, RegisterUserResponse, UpdateUserResponse, UserInformation, StatusPayload } from "../type/user.mutation.type.js";
+import { SetUserStatusResponse, RegisterUserResponse, UpdateUserResponse, UserInformation, StatusPayload, ResetPasswordResponse } from "../type/user.mutation.type.js";
 import { ServerContext } from "../type/user.base.type.js";
 
-export async function userLogin({ account, password }: userLoginPayload, context: ServerContext): Promise<userLoginResponse> {
+export async function userLogin({ account, password }: userLoginPayload, context: ServerContext): Promise<UserLoginResponse> {
     const result = await context.db.query(
         `SELECT 
         id,
@@ -89,6 +89,46 @@ export async function setUserStatus({ id, status }: StatusPayload, context: Serv
     try {
         const result = await context.db.query(`UPDATE users SET status=$2 WHERE id=$1 RETURNING id,name,email,role_id,status`, [id, status])
         return { setUserStatus: result.rows[0] }
+    } catch (error) {
+        throw error
+    }
+}
+
+export async function getUsers(context: ServerContext): Promise<GetUsersResponse> {
+    try {
+        const result = await context.db.query('SELECT id,name,email,role_id,status FROM users WHERE role_id > $1 AND id <> $2', [context.user.role_id, context.user.id])
+        return { getUsers: result.rows }
+    } catch (error) {
+        throw error
+    }
+}
+
+export async function getUserById(userId: string, context: ServerContext): Promise<GetUserByIdResponse> {
+    try {
+        const result = await context.db.query(`SELECT * FROM users WHERE id=$1`, [userId])
+        return { userInfo: result.rows[0] }
+    } catch (error) {
+        throw error
+    }
+}
+
+export async function resetPassword(userId: string, password_hash: string, context: ServerContext): Promise<ResetPasswordResponse> {
+    try {
+        if (userId.length === 0) return {
+            resetUser: {
+                id: '',
+                email: '',
+                name: '',
+                role_id: 1,
+                status: 'active'
+            }
+
+        }
+        const NEW_PASSWORD_HASH = await bcrypt.hash(password_hash, 10)
+        const result = await context.db.query(`UPDATE users SET password_hash=$1 WHERE id=$2 RETURNING id,name,email,role_id,status`, [NEW_PASSWORD_HASH, userId])
+        return {
+            resetUser: result.rows[0]
+        }
     } catch (error) {
         throw error
     }

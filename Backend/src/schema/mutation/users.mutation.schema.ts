@@ -8,5 +8,6 @@ export const UsersMutationDefs = gql`
         UpdateUserProfile(id:String!,name:String!,email:String,password_hash:String):UserResponse!
         DeActiveUser(id:String!,status:String):UserResponse!
         ActiveUser(id:String!,status:String):UserResponse!
+        ResetUserPassword(id:String!,password_hash:String!):UserResponse!
     }
 `
