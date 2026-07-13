@@ -6,7 +6,9 @@ export const ErrorCodes = {
   EMAIL_ALREADY_EXISTS: "EMAIL_ALREADY_EXISTS",
   ACTIVITY_LOGS_FAILED: 'ACTIVITY_LOGS_FAILED',
   ACCOUNT_INACTIVE: "ACCOUNT_INACTIVE",
-  INVALID_CREDENTIALS:"INVALID_CREDENTIALS"
+  INVALID_CREDENTIALS: "INVALID_CREDENTIALS",
+  INVALID_INPUT_DATA: "INVALID_INPUT_DATA",
+  EMAIL_FORMAT_INVALID: "EMAIL_FORMAT_INVALID"
 
 }
 
@@ -20,6 +22,8 @@ export const errorMap: Record<errorCode, string> = {
   EMAIL_ALREADY_EXISTS: "Email already exists",
   ACTIVITY_LOGS_FAILED: "Failed to retrieve activity logs",
   ACCOUNT_INACTIVE: "This account is inactive",
+  INVALID_INPUT_DATA: "Invalid input data",
+  EMAIL_FORMAT_INVALID: "Email format is invalid"
 };
 
 

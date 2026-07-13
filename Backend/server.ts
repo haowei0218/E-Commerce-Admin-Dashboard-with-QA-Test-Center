@@ -67,7 +67,6 @@ async function startServer() {
             const payload = jwt.verify(token, process.env.JWT_SECRET!) as TokenPayload
             const result = await SupabaseClient.query(`SELECT u.id,u.name,u.email,u.role_id,u.status,r.id AS role_code,r.manage_level FROM users AS u INNER JOIN roles AS r ON r.id=u.role_id WHERE u.id=$1`, [payload.userid])
             user = result.rows[0]
-            console.log('user verify result : ', user)
           }
           catch (error) {
             console.error('verify token failed : ', error)

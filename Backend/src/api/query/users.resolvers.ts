@@ -1,7 +1,7 @@
 import { userLoginPayload } from "../../type/user.query.type.js";
 import { getUserById, getUsers, userLogin } from "../../utils/user.utils.js";
 import { ServerContext } from "../../type/user.base.type.js";
-import { requestPermission } from "../../auth.js";
+
 
 
 export const UsersQueryResolvers = {
