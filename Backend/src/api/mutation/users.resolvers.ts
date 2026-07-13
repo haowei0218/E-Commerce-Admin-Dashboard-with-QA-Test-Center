@@ -24,7 +24,7 @@ export const UsersMutationResolvers = {
         userInfo: result.updateUserInfo
       }
     },
-    DeActiveUser: async (_parent: unknown, { id, status = 'inactive' }: StatusPayload, context: ServerContext) => {
+    SetUserInactive: async (_parent: unknown, { id, status = 'inactive' }: StatusPayload, context: ServerContext) => {
       const canMangeUser = await requestPermission(id, context)
 
       if (canMangeUser) {
@@ -37,7 +37,7 @@ export const UsersMutationResolvers = {
         }
       }
     },
-    ActiveUser: async (_parent: unknown, { id, status = 'active' }: StatusPayload, context: ServerContext) => {
+    SetUserActive: async (_parent: unknown, { id, status = 'active' }: StatusPayload, context: ServerContext) => {
       const result = await setUserStatus({ id: id, status: status }, context)
       if (result) {
         await createActivityLog({ user_id: context.user.id, action: 'UPDATE', description: `已將一名使用者${result.setUserStatus.name} 加入白名單` }, context)

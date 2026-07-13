@@ -6,8 +6,8 @@ export const UsersMutationDefs = gql`
     type Mutation {
         CreateUser(name:String!,email:String,password_hash:String,role_id:Int,status:String!):UserResponse!
         UpdateUserProfile(id:String!,name:String!,email:String,password_hash:String):UserResponse!
-        DeActiveUser(id:String!,status:String):UserResponse!
-        ActiveUser(id:String!,status:String):UserResponse!
+        SetUserInactive(id:String!,status:String):UserResponse!
+        SetUserActive(id:String!,status:String):UserResponse!
         ResetUserPassword(id:String!,password_hash:String!):UserResponse!
     }
 `
