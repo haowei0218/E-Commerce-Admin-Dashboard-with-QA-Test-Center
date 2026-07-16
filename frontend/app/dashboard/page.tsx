@@ -19,7 +19,7 @@ import NavigationBar from '@/components/ui/NavigationBar'
 import DashboardCards from '@/components/ui/DashboardCards'
 const sidebarIconStyle = 'text-2xl'
 
-const navigationBarList = [
+export const navigationBarList = [
   {
     sidebarName: 'Dashboard',
     sidebarIcon: <MdDashboard className={sidebarIconStyle} />,
