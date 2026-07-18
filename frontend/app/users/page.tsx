@@ -3,6 +3,7 @@ import { navigationBarList } from '../dashboard/page'
 import { Header } from '@/components/Header'
 import { CgExport } from 'react-icons/cg'
 import { FaPlus } from 'react-icons/fa'
+import { CiSearch } from 'react-icons/ci'
 export default function Users() {
   return (
     <div className='w-full h-full flex'>
@@ -19,15 +20,27 @@ export default function Users() {
             </span>
           </div>
 
-          <div className='buttons w-[80%] flex justify-end gap-2 mt-20'>
-            <button className='flex justify-center items-center w-25 h-9 border border-gray-200 rounded-sm bg-white gap-2 font-bold'>
-              <CgExport />
-              Export
-            </button>
-            <button className='flex justify-center items-center w-30 h-9 border border-gray-200 rounded-sm bg-blue-500 font-bold text-white gap-2'>
-              <FaPlus />
-              add User
-            </button>
+          <div className='buttons w-[80%] flex justify-between gap-2 mt-20'>
+            <div className='flex w-100 h-9'>
+              <input
+                className='w-80 border-t border-l border-b h-full border-gray-300 rounded-l-lg p-4 focus:border-none'
+                placeholder='search username or email'
+              />
+              <button className='border-t border-r border-b border-gray-300 rounded-r-lg pr-2'>
+                <CiSearch className='text-2xl' />
+              </button>
+            </div>
+
+            <div className='flex gap-2'>
+              <button className='flex justify-center items-center w-25 h-9 border border-gray-200 rounded-sm bg-white gap-2 font-bold'>
+                <CgExport />
+                Export
+              </button>
+              <button className='flex justify-center items-center w-30 h-9 border border-gray-200 rounded-sm bg-blue-500 font-bold text-white gap-2'>
+                <FaPlus />
+                add User
+              </button>
+            </div>
           </div>
         </div>
       </div>
