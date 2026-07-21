@@ -24,7 +24,7 @@ export function DropdownMenu({
   return (
     <div className='relative w-50'>
       <select
-        className='w-50 h-9 border border-gray-300 rounded-lg px-4 font-bold text-md appearance-none'
+        className='w-50 h-9 border border-gray-300 rounded-lg px-4 font-bold text-md appearance-none focus:outline-none focus:ring-0 focus:border-gray-300'
         onChange={(e) => onRoleChange(e.target.value)}
         value={value}
       >

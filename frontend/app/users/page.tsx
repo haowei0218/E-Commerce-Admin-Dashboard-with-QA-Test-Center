@@ -7,6 +7,16 @@ import { FaPlus } from 'react-icons/fa'
 import { CiSearch } from 'react-icons/ci'
 import { DropdownMenu } from '@/components/DropdownMenu'
 import { useState } from 'react'
+import { HiOutlineDotsHorizontal } from 'react-icons/hi'
+
+type User = {
+  userid: string
+  name: string
+  email: string
+  role: string
+  status: 'active' | 'inactive'
+  createAt: string
+}
 
 const Roles = [
   { value: 6, optionName: '工程師' },
@@ -28,9 +38,33 @@ const Status = [
   },
 ]
 
+const users: User[] = [
+  {
+    userid: '78a3114d-0765-4c3e-8ffc-e03d0b863886',
+    name: 'user25',
+    email: 'test222@gmail.com',
+    role: '測試人員',
+    status: 'active',
+    createAt: '2026-01-01',
+  },
+  {
+    userid: '9c5a6531-9887-4b96-8269-5939989d4022',
+    name: 'user2',
+    email: 'user2@gmail.com',
+    role: '客服/營運人員',
+    status: 'inactive',
+    createAt: '2026-01-01',
+  },
+]
+
 export default function Users() {
   const [role, setRole] = useState<string>('4')
   const [userStatus, setUserStatus] = useState<string>('active')
+
+  const statusStyle = {
+    active: 'bg-green-100 text-green-700',
+    inactive: 'bg-red-100 text-red-700',
+  }
   return (
     <div className='w-full h-full flex'>
       <NavigationBar navigaionbarList={navigationBarList} />
@@ -45,11 +79,11 @@ export default function Users() {
               Manage all system users.
             </span>
           </div>
-
+          {/* filter*/}
           <div className='filters min-w-[60%] flex justify-start items-center gap-2 mt-10'>
             <div className='flex min-w-85 h-9'>
               <input
-                className='w-80 border-t border-l border-b h-full border-gray-300 rounded-l-lg p-4 focus:border-none'
+                className='w-80 border-t border-l border-b h-full border-gray-300 rounded-l-lg p-4 outline-none focus:outline-none focus:ring-0 focus:border-gray-300'
                 placeholder='search username or email'
               />
               <button className='border-t border-r border-b border-gray-300 rounded-r-lg pr-2'>
@@ -86,20 +120,74 @@ export default function Users() {
               </button>
             </div>
           </div>
-
-          <div className='overflow-hidden rounded-t-2xl border border-gray-300'>
+          {/* table*/}
+          <div className='overflow-hidden rounded-t-2xl border-t border-l border-r border-gray-300 w-[85%]'>
             <table className='w-full'>
-              <thead className='bg-gray-200 '>
-                <tr className='flex justify-between p-1'>
-                  <th className='p-3 text-left'>User ID</th>
-                  <th className='p-3 text-left'>Name</th>
-                  <th className='p-3 text-left'>Email</th>
-                  <th className='p-3 text-left'>Role</th>
-                  <th className='p-3 text-left'>Status</th>
-                  <th className='p-3 text-left'>Create At</th>
-                  <th className='p-3 text-left'>Action</th>
+              <thead className='bg-gray-200'>
+                <tr className='flex justify-start gap-2 p-3'>
+                  <th className='text-left text-sm font-black font-stretch-condensed w-80 text-gray-600'>
+                    <strong>User ID</strong>
+                  </th>
+                  <th className='text-left text-sm font-black font-stretch-condensed w-45 text-gray-600'>
+                    <strong>Name</strong>
+                  </th>
+                  <th className='text-left text-sm font-black font-stretch-condensed w-60 text-gray-600'>
+                    <strong>Email</strong>
+                  </th>
+                  <th className='text-left text-sm font-black font-stretch-condensed w-40 text-gray-600'>
+                    <strong>Role</strong>
+                  </th>
+                  <th className='text-left text-sm font-black font-stretch-condensed w-30 text-gray-600'>
+                    <strong>Status</strong>
+                  </th>
+                  <th className='text-left text-sm font-black font-stretch-condensed w-50 text-gray-600'>
+                    <strong>Created At</strong>
+                  </th>
+                  <th className='text-left text-sm font-black font-stretch-condensed w-10 text-gray-600'>
+                    <strong>Action</strong>
+                  </th>
                 </tr>
               </thead>
+
+              <tbody className='bg-white'>
+                {users.map((user) => {
+                  return (
+                    <tr className='flex gap-2 p-3 border-b border-gray-200'>
+                      <th className='text-left text-sm font-medium w-80 font-stretch-condensed'>
+                        {user.userid}
+                      </th>
+                      <th className='text-left text-sm font-medium w-45 font-stretch-condensed'>
+                        {user.name}
+                      </th>
+                      <th className='text-left text-sm font-medium w-60 font-stretch-condensed'>
+                        {user.email}
+                      </th>
+                      <th className='text-left text-sm font-medium w-40 font-stretch-condensed'>
+                        {user.role}
+                      </th>
+                      <th
+                        className={`text-left text-sm font-medium w-30 font-stretch-condensed block  h-[90%]`}
+                      >
+                        <div
+                          className={`w-15 h-6 flex justify-center items-center ${
+                            statusStyle[user.status]
+                          } rounded-md`}
+                        >
+                          <span>{user.status}</span>
+                        </div>
+                      </th>
+                      <th className='text-left text-sm font-medium w-50 font-stretch-condensed'>
+                        {user.createAt}
+                      </th>
+                      <th className='text-left text-sm font-black w-10 font-stretch-condensed'>
+                        <button className='text-xl font-black'>
+                          <HiOutlineDotsHorizontal />
+                        </button>
+                      </th>
+                    </tr>
+                  )
+                })}
+              </tbody>
             </table>
           </div>
         </div>
