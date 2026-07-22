@@ -8,16 +8,18 @@ export const User = gql`
     email: String
     role_id: Int
     status: String
+    create_at:String
   }
 `;
 
 export const UserInformation = gql`
   type UserInformation {
-    id:String
-    name:String
-    email:String
-    role_id:Int
-    status:String
+    id: String
+    name: String
+    email: String
+    code: String
+    status: String
+    create_at:String
   }
 `
 
@@ -36,9 +38,8 @@ export const UserResponse = gql`
 
 export const GetUsersResponse = gql`
   type GetUsersResponse {
-    getUsers:[User]
+    getUsers:[UserInformation]
   }
 `
 
-
-export const mergeUserTypeDefs = mergeTypeDefs([User, UserInformation, UserLoginResponse, UserResponse, GetUsersResponse])
+export const mergeUserTypeDefs = mergeTypeDefs([User, UserLoginResponse, UserResponse,UserInformation, GetUsersResponse])

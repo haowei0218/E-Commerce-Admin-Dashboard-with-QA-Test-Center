@@ -1,12 +1,13 @@
 import { Pool } from 'pg'
-import { ContextUserInfo, userInfo } from './user.mutation.type.js'
+import { ContextUserInfo } from './user.mutation.type.js'
 
 export type user = {
     id: string
     name: string
     email: string
-    role_id: number
+    role_id: RoleCode
     status: string
+    create_at:string
 }
 
 export type ServerContext = {

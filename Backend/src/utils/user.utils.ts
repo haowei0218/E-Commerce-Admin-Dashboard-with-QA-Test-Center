@@ -1,4 +1,4 @@
-import { userLoginPayload, UserLoginResponse, GetUsersResponse, GetUserByIdResponse } from "../type/user.query.type.js";
+import { userLoginPayload, UserLoginResponse, GetUsersResponse, GetUserByIdResponse, GetUserByPropertiesResponse, getUserByPropertiesPayload } from "../type/user.query.type.js";
 import { GraphQLError } from "graphql";
 import bcrypt from 'bcrypt'
 import jwt from "jsonwebtoken";
@@ -22,7 +22,9 @@ export async function userLogin({ account, password }: userLoginPayload, context
         email,
         password_hash,
         role_id,
-        status FROM users WHERE email=$1`,
+        status, 
+        create_at
+        FROM users WHERE email=$1`,
         [account],
     );
 
@@ -44,7 +46,7 @@ export async function userLogin({ account, password }: userLoginPayload, context
     }
 
     /**驗證帳戶狀態 */
-    if (user.status !== "active") {
+    if (user.status !== "Active") {
         throw new GraphQLError("Account is inactive", {
             extensions: {
                 code: "FORBIDDEN",
@@ -59,6 +61,7 @@ export async function userLogin({ account, password }: userLoginPayload, context
             email: user.email,
             role_id: user.role_id,
             status: user.status,
+            create_at: user.create_at
         },
         token: token
     }
@@ -132,23 +135,58 @@ export async function setUserStatus({ id, status }: StatusPayload, context: Serv
 }
 
 export async function getUsers(context: ServerContext): Promise<GetUsersResponse> {
-    const result = await context.db.query('SELECT id,name,email,role_id,status FROM users WHERE role_id > $1 AND id <> $2', [context.user.role_id, context.user.id])
+    const result = await context.db.query('SELECT users.id,users.name,users.email,users.status,users.create_at,roles.code FROM users INNER JOIN roles ON roles.id = users.role_id WHERE users.role_id > $1 AND users.id <> $2', [context.user.role_id, context.user.id])
     return { getUsers: result.rows }
 }
 
 export async function getUserById(userId: string, context: ServerContext): Promise<GetUserByIdResponse> {
-    const result = await context.db.query(`SELECT * FROM users WHERE id=$1`, [userId])
-    return { userInfo: result.rows[0] }
+    const result = await context.db.query(`SELECT users.id,users.name,users.email,users.status,users.create_at,roles.code FROM users INNER JOIN roles ON roles.id = users.role_id WHERE users.id=$1`, [userId])
+    return { getUsers: result.rows[0] }
 }
 
 export async function resetPassword(userId: string, password_hash: string, context: ServerContext): Promise<ResetPasswordResponse> {
     if (userId.length === 0) {
         throwGraphqlError('Invalid input data', 'INVALID_INPUT_DATA')
-
     }
     const NEW_PASSWORD_HASH = await bcrypt.hash(password_hash, 10)
     const result = await context.db.query(`UPDATE users SET password_hash=$1 WHERE id=$2 RETURNING id,name,email,role_id,status`, [NEW_PASSWORD_HASH, userId])
     return {
         resetUser: result.rows[0]
+    }
+}
+
+export async function getUserByProperties(filtersInfo: getUserByPropertiesPayload, context: ServerContext): Promise<GetUserByPropertiesResponse> {
+    const keywordValue = filtersInfo.keyword?.trim() || null
+    const statusValue  = filtersInfo.status.trim() || null
+    const isRoleId = filtersInfo.role_id || null
+
+    const result = await context.db.query(`
+    SELECT
+      u.id,
+      u.name,
+      u.email,
+      u.status,
+      u.create_at,
+      r.code
+    FROM users AS u
+    INNER JOIN roles AS r
+      ON r.id = u.role_id
+    WHERE
+      ($1::text IS NULL OR (
+        u.name ILIKE '%' || $1 || '%'
+        OR u.email ILIKE '%' || $1 || '%'
+        OR u.id::text ILIKE '%' || $1 || '%'
+      ))
+      AND ($2::bigint IS NULL OR u.role_id = $2)
+      AND ($3::text IS NULL OR u.status = $3)
+  `,
+        [
+            keywordValue,
+            isRoleId,
+            statusValue ,
+            
+        ],)
+    return {
+        getUsers: result.rows
     }
 }
