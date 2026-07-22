@@ -1,6 +1,6 @@
 import { mergeResolvers } from '@graphql-tools/merge';
-import { UsersMutationResolvers } from './mutation/users.resolvers.js';
-import { UsersQueryResolvers } from './query/users.resolvers.js';
+import { UsersMutationResolvers } from './mutation/adminUsers.resolvers.js';
+import { UsersQueryResolvers } from './query/adminUsers.resolvers.js';
 import { ActivityLogsQueryResolvers } from './query/activity-logs.resolvers.js';
 
  

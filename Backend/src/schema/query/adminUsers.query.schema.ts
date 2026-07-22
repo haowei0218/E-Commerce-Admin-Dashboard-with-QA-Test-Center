@@ -5,9 +5,9 @@ export const UserQueryDefs = gql`
     ${GetUsersResponse}
     type Query {
         UserLogin(account:String,password:String):UserLoginResponse!
-        GetUsers:GetUsersResponse!
-        GetUserById(userId:String):GetUsersResponse!
-        GetUserByProperties(status:String,role_id:Int,keyword:String):GetUsersResponse!
+        GetAdminUsers:GetUsersResponse!
+        GetAdminUserById(userId:String):GetUsersResponse!
+        GetAdminUserByProperties(status:String,role_id:Int,keyword:String):GetUsersResponse!
         
     }
 `;

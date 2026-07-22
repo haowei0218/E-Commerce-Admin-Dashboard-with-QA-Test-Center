@@ -67,7 +67,7 @@ export async function userLogin({ account, password }: userLoginPayload, context
     }
 }
 
-export async function registerUser({ name, email, password_hash, role_id, status }: UserInformation, context: ServerContext): Promise<RegisterUserResponse> {
+export async function createAdminUser({ name, email, password_hash, role_id, status }: UserInformation, context: ServerContext): Promise<RegisterUserResponse> {
     try {
         const hashPassword = await bcrypt.hash(password_hash, 10)
         const result = await context.db.query(`
@@ -84,7 +84,7 @@ export async function registerUser({ name, email, password_hash, role_id, status
 }
 
 /**在邏輯上 只能更改自己的Profile 不可以更改別人的 */
-export async function updateUser({ id, name, email, password_hash }: Omit<UserInformation, 'role_id' | 'status'>, context: ServerContext): Promise<UpdateUserResponse> {
+export async function updateAdminUser({ id, name, email, password_hash }: Omit<UserInformation, 'role_id' | 'status'>, context: ServerContext): Promise<UpdateUserResponse> {
 
     if (id !== context.user.id) {
         throwGraphqlError("You do not have permission to perform this action", 'FORBIDDEN')
@@ -129,17 +129,17 @@ export async function updateUser({ id, name, email, password_hash }: Omit<UserIn
 }
 
 /**根據權限矩陣 部分role_id擁有更改其他使用者狀態的權限 */
-export async function setUserStatus({ id, status }: StatusPayload, context: ServerContext): Promise<SetUserStatusResponse> {
+export async function setAdminUserStatus({ id, status }: StatusPayload, context: ServerContext): Promise<SetUserStatusResponse> {
     const result = await context.db.query(`UPDATE users SET status=$2 WHERE id=$1 RETURNING id,name,email,role_id,status`, [id, status])
     return { setUserStatus: result.rows[0] }
 }
 
-export async function getUsers(context: ServerContext): Promise<GetUsersResponse> {
-    const result = await context.db.query('SELECT users.id,users.name,users.email,users.status,users.create_at,roles.code FROM users INNER JOIN roles ON roles.id = users.role_id WHERE users.role_id > $1 AND users.id <> $2', [context.user.role_id, context.user.id])
+export async function getAdminUsers(context: ServerContext): Promise<GetUsersResponse> {
+    const result = await context.db.query('SELECT users.id,users.name,users.email,users.status,users.create_at,roles.code FROM users INNER JOIN roles ON roles.id = users.role_id WHERE users.role_id > $1', [context.user.role_id, context.user.id])
     return { getUsers: result.rows }
 }
 
-export async function getUserById(userId: string, context: ServerContext): Promise<GetUserByIdResponse> {
+export async function getAdminUserById(userId: string, context: ServerContext): Promise<GetUserByIdResponse> {
     const result = await context.db.query(`SELECT users.id,users.name,users.email,users.status,users.create_at,roles.code FROM users INNER JOIN roles ON roles.id = users.role_id WHERE users.id=$1`, [userId])
     return { getUsers: result.rows[0] }
 }
@@ -155,10 +155,12 @@ export async function resetPassword(userId: string, password_hash: string, conte
     }
 }
 
-export async function getUserByProperties(filtersInfo: getUserByPropertiesPayload, context: ServerContext): Promise<GetUserByPropertiesResponse> {
+export async function getAdminUserByProperties(filtersInfo: getUserByPropertiesPayload, context: ServerContext): Promise<GetUserByPropertiesResponse> {
     const keywordValue = filtersInfo.keyword?.trim() || null
     const statusValue  = filtersInfo.status.trim() || null
     const isRoleId = filtersInfo.role_id || null
+
+    
 
     const result = await context.db.query(`
     SELECT
