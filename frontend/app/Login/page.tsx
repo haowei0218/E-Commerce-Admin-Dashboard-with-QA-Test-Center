@@ -67,6 +67,8 @@ export function page() {
   const SubmitFn: SubmitHandler<LoginForm> = async (data: LoginForm) => {
     try {
       const result = await userLogin(data)
+      console.log('result: ', result.UserLogin.token)
+      localStorage.setItem('token', result.UserLogin.token)
       toast.success('登入成功')
       Router.push('/dashboard')
     } catch (error) {

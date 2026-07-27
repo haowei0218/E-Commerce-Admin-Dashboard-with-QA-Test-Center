@@ -12,3 +12,18 @@ export const USER_LOGIN = `
     }
   }
 `
+
+export const GET_USERS = /* GraphQL */ `
+  query GetAdminUsers {
+    GetAdminUsers {
+      getUsers {
+        id
+        name
+        email
+        code
+        status
+        create_at
+      }
+    }
+  }
+`

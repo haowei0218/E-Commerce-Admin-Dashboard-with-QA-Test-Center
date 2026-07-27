@@ -9,15 +9,31 @@ export type UserLoginPayload = {
   password: string
 }
 
-export type UserProfile = {
+export type loginUserProfile = {
   id: string
   name: string
   email: string
   role_id: number
   status: string
 }
+export type adminUserProfile = {
+  id: string
+  name: string
+  email: string
+  code: string
+  status: 'Active' | 'Inactive'
+  create_at: string
+}
 
 export type UserLoginResponse = {
-  userProfile: UserProfile
-  token: string
+  UserLogin: {
+    userProfile: loginUserProfile
+    token: string
+  }
+}
+
+export type GetUsersResponse = {
+  GetAdminUsers: {
+    getUsers: adminUserProfile[]
+  }
 }

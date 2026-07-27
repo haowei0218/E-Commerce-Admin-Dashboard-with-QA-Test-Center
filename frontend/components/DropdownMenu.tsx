@@ -29,7 +29,11 @@ export function DropdownMenu({
         value={value}
       >
         {props.map((item) => {
-          return <option value={item.value}>{item.optionName}</option>
+          return (
+            <option key={item.value} value={item.value}>
+              {item.optionName}
+            </option>
+          )
         })}
       </select>
       <RiArrowDropDownLine

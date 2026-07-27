@@ -6,8 +6,11 @@ import { CgExport } from 'react-icons/cg'
 import { FaPlus } from 'react-icons/fa'
 import { CiSearch } from 'react-icons/ci'
 import { DropdownMenu } from '@/components/DropdownMenu'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { HiOutlineDotsHorizontal } from 'react-icons/hi'
+import { adminUserProfile } from '@/type/user.login.type'
+import { getUsers } from '@/lib/api'
+import { Ring } from '@/components/ring'
 
 type User = {
   userid: string
@@ -60,10 +63,26 @@ const users: User[] = [
 export default function Users() {
   const [role, setRole] = useState<string>('4')
   const [userStatus, setUserStatus] = useState<string>('active')
+  const [Users, setUsers] = useState<adminUserProfile[] | null>(null)
+
+  useEffect(() => {
+    async function fetchAdminUsers() {
+      try {
+        const res = await getUsers()
+        const adminUsers = res.GetAdminUsers.getUsers
+        setUsers(adminUsers)
+        console.log('users:', adminUsers)
+      } catch (error) {
+        console.error('Get admin users failed:', error)
+      }
+    }
+
+    fetchAdminUsers()
+  }, [])
 
   const statusStyle = {
-    active: 'bg-green-100 text-green-700',
-    inactive: 'bg-red-100 text-red-700',
+    Active: 'bg-green-100 text-green-700',
+    Inactive: 'bg-red-100 text-red-700',
   }
   return (
     <div className='w-full h-full flex'>
@@ -121,75 +140,80 @@ export default function Users() {
             </div>
           </div>
           {/* table*/}
-          <div className='overflow-hidden rounded-t-2xl border-t border-l border-r border-gray-300 w-[85%]'>
-            <table className='w-full'>
-              <thead className='bg-gray-200'>
-                <tr className='flex justify-start gap-2 p-3'>
-                  <th className='text-left text-sm font-black font-stretch-condensed w-80 text-gray-600'>
-                    <strong>User ID</strong>
-                  </th>
-                  <th className='text-left text-sm font-black font-stretch-condensed w-45 text-gray-600'>
-                    <strong>Name</strong>
-                  </th>
-                  <th className='text-left text-sm font-black font-stretch-condensed w-60 text-gray-600'>
-                    <strong>Email</strong>
-                  </th>
-                  <th className='text-left text-sm font-black font-stretch-condensed w-40 text-gray-600'>
-                    <strong>Role</strong>
-                  </th>
-                  <th className='text-left text-sm font-black font-stretch-condensed w-30 text-gray-600'>
-                    <strong>Status</strong>
-                  </th>
-                  <th className='text-left text-sm font-black font-stretch-condensed w-50 text-gray-600'>
-                    <strong>Created At</strong>
-                  </th>
-                  <th className='text-left text-sm font-black font-stretch-condensed w-10 text-gray-600'>
-                    <strong>Action</strong>
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody className='bg-white'>
-                {users.map((user) => {
-                  return (
-                    <tr className='flex gap-2 p-3 border-b border-gray-200'>
-                      <th className='text-left text-sm font-medium w-80 font-stretch-condensed'>
-                        {user.userid}
-                      </th>
-                      <th className='text-left text-sm font-medium w-45 font-stretch-condensed'>
-                        {user.name}
-                      </th>
-                      <th className='text-left text-sm font-medium w-60 font-stretch-condensed'>
-                        {user.email}
-                      </th>
-                      <th className='text-left text-sm font-medium w-40 font-stretch-condensed'>
-                        {user.role}
-                      </th>
-                      <th
-                        className={`text-left text-sm font-medium w-30 font-stretch-condensed block  h-[90%]`}
+          {!Users && <Ring className='w-10 h-10 m-auto' />}
+          {Users && (
+            <div className='overflow-hidden rounded-t-2xl border-t border-l border-r border-gray-300 w-[85%]'>
+              <table className='w-full'>
+                <thead className='bg-gray-200'>
+                  <tr className='flex justify-start gap-2 p-3'>
+                    <th className='text-left text-sm font-black font-stretch-condensed w-80 text-gray-600'>
+                      <strong>User ID</strong>
+                    </th>
+                    <th className='text-left text-sm font-black font-stretch-condensed w-45 text-gray-600'>
+                      <strong>Name</strong>
+                    </th>
+                    <th className='text-left text-sm font-black font-stretch-condensed w-60 text-gray-600'>
+                      <strong>Email</strong>
+                    </th>
+                    <th className='text-left text-sm font-black font-stretch-condensed w-40 text-gray-600'>
+                      <strong>Role</strong>
+                    </th>
+                    <th className='text-left text-sm font-black font-stretch-condensed w-30 text-gray-600'>
+                      <strong>Status</strong>
+                    </th>
+                    <th className='text-left text-sm font-black font-stretch-condensed w-50 text-gray-600'>
+                      <strong>Created At</strong>
+                    </th>
+                    <th className='text-left text-sm font-black font-stretch-condensed w-10 text-gray-600'>
+                      <strong>Action</strong>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className='bg-white'>
+                  {Users?.map((user) => {
+                    return (
+                      <tr
+                        className='flex gap-2 p-3 border-b border-gray-200'
+                        key={user.id + user.email}
                       >
-                        <div
-                          className={`w-15 h-6 flex justify-center items-center ${
-                            statusStyle[user.status]
-                          } rounded-md`}
+                        <th className='text-left text-sm font-medium w-80 font-stretch-condensed'>
+                          {user.id}
+                        </th>
+                        <th className='text-left text-sm font-medium w-45 font-stretch-condensed'>
+                          {user.name}
+                        </th>
+                        <th className='text-left text-sm font-medium w-60 font-stretch-condensed'>
+                          {user.email}
+                        </th>
+                        <th className='text-left text-sm font-medium w-40 font-stretch-condensed'>
+                          {user.code}
+                        </th>
+                        <th
+                          className={`text-left text-sm font-medium w-30 font-stretch-condensed block  h-[90%]`}
                         >
-                          <span>{user.status}</span>
-                        </div>
-                      </th>
-                      <th className='text-left text-sm font-medium w-50 font-stretch-condensed'>
-                        {user.createAt}
-                      </th>
-                      <th className='text-left text-sm font-black w-10 font-stretch-condensed'>
-                        <button className='text-xl font-black'>
-                          <HiOutlineDotsHorizontal />
-                        </button>
-                      </th>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
+                          <div
+                            className={`w-15 h-6 flex justify-center items-center ${
+                              statusStyle[user.status]
+                            } rounded-md`}
+                          >
+                            <span>{user.status}</span>
+                          </div>
+                        </th>
+                        <th className='text-left text-sm font-medium w-50 font-stretch-condensed'>
+                          {user.create_at}
+                        </th>
+                        <th className='text-left text-sm font-black w-10 font-stretch-condensed'>
+                          <button className='text-xl font-black'>
+                            <HiOutlineDotsHorizontal />
+                          </button>
+                        </th>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
     </div>
