@@ -37,3 +37,10 @@ export type GetUsersResponse = {
     getUsers: adminUserProfile[]
   }
 }
+
+export type AdminUserLogoutResponse = {
+  AdminUserLogout: {
+    success: boolean,
+    message: string
+  }
+}

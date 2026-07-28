@@ -1,4 +1,4 @@
-export const USER_LOGIN = `
+export const USER_LOGIN = /* GraphQL */`
   query UserLogin($account: String, $password: String) {
     UserLogin(account: $account, password: $password) {
       userProfile {
@@ -24,6 +24,14 @@ export const GET_USERS = /* GraphQL */ `
         status
         create_at
       }
+    }
+  }
+`
+export const ADMIN_USER_LOGOUT = /* GraphQL */`
+  mutation AdminUserLogout {
+    AdminUserLogout {
+      success
+      message
     }
   }
 `

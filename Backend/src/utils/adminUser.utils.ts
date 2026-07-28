@@ -20,6 +20,10 @@ import {
   ResetPasswordResponse,
 } from '../type/user.mutation.type.js'
 import { ServerContext } from '../type/user.base.type.js'
+import type {
+  Request,
+  Response as ExpressResponse,
+} from 'express';
 
 /**email format check */
 export function emailFormatCheck(email: string) {
@@ -67,8 +71,19 @@ export async function userLogin(
   }
   const token = jwt.sign(
     { userid: user.id, accountName: user.name },
-    env.jwtSecret
+    env.jwtSecret,
+    {
+      algorithm: 'HS256',
+      expiresIn: '1h',
+    }
   )
+  context.res.cookie('access_token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 60 * 60 * 1000, // 1 小時
+  });
   return {
     userProfile: {
       id: user.id,
@@ -244,5 +259,20 @@ export async function getAdminUserByProperties(
   )
   return {
     getUsers: result.rows,
+  }
+}
+
+
+export async function adminUserLogout(context: ServerContext) {
+  context.res.clearCookie('access_token', {
+    httpOnly: true,
+    secure: process.env.NEXT_PUBLIC_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+  })
+
+  return {
+    success: true,
+    message: 'Logout successful',
   }
 }

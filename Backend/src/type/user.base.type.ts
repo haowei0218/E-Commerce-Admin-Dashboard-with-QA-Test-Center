@@ -1,5 +1,9 @@
 import { Pool } from 'pg'
 import { ContextUserInfo } from './user.mutation.type.js'
+import type {
+    Request,
+    Response as ExpressResponse,
+} from 'express';
 
 export type user = {
     id: string
@@ -7,13 +11,14 @@ export type user = {
     email: string
     role_id: RoleCode
     status: string
-    create_at:string
+    create_at: string
 }
 
 export type ServerContext = {
     db: Pool;
     token: string | null
     user: ContextUserInfo
+    res: ExpressResponse
 }
 
 export type RoleMap = {

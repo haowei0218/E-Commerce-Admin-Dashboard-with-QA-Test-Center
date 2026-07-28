@@ -41,5 +41,13 @@ export const GetUsersResponse = gql`
     getUsers:[UserInformation]
   }
 `
+export const LogoutResponse = gql`
+  type LogoutResponse {
+    success: Boolean!
+    message: String!
+  }
 
-export const mergeUserTypeDefs = mergeTypeDefs([User, UserLoginResponse, UserResponse,UserInformation, GetUsersResponse])
+
+`
+
+export const mergeUserTypeDefs = mergeTypeDefs([User, UserLoginResponse, UserResponse, UserInformation, GetUsersResponse, LogoutResponse])

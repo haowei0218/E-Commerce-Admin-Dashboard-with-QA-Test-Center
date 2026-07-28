@@ -13,25 +13,26 @@ export async function fetchAPI<T extends keyof APIPayload>(
   const token =
     typeof window !== 'undefined' ? localStorage.getItem('token') : null
 
-  const result = await fetch(apiUrl, {
+  const response = await fetch(apiUrl, {
     method: 'POST',
+    // 讓瀏覽器自動攜帶 HttpOnly Cookie
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
     body: JSON.stringify({
       query: queryString,
-      variables: variables,
+      variables: variables ?? null,
     }),
   })
-  if (!result.ok) {
-    throw new Error(result.statusText)
+  if (!response.ok) {
+    throw new Error(response.statusText)
   }
 
-  const json = await result.json()
+  const result = await response.json()
 
-  if (json.errors) {
-    throw new Error(json.errors[0].message)
+  if (result.errors) {
+    throw new Error(result.errors[0].message)
   }
-  return json.data
+  return result.data
 }

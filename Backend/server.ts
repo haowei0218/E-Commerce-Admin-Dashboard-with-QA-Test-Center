@@ -4,14 +4,14 @@ import cors from "cors";
 import jwt from "jsonwebtoken";
 import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
-
+import cookieParser from 'cookie-parser'
 import { mergeSchema } from "./src/schema/merge.shema.js";
 import SupabaseClient from "./src/db/db.js";
 import { MergeAllResolvers } from './src/api/resolverMerge.js'
 import { ServerContext } from "./src/type/user.base.type.js";
 
-console.log("cwd:", process.cwd());
-console.log("DATABASE_URL exists:", !!process.env.NEXT_PUBLIC_SUPABASE_URL);
+// console.log("cwd:", process.cwd());
+// console.log("DATABASE_URL exists:", !!process.env.NEXT_PUBLIC_SUPABASE_URL);
 
 type TokenPayload = {
   userid: string;
@@ -53,14 +53,18 @@ async function startServer() {
         "Authorization",
         "Apollo-Require-Preflight",
       ],
+      credentials: true
     }),
+    cookieParser(),
     express.json(),
     expressMiddleware(server, {
-      context: async ({ req }) => {
-        const token = req.headers.authorization?.replace(/^Bearer\s+/i, "") ?? null;
+      context: async ({ req, res }) => {
+        const authorizationToken = req.headers.authorization?.replace(/^Bearer\s+/i, "") ?? null;
+        const cookiesToken = req.cookies?.access_token
+        const token = authorizationToken ?? cookiesToken ?? null
+
+
         let user = null
-
-
         /**身分認證流程 : get token -> verify token -> get userid from verified payload -> get user profile by userid */
         if (token) {
           try {
@@ -69,13 +73,15 @@ async function startServer() {
             user = result.rows[0]
           }
           catch (error) {
+            user = null;
             console.error('verify token failed : ', error)
           }
         }
         return {
           token,
           db: SupabaseClient,
-          user
+          user,
+          res,
         };
       },
     }),

@@ -1,4 +1,4 @@
-import { USER_LOGIN, GET_USERS } from '@/graphql/user.graphql'
+import { USER_LOGIN, GET_USERS, ADMIN_USER_LOGOUT } from '@/graphql/user.graphql'
 import { Response } from '@/type/api.response.type'
 import { UserLoginPayload } from '@/type/user.login.type'
 import { fetchAPI } from '@/utils/api.utils'
@@ -18,5 +18,11 @@ export async function userLogin({
 
 export async function getUsers(): Promise<Response['GetUsers']> {
   const result = await fetchAPI<'GetUsers'>(apiUrl, GET_USERS)
+  return result
+}
+
+export async function adminUserLogout(): Promise<Response['AdminUserLogout']> {
+  const result = await fetchAPI<'AdminUserLogout'>(apiUrl, ADMIN_USER_LOGOUT)
+  console.log('logout result: ',result)
   return result
 }

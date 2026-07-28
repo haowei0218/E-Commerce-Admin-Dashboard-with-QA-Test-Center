@@ -6,7 +6,7 @@ import { RiAdminFill } from 'react-icons/ri'
 import { Nunito } from 'next/font/google'
 import { z } from 'zod'
 import { userLogin } from '@/lib/api'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
 const nunito = Nunito({
   subsets: ['latin'],
@@ -57,6 +57,13 @@ export function page() {
   const [isRemember, setRememberAccount] = useState(false)
   const [isHiddenPassword, setHiddenPassword] = useState(true)
   const Router = useRouter()
+  const searchParams = useSearchParams()
+  const redirectPath = searchParams.get('redirect') ?? '/dashboard'
+  const safeRedirectPath =
+  redirectPath.startsWith('/') &&
+  !redirectPath.startsWith('//')
+    ? redirectPath
+    : '/dashboard'
 
   const { register, handleSubmit } = useForm<LoginForm>({
     defaultValues: {
@@ -67,10 +74,10 @@ export function page() {
   const SubmitFn: SubmitHandler<LoginForm> = async (data: LoginForm) => {
     try {
       const result = await userLogin(data)
-      console.log('result: ', result.UserLogin.token)
-      localStorage.setItem('token', result.UserLogin.token)
+      localStorage.setItem('user', JSON.stringify(result.UserLogin.userProfile))
       toast.success('登入成功')
-      Router.push('/dashboard')
+      Router.replace(safeRedirectPath)
+      Router.refresh()
     } catch (error) {
       toast.error(error instanceof Error ? error.message : '登入失敗')
     }

@@ -60,6 +60,14 @@ const users: User[] = [
   },
 ]
 
+export function formatDate(value: string | number | Date) {
+  return new Intl.DateTimeFormat('zh-TW', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(new Date(Number(value)))
+}
+
 export default function Users() {
   const [role, setRole] = useState<string>('4')
   const [userStatus, setUserStatus] = useState<string>('active')
@@ -90,13 +98,27 @@ export default function Users() {
       <div className='main w-full flex flex-col h-full'>
         <Header />
         <div className='bg-gray-50 w-full h-full p-5'>
-          <div className='flex flex-col gap-2'>
-            <h1 className='text-2xl'>
-              <strong>Users</strong>
-            </h1>
-            <span className='text-gray-400 text-sm font-bold'>
-              Manage all system users.
-            </span>
+          <div className='flex justify-between items-center gap-2 w-[85%]'>
+
+            <div className='flex flex-col gap-2'>
+              <h1 className='text-2xl'>
+                <strong>Users</strong>
+              </h1>
+              <span className='text-gray-400 text-sm font-bold'>
+                Manage all system users.
+              </span>
+            </div>
+
+            <div className='flex gap-2'>
+              <button className='flex justify-center items-center w-25 h-9 border border-gray-300 rounded-lg bg-white gap-2 font-bold'>
+                <CgExport />
+                Export
+              </button>
+              <button className='flex justify-center items-center w-30 h-9 border border-gray-300 rounded-lg bg-blue-500 font-bold text-white gap-2'>
+                <FaPlus />
+                add User
+              </button>
+            </div>
           </div>
           {/* filter*/}
           <div className='filters min-w-[60%] flex justify-start items-center gap-2 mt-10'>
@@ -192,15 +214,14 @@ export default function Users() {
                           className={`text-left text-sm font-medium w-30 font-stretch-condensed block  h-[90%]`}
                         >
                           <div
-                            className={`w-15 h-6 flex justify-center items-center ${
-                              statusStyle[user.status]
-                            } rounded-md`}
+                            className={`w-15 h-6 flex justify-center items-center ${statusStyle[user.status]
+                              } rounded-md`}
                           >
                             <span>{user.status}</span>
                           </div>
                         </th>
                         <th className='text-left text-sm font-medium w-50 font-stretch-condensed'>
-                          {user.create_at}
+                          {formatDate(user.create_at)}
                         </th>
                         <th className='text-left text-sm font-black w-10 font-stretch-condensed'>
                           <button className='text-xl font-black'>
