@@ -1,7 +1,8 @@
-import { UserLoginResponse, GetUsersResponse,AdminUserLogoutResponse } from './user.login.type'
+import { UserLoginResponse, GetUsersResponse, AdminUserLogoutResponse, GetAdminUserByPropertiesResponse } from './adminUser.type'
 
 export type Response = {
   UserLogin: UserLoginResponse
   GetUsers: GetUsersResponse
-  AdminUserLogout:AdminUserLogoutResponse
+  AdminUserLogout: AdminUserLogoutResponse
+  GetAdminUserByProperties: GetAdminUserByPropertiesResponse
 }

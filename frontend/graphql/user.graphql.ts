@@ -35,3 +35,17 @@ export const ADMIN_USER_LOGOUT = /* GraphQL */`
     }
   }
 `
+export const GET_ADMIN_USER_BY_PROPERTIES = /* GraphQL */`
+query GetAdminUserByProperties($status: String, $roleId: Int, $keyword: String) {
+  GetAdminUserByProperties(status: $status, role_id: $roleId, keyword: $keyword) {
+    getUsers {
+      id
+      name
+      email
+      code
+      status
+      create_at
+    }
+  }
+}
+`

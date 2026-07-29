@@ -8,9 +8,10 @@ import { CiSearch } from 'react-icons/ci'
 import { DropdownMenu } from '@/components/DropdownMenu'
 import { useEffect, useState } from 'react'
 import { HiOutlineDotsHorizontal } from 'react-icons/hi'
-import { adminUserProfile } from '@/type/user.login.type'
-import { getUsers } from '@/lib/api'
+import { adminUserProfile } from '@/type/adminUser.type'
+import { getAdminUserByProperties, getUsers } from '@/lib/api'
 import { Ring } from '@/components/ring'
+import { CiFilter } from "react-icons/ci";
 
 type User = {
   userid: string
@@ -22,22 +23,27 @@ type User = {
 }
 
 const Roles = [
-  { value: 6, optionName: '工程師' },
-  { value: 5, optionName: '測試人員' },
-  { value: 4, optionName: '唯讀帳號' },
-  { value: 3, optionName: '客服/營運人員' },
-  { value: 2, optionName: '營運主管' },
-  { value: 7, optionName: 'All' },
+  { value: "6", optionName: '工程師' },
+  { value: "5", optionName: '測試人員' },
+  { value: "4", optionName: '唯讀帳號' },
+  { value: "3", optionName: '客服/營運人員' },
+  { value: "2", optionName: '營運主管' },
+  { value: "1", optionName: '管理員' },
+  { value: "All", optionName: 'All' },
 ]
 
 const Status = [
   {
-    value: 'active',
-    optionName: 'active',
+    value: 'Active',
+    optionName: 'Active',
   },
   {
-    value: 'inactive',
-    optionName: 'inactive',
+    value: 'Inactive',
+    optionName: 'Inactive',
+  },
+  {
+    value: 'All',
+    optionName: 'All',
   },
 ]
 
@@ -60,6 +66,8 @@ const users: User[] = [
   },
 ]
 
+
+
 export function formatDate(value: string | number | Date) {
   return new Intl.DateTimeFormat('zh-TW', {
     year: 'numeric',
@@ -69,9 +77,33 @@ export function formatDate(value: string | number | Date) {
 }
 
 export default function Users() {
-  const [role, setRole] = useState<string>('4')
-  const [userStatus, setUserStatus] = useState<string>('active')
+  const [role, setRole] = useState<string>("All")
+  const [userStatus, setUserStatus] = useState<string>('All')
+  const [keywords, setKeywords] = useState<string>('')
   const [Users, setUsers] = useState<adminUserProfile[] | null>(null)
+
+
+  async function handleAdminUserFilter(type: 'Filter' | 'Search') {
+    const reuslt = type === 'Filter' ? await getAdminUserByProperties({
+      keyword: keywords,
+      roleId: role === 'All' ? null : Number(role),
+      status: userStatus === 'All' ? null : userStatus,
+    }) : await getAdminUserByProperties({
+      keyword: keywords,
+      roleId: null,
+      status: null
+    })
+
+    if (reuslt.GetAdminUserByProperties.getUsers) {
+      setUsers(reuslt.GetAdminUserByProperties.getUsers)
+      setRole('All')
+      setUserStatus('All')
+      setKeywords('')
+    }
+    console.log('filter user : ', reuslt)
+  }
+
+
 
   useEffect(() => {
     async function fetchAdminUsers() {
@@ -124,23 +156,24 @@ export default function Users() {
           <div className='filters min-w-[60%] flex justify-start items-center gap-2 mt-10'>
             <div className='flex min-w-85 h-9'>
               <input
-                className='w-80 border-t border-l border-b h-full border-gray-300 rounded-l-lg p-4 outline-none focus:outline-none focus:ring-0 focus:border-gray-300'
+                className='w-80 border-t border-l border-b h-full border-gray-300 bg-white rounded-l-lg p-4 outline-none focus:outline-none focus:ring-0 focus:border-gray-300'
                 placeholder='search username or email'
+                onChange={(e) => setKeywords(e.target.value)}
               />
-              <button className='border-t border-r border-b border-gray-300 rounded-r-lg pr-2'>
+              <button className='border-t border-r border-b border-gray-300 rounded-r-lg pr-2' onClick={() => handleAdminUserFilter("Search")}>
                 <CiSearch className='text-2xl' />
               </button>
             </div>
 
             <div className='mb-5.5'>
-              <label className='w-15 text-center relative z-2 top-3 left-4 border border-gray-50 bg-gray-50 font-black text-gray-500 text-xs'>
+              <label className='w-15 text-center relative z-2 top-3 left-4 border border-gray-50 bg-white font-black text-gray-500 text-xs'>
                 Role
               </label>
               <DropdownMenu props={Roles} value={role} onRoleChange={setRole} />
             </div>
 
             <div className='mb-5.5'>
-              <label className='w-15 text-center relative z-2 top-3 left-4 border border-gray-50 bg-gray-50 font-black text-gray-500 text-xs'>
+              <label className='w-15 text-center relative z-2 top-3 left-4 border border-gray-50 bg-white font-black text-gray-500 text-xs'>
                 status
               </label>
               <DropdownMenu
@@ -152,12 +185,11 @@ export default function Users() {
 
             <div className='flex gap-2'>
               <button className='flex justify-center items-center w-25 h-9 border border-gray-300 rounded-lg bg-white gap-2 font-bold'>
-                <CgExport />
-                Export
+                Clear
               </button>
-              <button className='flex justify-center items-center w-30 h-9 border border-gray-300 rounded-lg bg-blue-500 font-bold text-white gap-2'>
-                <FaPlus />
-                add User
+              <button className='flex justify-center items-center w-30 h-9 border border-gray-300 rounded-lg bg-white gap-2 font-bold' onClick={() => handleAdminUserFilter("Filter")}>
+                <CiFilter />
+                Filter
               </button>
             </div>
           </div>

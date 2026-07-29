@@ -230,8 +230,8 @@ export async function getAdminUserByProperties(
   filtersInfo: getUserByPropertiesPayload,
   context: ServerContext
 ): Promise<GetUserByPropertiesResponse> {
-  const keywordValue = filtersInfo.keyword?.trim() || null
-  const statusValue = filtersInfo.status.trim() || null
+  const keywordValue = filtersInfo.keyword || null
+  const statusValue = filtersInfo.status || null
   const isRoleId = filtersInfo.role_id || null
 
   const result = await context.db.query(

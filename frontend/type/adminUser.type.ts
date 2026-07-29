@@ -44,3 +44,15 @@ export type AdminUserLogoutResponse = {
     message: string
   }
 }
+
+export type GetAdminUserByPropertiesResponse = {
+  GetAdminUserByProperties: {
+    getUsers: adminUserProfile[]
+  }
+}
+
+export type GetAdminUserByPropertiesPayload = {
+  keyword: string | null
+  roleId: number | string | null
+  status: string | null
+}
