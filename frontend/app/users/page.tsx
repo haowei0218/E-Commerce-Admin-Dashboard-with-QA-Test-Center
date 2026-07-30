@@ -9,19 +9,14 @@ import { DropdownMenu } from '@/components/DropdownMenu'
 import { useEffect, useState } from 'react'
 import { HiOutlineDotsHorizontal } from 'react-icons/hi'
 import { adminUserProfile } from '@/type/adminUser.type'
-import { getAdminUserByProperties, getUsers } from '@/lib/api'
+import { getAdminUserByProperties, getUsers } from '@/lib/user.api'
 import { Ring } from '@/components/ring'
 import { CiFilter } from "react-icons/ci";
-
-type User = {
-  userid: string
-  name: string
-  email: string
-  role: string
-  status: 'active' | 'inactive'
-  createAt: string
-}
-
+import { useRouter } from 'next/navigation'
+import { CiEdit } from "react-icons/ci";
+import PageTitle from '@/components/ui/PageTitle'
+import Link from 'next/link'
+import { MdBlock } from "react-icons/md";
 const Roles = [
   { value: "6", optionName: '工程師' },
   { value: "5", optionName: '測試人員' },
@@ -47,24 +42,6 @@ const Status = [
   },
 ]
 
-const users: User[] = [
-  {
-    userid: '78a3114d-0765-4c3e-8ffc-e03d0b863886',
-    name: 'user25',
-    email: 'test222@gmail.com',
-    role: '測試人員',
-    status: 'active',
-    createAt: '2026-01-01',
-  },
-  {
-    userid: '9c5a6531-9887-4b96-8269-5939989d4022',
-    name: 'user2',
-    email: 'user2@gmail.com',
-    role: '客服/營運人員',
-    status: 'inactive',
-    createAt: '2026-01-01',
-  },
-]
 
 
 
@@ -81,29 +58,40 @@ export default function Users() {
   const [userStatus, setUserStatus] = useState<string>('All')
   const [keywords, setKeywords] = useState<string>('')
   const [Users, setUsers] = useState<adminUserProfile[] | null>(null)
+  const router = useRouter()
 
 
   async function handleAdminUserFilter(type: 'Filter' | 'Search') {
-    const reuslt = type === 'Filter' ? await getAdminUserByProperties({
-      keyword: keywords,
-      roleId: role === 'All' ? null : Number(role),
-      status: userStatus === 'All' ? null : userStatus,
-    }) : await getAdminUserByProperties({
-      keyword: keywords,
-      roleId: null,
-      status: null
-    })
-
-    if (reuslt.GetAdminUserByProperties.getUsers) {
-      setUsers(reuslt.GetAdminUserByProperties.getUsers)
-      setRole('All')
-      setUserStatus('All')
-      setKeywords('')
+    const variables = {
+      keyword: type === 'Filter' ? null : keywords.trim(),
+      roleId: type === 'Search' ? null : role === 'All' ? null : Number(role),
+      status: type === 'Search' ? null : userStatus === 'All' ? null : userStatus
     }
-    console.log('filter user : ', reuslt)
+    const result = await getAdminUserByProperties(variables)
+    if (result.GetAdminUserByProperties.getUsers) {
+      setUsers(result.GetAdminUserByProperties.getUsers)
+
+    }
   }
 
+  async function resetFilter() {
+    setRole('All')
+    setUserStatus('All')
+    setKeywords('')
 
+    async function fetchAdminUsers() {
+      try {
+        const res = await getUsers()
+        const adminUsers = res.GetAdminUsers.getUsers
+        setUsers(adminUsers)
+        console.log('users:', adminUsers)
+      } catch (error) {
+        console.error('Get admin users failed:', error)
+      }
+    }
+
+    fetchAdminUsers()
+  }
 
   useEffect(() => {
     async function fetchAdminUsers() {
@@ -130,28 +118,17 @@ export default function Users() {
       <div className='main w-full flex flex-col h-full'>
         <Header />
         <div className='bg-gray-50 w-full h-full p-5'>
-          <div className='flex justify-between items-center gap-2 w-[85%]'>
-
-            <div className='flex flex-col gap-2'>
-              <h1 className='text-2xl'>
-                <strong>Users</strong>
-              </h1>
-              <span className='text-gray-400 text-sm font-bold'>
-                Manage all system users.
-              </span>
-            </div>
-
+          <PageTitle children={
             <div className='flex gap-2'>
               <button className='flex justify-center items-center w-25 h-9 border border-gray-300 rounded-lg bg-white gap-2 font-bold'>
                 <CgExport />
                 Export
               </button>
-              <button className='flex justify-center items-center w-30 h-9 border border-gray-300 rounded-lg bg-blue-500 font-bold text-white gap-2'>
+              <Link className='flex justify-center items-center w-30 h-9 border border-gray-300 rounded-lg bg-blue-500 font-bold text-white gap-2 hover:bg-blue-700 hover:cursor-pointer' href="/users/add-user">
                 <FaPlus />
                 add User
-              </button>
-            </div>
-          </div>
+              </Link>
+            </div>} mainTitle='Users' subTitle='Manage all system users.' />
           {/* filter*/}
           <div className='filters min-w-[60%] flex justify-start items-center gap-2 mt-10'>
             <div className='flex min-w-85 h-9'>
@@ -159,8 +136,9 @@ export default function Users() {
                 className='w-80 border-t border-l border-b h-full border-gray-300 bg-white rounded-l-lg p-4 outline-none focus:outline-none focus:ring-0 focus:border-gray-300'
                 placeholder='search username or email'
                 onChange={(e) => setKeywords(e.target.value)}
+                value={keywords}
               />
-              <button className='border-t border-r border-b border-gray-300 rounded-r-lg pr-2' onClick={() => handleAdminUserFilter("Search")}>
+              <button className='border-t border-r border-b bg-white border-gray-300 rounded-r-lg pr-2' onClick={() => handleAdminUserFilter("Search")}>
                 <CiSearch className='text-2xl' />
               </button>
             </div>
@@ -184,10 +162,10 @@ export default function Users() {
             </div>
 
             <div className='flex gap-2'>
-              <button className='flex justify-center items-center w-25 h-9 border border-gray-300 rounded-lg bg-white gap-2 font-bold'>
+              <button className='flex justify-center items-center w-25 h-9 border border-gray-300 rounded-lg bg-white gap-2 font-bold hover:bg-gray-500 hover:text-white hover:cursor-pointer' onClick={resetFilter}>
                 Clear
               </button>
-              <button className='flex justify-center items-center w-30 h-9 border border-gray-300 rounded-lg bg-white gap-2 font-bold' onClick={() => handleAdminUserFilter("Filter")}>
+              <button className='flex justify-center items-center w-30 h-9 border border-gray-300 rounded-lg bg-white gap-2 font-bold hover:bg-gray-500 hover:text-white hover:cursor-pointer' onClick={() => handleAdminUserFilter("Filter")}>
                 <CiFilter />
                 Filter
               </button>
@@ -255,9 +233,14 @@ export default function Users() {
                         <th className='text-left text-sm font-medium w-50 font-stretch-condensed'>
                           {formatDate(user.create_at)}
                         </th>
-                        <th className='text-left text-sm font-black w-10 font-stretch-condensed'>
-                          <button className='text-xl font-black'>
-                            <HiOutlineDotsHorizontal />
+                        <th className='flex items-start gap-2 text-left text-sm font-black font-stretch-condensed mb-2'>
+                          <button className='flex items-center gap-2 text-xl font-black border border-gray-200 rounded-sm  hover:bg-gray-500 bg:text-white hover:cursor-pointer' onClick={()=> router.push('/users/edit-user')}>
+                            <span className='text-xs font-bold'>Edit</span>
+                            <CiEdit className='m-auto' />
+                          </button>
+                          <button className='flex items-center gap-2 text-xl font-black border border-gray-200 rounded-sm  hover:bg-gray-500 bg:text-white hover:cursor-pointer' >
+                            <span className='text-xs font-bold'>block</span>
+                            <MdBlock className='m-auto' />
                           </button>
                         </th>
                       </tr>

@@ -1,7 +1,7 @@
 'use client'
 import { MdAdminPanelSettings } from 'react-icons/md'
 import Link from 'next/link'
-import { adminUserLogout } from '@/lib/api'
+import { adminUserLogout } from '@/lib/user.api'
 import { useRouter } from 'next/navigation'
 type navigationBar = {
   sidebarName: string

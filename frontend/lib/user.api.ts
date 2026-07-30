@@ -1,6 +1,6 @@
-import { USER_LOGIN, GET_USERS, ADMIN_USER_LOGOUT, GET_ADMIN_USER_BY_PROPERTIES } from '@/graphql/user.graphql'
+import { USER_LOGIN, GET_USERS, ADMIN_USER_LOGOUT, GET_ADMIN_USER_BY_PROPERTIES, CREATE_ADMIN_USER } from '@/graphql/user.graphql'
 import { Response } from '@/type/api.response.type'
-import { GetAdminUserByPropertiesPayload, UserLoginPayload } from '@/type/adminUser.type'
+import { CreateAdminUserPayload, GetAdminUserByPropertiesPayload, UserLoginPayload } from '@/type/adminUser.type'
 import { fetchAPI } from '@/utils/api.utils'
 
 const apiUrl = process.env.NEXT_PUBLIC_API ?? 'http://localhost:4201/graphql'
@@ -29,5 +29,10 @@ export async function adminUserLogout(): Promise<Response['AdminUserLogout']> {
 
 export async function getAdminUserByProperties(filter: GetAdminUserByPropertiesPayload): Promise<Response['GetAdminUserByProperties']> {
   const result = await fetchAPI<'GetAdminUserByProperties'>(apiUrl, GET_ADMIN_USER_BY_PROPERTIES, filter)
+  return result
+}
+
+export async function createAdminUser(adminUserInfo: CreateAdminUserPayload): Promise<Response['CreateAdminUser']> {
+  const result = await fetchAPI<'CreateAdminUser'>(apiUrl, CREATE_ADMIN_USER, adminUserInfo)
   return result
 }

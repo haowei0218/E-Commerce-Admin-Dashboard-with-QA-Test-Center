@@ -9,7 +9,7 @@ export const UsersMutationResolvers = {
   Mutation: {
     CreateAdminUser: async (_parent: unknown, { name, email, password_hash, role_id, status }: UserInformation, context: ServerContext) => {
       const result = await createAdminUser({ name: name, email: email, password_hash: password_hash, role_id: role_id, status: status }, context)
-      const { id } = result.registerUserInfo
+      const { id } = result.userInfo
       if (result) {
         await createActivityLog({ user_id: context.user.id, action: 'CREATE', description: `新增了一名使用者${name}` }, context)
       }

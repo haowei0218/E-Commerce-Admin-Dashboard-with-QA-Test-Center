@@ -110,7 +110,7 @@ export async function createAdminUser(
             `,
       [name, email, hashPassword, role_id, status]
     )
-    return { registerUserInfo: result.rows[0] }
+    return { userInfo: result.rows[0] }
   } catch (error: any) {
     if (error.code === '23505') {
       throwGraphqlError('Email already exists', 'EMAIL_ALREADY_EXISTS')

@@ -26,7 +26,7 @@ export type ContextUserInfo = userInfo & {
 
 
 export type RegisterUserResponse = {
-    registerUserInfo: userInfo
+    userInfo: userInfo
 }
 
 export type UpdateUserResponse = {

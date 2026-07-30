@@ -5,7 +5,7 @@ import { Role } from '@/type/adminUser.type'
 import { RiAdminFill } from 'react-icons/ri'
 import { Nunito } from 'next/font/google'
 import { z } from 'zod'
-import { userLogin } from '@/lib/api'
+import { userLogin } from '@/lib/user.api'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { toast } from 'sonner'
 const nunito = Nunito({

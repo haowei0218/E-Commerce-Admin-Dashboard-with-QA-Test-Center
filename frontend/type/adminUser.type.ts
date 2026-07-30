@@ -15,6 +15,7 @@ export type loginUserProfile = {
   email: string
   role_id: number
   status: string
+  create_at?: string
 }
 export type adminUserProfile = {
   id: string
@@ -55,4 +56,18 @@ export type GetAdminUserByPropertiesPayload = {
   keyword: string | null
   roleId: number | string | null
   status: string | null
+}
+
+export type CreateAdminUserPayload = {
+  name: string
+  email: string
+  roleId: number
+  status: string
+  passwordHash: string
+}
+
+export type CreateAdminUserResponse = {
+  CreateAdminUser: {
+    userInfo: loginUserProfile
+  }
 }
