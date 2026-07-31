@@ -64,3 +64,18 @@ mutation CreateAdminUser($name: String!, $status: String!, $email: String, $pass
   }
 }
 `
+
+export const GET_ADMIN_USER_BY_ID = /* GraphQL */`
+query GetAdminUserById($userId: String) {
+  GetAdminUserById(userId: $userId) {
+    getUserById {
+      id
+      name
+      email
+      role_id
+      status
+      create_at
+    } 
+  }
+}
+`

@@ -71,3 +71,9 @@ export type CreateAdminUserResponse = {
     userInfo: loginUserProfile
   }
 }
+
+export type GetAdminUserByIdResponse = {
+  GetAdminUserById: {
+    getUserById: loginUserProfile
+  }
+}

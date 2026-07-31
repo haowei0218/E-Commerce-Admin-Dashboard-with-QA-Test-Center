@@ -8,19 +8,22 @@ import Link from "next/link";
 import { z } from 'zod'
 import { useForm } from "react-hook-form";
 import { RiArrowDropDownLine } from 'react-icons/ri'
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
 import { createAdminUser } from "@/lib/user.api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ImSpinner2 } from 'react-icons/im'
-
-
-
-export default function createUser() {
+import { loginUserProfile } from "@/type/adminUser.type";
+import { useParams } from "next/navigation";
+import { getAdminUserById } from "@/lib/user.api";
+export default function editUser() {
+    const params = useParams<{ id: string }>()
+    const userId = params.id ?? ""
     const [confirmPassword, setConfirmPassword] = useState<string>('')
     const [passwordDisable, setPasswordDisable] = useState<boolean>(true)
     const [confirmPasswordDisable, setConfirmPasswordDisable] = useState<boolean>(true)
+    const [userProfile, setUserProfile] = useState<loginUserProfile | null>(null)
     const router = useRouter()
     const userInfo = z.object({
         name: z.string().min(1).max(30),
@@ -30,9 +33,11 @@ export default function createUser() {
         status: z.string()
     })
 
+
+
     type UserInformation = z.infer<typeof userInfo>
 
-    const { register, handleSubmit, watch, formState: { errors, isSubmitting, isSubmitted } } = useForm<UserInformation>({
+    const { register, handleSubmit, watch, reset, formState: { errors, isSubmitting, isSubmitted } } = useForm<UserInformation>({
         defaultValues: {
             name: "",
             roleId: 0,
@@ -41,6 +46,30 @@ export default function createUser() {
             status: ""
         }
     })
+
+
+    useEffect(() => {
+        async function GetAdminUserById() {
+            try {
+                const response = await getAdminUserById({ userId: userId })
+                const user = response.GetAdminUserById.getUserById
+                console.log('response : ', response.GetAdminUserById.getUserById)
+                setUserProfile(user)
+                reset({
+                    name: user.name ?? "",
+                    roleId: Number(user.role_id ?? 0),
+                    email: user.email ?? "",
+                    passwordHash: "",
+                    status: user.status ?? "",
+                })
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        GetAdminUserById()
+
+    }, [])
 
     async function onSubmit(data: UserInformation) {
         try {
@@ -58,7 +87,7 @@ export default function createUser() {
     }
     const password = watch('passwordHash')
     const isPasswordMisMatch = confirmPassword.length !== 0 && password !== confirmPassword ? "密碼不一致 請重新輸入" : ""
-    const submitDisable = watch('name').length === 0 || watch('roleId') === 0 || watch('email').length === 0 || watch('passwordHash').length === 0 || watch('status').length === 0
+    const submitDisable = watch('name')?.length === 0 || watch('roleId') === 0 || watch('email')?.length === 0 || watch('passwordHash')?.length === 0 || watch('status')?.length === 0
 
     return (
         <div className='w-full h-full flex'>
@@ -71,11 +100,11 @@ export default function createUser() {
                             <FaLongArrowAltLeft className="font-black text-blue-500" />
                             <Link href='/users' className="text-lg font-black text-blue-500">back</Link>
                         </button>
-                        <PageTitle mainTitle="Add User" subTitle="Add the new user to the system" />
+                        <PageTitle mainTitle="Edit User" subTitle="Edit a system user and assign their access." />
                     </div>
 
                     <form onSubmit={handleSubmit(onSubmit)} className=" w-full max-w-6xl mt-10 ml-20 border border-gray-300 rounded-2xl bg-white p-10 ">
-                        <h1 className="text-2xl font-black mb-10">User Information</h1>
+                        <h1 className="text-2xl font-black mb-10">User Information Edit</h1>
 
                         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 mb-5">
                             <div className="flex flex-col items-start gap-2">
@@ -87,6 +116,7 @@ export default function createUser() {
                                 <input
                                     {...register('name')}
                                     className="h-10 w-full rounded-xl border-2 border-gray-200 px-3"
+
                                 />
                             </div>
 
@@ -99,6 +129,7 @@ export default function createUser() {
                                 <input
                                     {...register('email')}
                                     className="h-10 w-full rounded-xl border-2 border-gray-200 px-3"
+
                                 />
                             </div>
                         </div>
@@ -139,8 +170,8 @@ export default function createUser() {
                                 <div className="relative w-full">
                                     <select {...register('status')} className="h-10 w-full rounded-xl border-2 appearance-none border-gray-200 px-3 text-gray-500 text-md font-black">
                                         <option value="">Select status</option>
-                                        <option value="active">Active</option>
-                                        <option value="inactive">Inactive</option>
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
 
                                     </select>
                                     <RiArrowDropDownLine
@@ -210,7 +241,7 @@ export default function createUser() {
                             <div className="w-full flex items-end justify-end gap-2">
                                 <Link className="w-30 h-9 border border-gray-300 rounded-lg bg-white font-bold  gap-2 hover:bg-gray-700 hover:text-white hover:cursor-pointer text-center pt-1" href={"/users"}>Cancel</Link>
                                 <button className="w-30 h-9 border flex justify-center items-center border-gray-300 rounded-lg bg-blue-500 font-bold text-white gap-2 hover:bg-blue-700 hover:cursor-pointer" disabled={submitDisable || isSubmitting} type="submit">{isSubmitting && <ImSpinner2 className="animate-spin" />}
-                                    {isSubmitting ? 'Creating...' : 'Create User'}</button>
+                                    {isSubmitting ? 'Editing...' : 'Edit'}</button>
                             </div>
                         </div>
                     </form>

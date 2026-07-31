@@ -122,11 +122,11 @@ export default function Users() {
                   Export
                 </button>
                 <Link
-                  className='flex justify-center items-center w-30 h-9 border border-gray-300 rounded-lg bg-blue-500 font-bold text-white gap-2 hover:bg-blue-700 hover:cursor-pointer'
+                  className='flex justify-center items-center w-40 h-9 border border-gray-300 rounded-lg bg-blue-500 font-bold text-white gap-2 hover:bg-blue-700 hover:cursor-pointer'
                   href='/users/add-user'
                 >
                   <FaPlus />
-                  add User
+                  Create User
                 </Link>
               </div>
             }
@@ -134,7 +134,7 @@ export default function Users() {
             subTitle='Manage all system users.'
           />
           {/* filter*/}
-          <div className='filters min-w-[60%] flex justify-start items-center gap-2 mt-10'>
+          <div className='filters min-w-[60%] flex justify-start items-center gap-2 mt-5'>
             <div className='flex min-w-85 h-9'>
               <input
                 className='w-80 border-t border-l border-b h-full border-gray-300 bg-white rounded-l-lg p-4 outline-none focus:outline-none focus:ring-0 focus:border-gray-300'
@@ -159,7 +159,7 @@ export default function Users() {
 
             <div className='mb-5.5'>
               <label className='w-15 text-center relative z-2 top-3 left-4 border border-gray-50 bg-white font-black text-gray-500 text-xs'>
-                status
+                Status
               </label>
               <DropdownMenu
                 props={Status}
@@ -210,7 +210,7 @@ export default function Users() {
                       <strong>Created At</strong>
                     </th>
                     <th className='text-left text-sm font-black font-stretch-condensed w-10 text-gray-600'>
-                      <strong>Action</strong>
+                      <strong>Actions</strong>
                     </th>
                   </tr>
                 </thead>
@@ -221,43 +221,45 @@ export default function Users() {
                         className='flex gap-2 p-3 border-b border-gray-200'
                         key={user.id + user.email}
                       >
-                        <th className='text-left text-sm font-medium w-80 font-stretch-condensed'>
+                        <td className='text-left flex items-center text-md font-medium w-80 font-stretch-condensed '>
                           {user.id}
-                        </th>
-                        <th className='text-left text-sm font-medium w-45 font-stretch-condensed'>
+                        </td>
+                        <td className='text-left flex items-center text-md font-medium w-45 font-stretch-condensed '>
                           {user.name}
-                        </th>
-                        <th className='text-left text-sm font-medium w-60 font-stretch-condensed'>
+                        </td>
+                        <td className='text-left flex items-center text-md font-medium w-60 font-stretch-condensed '>
                           {user.email}
-                        </th>
-                        <th className='text-left text-sm font-medium w-40 font-stretch-condensed'>
+                        </td>
+                        <td className='text-left flex items-center text-md font-medium w-40 font-stretch-condensed '>
                           {user.code}
-                        </th>
-                        <th
-                          className={`text-left text-sm font-medium w-30 font-stretch-condensed block  h-[90%]`}
+                        </td>
+                        <td
+                          className="text-left flex items-center text-md font-medium w-30 font-stretch-condensed  "
                         >
                           <div
-                            className={`w-15 h-6 flex justify-center items-center ${
-                              statusStyle[user.status]
-                            } rounded-md`}
+                            className={`w-15 h-6 mt-1.5 flex justify-center items-center ${statusStyle[user.status]
+                              } rounded-md`}
                           >
-                            <span>{user.status}</span>
+                            <span >{user.status}</span>
                           </div>
-                        </th>
-                        <th className='text-left text-sm font-medium w-50 font-stretch-condensed'>
+                        </td>
+                        <td className='flex items-center text-left text-md font-medium w-50 font-stretch-condensed '>
                           {formatDate(user.create_at)}
-                        </th>
-                        <th className='flex items-start gap-2 text-left text-sm font-black font-stretch-condensed mb-2'>
+                        </td>
+                        <td className='flex items-start gap-2 text-left text-md font-black font-stretch-condensed mb-2 '>
                           <button
-                            className='flex items-center gap-2 text-xl font-black border border-gray-200 rounded-sm  hover:bg-gray-500 bg:text-white hover:cursor-pointer'
-                            onClick={() => router.push('/users/edit-user')}
+                            className='flex items-center justify-center  p-1 gap-2 rounded-md text-md  border border-gray-200 px-2.5 py-1.5  text-gray-600 hover:bg-gray-50'
+                            onClick={() => router.push(`/users/edit-user/${user.id}`)}
                           >
                             <CiEdit className='m-auto' />
+                            Edit
+
                           </button>
-                          <button className='flex items-center gap-2 text-xl font-black border border-gray-200 rounded-sm  hover:bg-gray-500 bg:text-white hover:cursor-pointer'>
+                          <button className='flex items-center justify-center p-1 gap-2 rounded-md border border-red-200 px-2.5 py-1.5 text-md text-red-600 hover:bg-red-50'>
                             <MdBlock className='m-auto' />
+                            Block
                           </button>
-                        </th>
+                        </td>
                       </tr>
                     )
                   })}

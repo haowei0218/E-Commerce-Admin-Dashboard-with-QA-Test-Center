@@ -18,7 +18,7 @@ export type GetUsersResponse = {
 }
 
 export type GetUserByIdResponse = {
-    getUsers: queryUser
+    getUserById: user
 }
 
 export type getUserByPropertiesPayload = {

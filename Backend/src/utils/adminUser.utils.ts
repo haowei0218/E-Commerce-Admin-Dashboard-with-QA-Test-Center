@@ -125,8 +125,10 @@ export async function updateAdminUser(
     id,
     name,
     email,
+    role_id,
+    status,
     password_hash,
-  }: Omit<UserInformation, 'role_id' | 'status'>,
+  }: UserInformation,
   context: ServerContext
 ): Promise<UpdateUserResponse> {
   if (id !== context.user.id) {
@@ -140,7 +142,9 @@ export async function updateAdminUser(
     !id?.trim() ||
     !name?.trim() ||
     !email?.trim() ||
-    !password_hash?.trim()
+    !password_hash?.trim() ||
+    !role_id ||
+    !status?.trim()
   ) {
     throwGraphqlError('Invalid input data', 'INVALID_INPUT_DATA')
   }
@@ -152,8 +156,8 @@ export async function updateAdminUser(
   try {
     const NewPasswordHash = (await bcrypt.hash(password_hash, 10)) ?? ''
     const result = await context.db.query(
-      `UPDATE users SET name=$1,email=$2,password_hash=COALESCE($3, password_hash) WHERE id=$4 RETURNING id,name,email,role_id,status`,
-      [name.trim(), email, NewPasswordHash, id]
+      `UPDATE users SET name=$1,email=$2,password_hash=COALESCE($3, password_hash),status=$4,role_id=$5 WHERE id=$6 RETURNING id,name,email,role_id,status`,
+      [name.trim(), email, NewPasswordHash, status, role_id, id]
     )
     const updateUser = result.rows[0]
 
@@ -171,6 +175,62 @@ export async function updateAdminUser(
       throwGraphqlError('Email already exists', 'EMAIL_ALREADY_EXISTS')
     }
 
+    throw error
+  }
+}
+
+export async function updateProfile(
+  {
+    id,
+    name,
+    email,
+    status,
+    password_hash,
+  }: Omit<UserInformation, 'role_id'>,
+  context: ServerContext
+): Promise<UpdateUserResponse> {
+  if (id !== context.user.id) {
+    throwGraphqlError(
+      'You do not have permission to edit other user',
+      'FORBIDDEN'
+    )
+  }
+
+  if (
+    !id?.trim() ||
+    !name?.trim() ||
+    !email?.trim() ||
+    !password_hash?.trim() ||
+    !status?.trim()
+  ) {
+    throwGraphqlError('Invalid input data', 'INVALID_INPUT_DATA')
+  }
+
+  if (!emailFormatCheck(email)) {
+    throwGraphqlError('Email format is invalid', 'EMAIL_FORMAT_INVALID')
+  }
+
+  try {
+    const NewPasswordHash = (await bcrypt.hash(password_hash, 10)) ?? ''
+    const result = await context.db.query(
+      `UPDATE users SET name=$1,email=$2,password_hash=COALESCE($3, password_hash),status=$4 WHERE id=$6 RETURNING id,name,email,role_id,status`,
+      [name.trim(), email, NewPasswordHash, status, id]
+    )
+    const updateUser = result.rows[0]
+
+    if (!updateUser) {
+      throwGraphqlError('User not found', 'USER_NOT_FOUND')
+    }
+    return { updateUserInfo: updateUser }
+  } catch (error: unknown) {
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'code' in error &&
+      error.code === '23505'
+    ) {
+      throwGraphqlError('Email already exists', 'EMAIL_ALREADY_EXISTS')
+    }
     throw error
   }
 }
@@ -202,10 +262,10 @@ export async function getAdminUserById(
   context: ServerContext
 ): Promise<GetUserByIdResponse> {
   const result = await context.db.query(
-    `SELECT users.id,users.name,users.email,users.status,users.create_at,roles.code FROM users INNER JOIN roles ON roles.id = users.role_id WHERE users.id=$1`,
+    `SELECT users.id,users.name,users.email,users.status,users.create_at,users.role_id FROM users WHERE users.id=$1`,
     [userId]
   )
-  return { getUsers: result.rows[0] }
+  return { getUserById: result.rows[0] }
 }
 
 export async function resetPassword(

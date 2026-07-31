@@ -32,7 +32,7 @@ export default function RootLayout({
       lang='en'
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
-      <body>
+      <body className={geistSans.className}>
         <ApolloServerProvider>
           <Toaster position='top-center' />
           {children}

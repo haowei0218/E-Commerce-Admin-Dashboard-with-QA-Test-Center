@@ -6,4 +6,5 @@ export type APIPayload = {
   AdminUserLogout: null
   GetAdminUserByProperties: GetAdminUserByPropertiesPayload
   CreateAdminUser: CreateAdminUserPayload
+  GetAdminUserById: { userId: string }
 }

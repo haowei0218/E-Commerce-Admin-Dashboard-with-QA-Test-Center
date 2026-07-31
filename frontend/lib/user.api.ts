@@ -1,4 +1,4 @@
-import { USER_LOGIN, GET_USERS, ADMIN_USER_LOGOUT, GET_ADMIN_USER_BY_PROPERTIES, CREATE_ADMIN_USER } from '@/graphql/user.graphql'
+import { USER_LOGIN, GET_USERS, ADMIN_USER_LOGOUT, GET_ADMIN_USER_BY_PROPERTIES, CREATE_ADMIN_USER, GET_ADMIN_USER_BY_ID } from '@/graphql/user.graphql'
 import { Response } from '@/type/api.response.type'
 import { CreateAdminUserPayload, GetAdminUserByPropertiesPayload, UserLoginPayload } from '@/type/adminUser.type'
 import { fetchAPI } from '@/utils/api.utils'
@@ -34,5 +34,10 @@ export async function getAdminUserByProperties(filter: GetAdminUserByPropertiesP
 
 export async function createAdminUser(adminUserInfo: CreateAdminUserPayload): Promise<Response['CreateAdminUser']> {
   const result = await fetchAPI<'CreateAdminUser'>(apiUrl, CREATE_ADMIN_USER, adminUserInfo)
+  return result
+}
+
+export async function getAdminUserById({ userId }: { userId: string }): Promise<Response['GetAdminUserById']> {
+  const result = await fetchAPI<'GetAdminUserById'>(apiUrl, GET_ADMIN_USER_BY_ID, { userId: userId })
   return result
 }

@@ -1,6 +1,6 @@
 import { ServerContext } from "../../type/user.base.type.js"
 import { StatusPayload, UserInformation } from "../../type/user.mutation.type.js"
-import { setAdminUserStatus, createAdminUser, updateAdminUser, resetPassword, adminUserLogout } from "../../utils/adminUser.utils.js"
+import { setAdminUserStatus, createAdminUser, updateAdminUser, resetPassword, adminUserLogout, updateProfile } from "../../utils/adminUser.utils.js"
 import { createActivityLog } from "../../utils/activity-log.utils.js"
 import { requestPermission } from "../../auth.js"
 import { userInfo } from "node:os"
@@ -15,8 +15,17 @@ export const UsersMutationResolvers = {
       }
       return result
     },
-    UpdateAdminUserProfile: async (_parent: unknown, { id, name, email, password_hash }: Omit<UserInformation, 'role_id' | 'status'>, context: ServerContext) => {
-      const result = await updateAdminUser({ id: id, name: name, email: email, password_hash: password_hash }, context)
+    UpdateAdminUserProfile: async (_parent: unknown, { id, name, email, password_hash, role_id, status }: UserInformation, context: ServerContext) => {
+      const result = await updateAdminUser({ id: id, name: name, email: email, password_hash: password_hash, role_id, status }, context)
+      if (result) {
+        await createActivityLog({ user_id: context.user.id, action: 'UPDATE', description: `更新了使用者${name}的資料` }, context)
+      }
+      return {
+        userInfo: result.updateUserInfo
+      }
+    },
+    UpdateProfile: async (_parent: unknown, { id, name, email, password_hash, status }: Omit<UserInformation, 'role_id'>, context: ServerContext) => {
+      const result = await updateProfile({ id: id, name: name, email: email, password_hash: password_hash, status: status }, context)
       if (result) {
         await createActivityLog({ user_id: context.user.id, action: 'UPDATE', description: `更新了使用者${name}的資料` }, context)
       }
