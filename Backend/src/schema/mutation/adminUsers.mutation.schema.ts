@@ -7,7 +7,7 @@ export const UsersMutationDefs = gql`
     type Mutation {
         CreateAdminUser(name:String!,email:String,password_hash:String,role_id:Int,status:String!):UserResponse!
         UpdateAdminUserProfile(id:String!,name:String!,email:String,password_hash:String):UserResponse!
-        UpdateProfile(id:string!,name:String!,email:String,password_hash:String,role_id:Int,status:String!):UserResponse!
+        UpdateProfile(id:String!,name:String!,email:String,password_hash:String,role_id:Int,status:String!):UserResponse!
         SetAdminUserInactive(id:String!,status:String):UserResponse!
         SetAdminUserActive(id:String!,status:String):UserResponse!
         ResetAdminUserPassword(id:String!,password_hash:String!):UserResponse!
