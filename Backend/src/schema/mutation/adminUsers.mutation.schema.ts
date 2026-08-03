@@ -12,5 +12,6 @@ export const UsersMutationDefs = gql`
         SetAdminUserActive(id:String!,status:String):UserResponse!
         ResetAdminUserPassword(id:String!,password_hash:String!):UserResponse!
         AdminUserLogout:LogoutResponse!
+        ChangePassword(id:String!,newPassword:String!):UserResponse!
     }
 `

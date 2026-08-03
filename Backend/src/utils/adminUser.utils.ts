@@ -338,3 +338,9 @@ export async function adminUserLogout(context: ServerContext) {
     message: 'Logout successful',
   }
 }
+
+export async function changePassword(id: string, password: string, context: ServerContext) {
+  if (context.user.role_id !== 1) {
+    throwGraphqlError("You don't have any permission to change admin user password", "FORBIDDEN")
+  }
+}
