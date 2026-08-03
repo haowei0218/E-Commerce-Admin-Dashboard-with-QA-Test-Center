@@ -314,8 +314,10 @@ export async function getAdminUserByProperties(
       ))
       AND ($2::bigint IS NULL OR u.role_id = $2)
       AND ($3::text IS NULL OR u.status = $3)
+      AND u.role_id > $4
+      AND u.id <> $5
   `,
-    [keywordValue, isRoleId, statusValue]
+    [keywordValue, isRoleId, statusValue, context.user.role_id, context.user.id]
   )
   return {
     getUsers: result.rows,
