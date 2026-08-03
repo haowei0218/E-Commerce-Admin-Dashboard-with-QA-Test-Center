@@ -471,56 +471,6 @@ http://localhost:4000/graphql
 ```
 
 ---
-
-## 目前開發進度
-
-### 已完成或已實作
-
-* [x] 後台登入介面
-* [x] JWT 身分驗證流程
-* [x] GraphQL Context 使用者注入
-* [x] Users Table
-* [x] 使用者搜尋功能
-* [x] Role Filter
-* [x] Status Filter
-* [x] 複合條件查詢
-* [x] 建立使用者 API
-* [x] 編輯使用者 API
-* [x] 啟用使用者 API
-* [x] 停用使用者 API
-* [x] 頁面保護機制
-* [x] 後端角色與管理層級驗證
-* [x] Activity Log 基礎功能
-
-### 開發中
-
-* [ ] Create User Modal
-* [ ] Edit User Modal
-* [ ] 列表分頁
-* [ ] Loading State
-* [ ] Error State
-* [ ] Empty Data State
-* [ ] 操作成功與失敗通知
-* [ ] Reset Password
-* [ ] 前後端權限顯示一致性
-* [ ] Users Module 測試
-
-### 後續規劃
-
-* [ ] Dashboard Statistics
-* [ ] Product Management
-* [ ] Order Management
-* [ ] Role Management
-* [ ] Permission Management
-* [ ] Activity Log Management
-* [ ] Notification Center
-* [ ] QA Test Center
-* [ ] Playwright E2E Tests
-* [ ] CI/CD
-* [ ] Production Deployment
-
----
-
 ## 專案學習成果
 
 透過本專案，我實際練習了：
