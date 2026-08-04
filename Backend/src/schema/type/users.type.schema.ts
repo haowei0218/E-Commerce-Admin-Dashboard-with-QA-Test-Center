@@ -52,8 +52,12 @@ export const GetUserByIdResponse = gql`
   type GetUserByIdResponse {
     getUserById:User
   }
-
-
 `
 
-export const mergeUserTypeDefs = mergeTypeDefs([User, UserLoginResponse, UserResponse, UserInformation, GetUsersResponse, LogoutResponse,GetUserByIdResponse])
+export const ChangePasswordResponse = gql`
+  type ChangePasswordResponse {
+    userProfile:User
+  }
+`
+
+export const mergeUserTypeDefs = mergeTypeDefs([User, UserLoginResponse, UserResponse, UserInformation, GetUsersResponse, LogoutResponse, GetUserByIdResponse, ChangePasswordResponse])

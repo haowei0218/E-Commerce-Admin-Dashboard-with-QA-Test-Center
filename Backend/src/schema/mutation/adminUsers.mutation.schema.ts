@@ -1,5 +1,5 @@
 import { gql } from 'graphql-tag'
-import { UserResponse, LogoutResponse } from '../type/users.type.schema.js'
+import { UserResponse, LogoutResponse,ChangePasswordResponse } from '../type/users.type.schema.js'
 
 export const UsersMutationDefs = gql`
     ${UserResponse}
@@ -12,6 +12,6 @@ export const UsersMutationDefs = gql`
         SetAdminUserActive(id:String!,status:String):UserResponse!
         ResetAdminUserPassword(id:String!,password_hash:String!):UserResponse!
         AdminUserLogout:LogoutResponse!
-        ChangePassword(id:String!,newPassword:String!):UserResponse!
+        ChangePassword(id:String!,newPassword:String!):ChangePasswordResponse!
     }
 `

@@ -18,6 +18,7 @@ import {
   UserInformation,
   StatusPayload,
   ResetPasswordResponse,
+  changePasswordResponse,
 } from '../type/user.mutation.type.js'
 import { ServerContext } from '../type/user.base.type.js'
 import type {
@@ -339,8 +340,27 @@ export async function adminUserLogout(context: ServerContext) {
   }
 }
 
-export async function changePassword(id: string, password: string, context: ServerContext) {
-  if (context.user.role_id !== 1) {
+export async function changePassword(id: string, newPassword: string, context: ServerContext): Promise<changePasswordResponse> {
+
+  if (!context.user) {
+    throwGraphqlError("Authentication is required", "UNAUTHENTICATED");
+  }
+
+  const currentUserRoleId = Number(context.user.role_id);
+  /**role id !== 1 不可修改別人的密碼 */
+  if (currentUserRoleId !== 1 && id !== context.user.id) {
     throwGraphqlError("You don't have any permission to change admin user password", "FORBIDDEN")
   }
+  const NEW_PASSWORD_HASH = await bcrypt.hash(newPassword, 10)
+  const result = await context.db.query(`UPDATE users SET password_hash=$1 WHERE id=$2 RETURNING id,name,email,role_id,status`, [NEW_PASSWORD_HASH, id])
+  const updatedUser = result.rows[0];
+
+  if (!updatedUser) {
+    throwGraphqlError("User not found", "USER_NOT_FOUND");
+  }
+
+  return {
+    userProfile: updatedUser,
+  };
+
 }

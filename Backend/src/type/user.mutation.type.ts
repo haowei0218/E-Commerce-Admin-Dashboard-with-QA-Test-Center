@@ -17,6 +17,7 @@ export type userInfo = {
     email: string
     role_id: RoleCode
     status: AccountStatus
+    create_at?: string
 }
 
 export type ContextUserInfo = userInfo & {
@@ -44,4 +45,13 @@ export type SetUserStatusResponse = {
 
 export type ResetPasswordResponse = {
     resetUser: userInfo
+}
+
+export type changePasswordPayload = {
+    id:string
+    newPassword:string
+}
+
+export type changePasswordResponse = {
+    userProfile: userInfo
 }

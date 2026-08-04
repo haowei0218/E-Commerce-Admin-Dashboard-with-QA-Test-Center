@@ -1,6 +1,6 @@
 import { ServerContext } from "../../type/user.base.type.js"
-import { StatusPayload, UserInformation } from "../../type/user.mutation.type.js"
-import { setAdminUserStatus, createAdminUser, updateAdminUser, resetPassword, adminUserLogout, updateProfile } from "../../utils/adminUser.utils.js"
+import { changePasswordPayload, StatusPayload, UserInformation } from "../../type/user.mutation.type.js"
+import { setAdminUserStatus, createAdminUser, updateAdminUser, resetPassword, adminUserLogout, updateProfile, changePassword } from "../../utils/adminUser.utils.js"
 import { createActivityLog } from "../../utils/activity-log.utils.js"
 import { requestPermission } from "../../auth.js"
 import { userInfo } from "node:os"
@@ -66,6 +66,9 @@ export const UsersMutationResolvers = {
     },
     AdminUserLogout: async (_parent: unknown, _args: unknown, context: ServerContext) => {
       return await adminUserLogout(context)
+    },
+    ChangePassword: async (_parent: unknown, { id, newPassword }: changePasswordPayload, context: ServerContext) => {
+      return await changePassword(id, newPassword, context)
     }
   }
 }
