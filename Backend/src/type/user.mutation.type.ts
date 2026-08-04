@@ -43,10 +43,6 @@ export type SetUserStatusResponse = {
     setUserStatus: userInfo
 }
 
-export type ResetPasswordResponse = {
-    resetUser: userInfo
-}
-
 export type changePasswordPayload = {
     id:string
     newPassword:string

@@ -17,7 +17,6 @@ import {
   UpdateUserResponse,
   UserInformation,
   StatusPayload,
-  ResetPasswordResponse,
   changePasswordResponse,
 } from '../type/user.mutation.type.js'
 import { ServerContext } from '../type/user.base.type.js'
@@ -267,24 +266,6 @@ export async function getAdminUserById(
     [userId]
   )
   return { getUserById: result.rows[0] }
-}
-
-export async function resetPassword(
-  userId: string,
-  password_hash: string,
-  context: ServerContext
-): Promise<ResetPasswordResponse> {
-  if (userId.length === 0) {
-    throwGraphqlError('Invalid input data', 'INVALID_INPUT_DATA')
-  }
-  const NEW_PASSWORD_HASH = await bcrypt.hash(password_hash, 10)
-  const result = await context.db.query(
-    `UPDATE users SET password_hash=$1 WHERE id=$2 RETURNING id,name,email,role_id,status`,
-    [NEW_PASSWORD_HASH, userId]
-  )
-  return {
-    resetUser: result.rows[0],
-  }
 }
 
 export async function getAdminUserByProperties(
