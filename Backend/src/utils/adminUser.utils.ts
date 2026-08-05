@@ -23,10 +23,6 @@ import {
   setAdminUserRoleResponse,
 } from '../type/user.mutation.type.js'
 import { ServerContext } from '../type/user.base.type.js'
-import type {
-  Request,
-  Response as ExpressResponse,
-} from 'express';
 import { requestPermission } from '../auth.js'
 
 /**email format check */
@@ -377,7 +373,7 @@ export async function updateMyProfile(myProfile: updateMyProfilePayload, context
   }
 }
 
-/** */
+/**更新使用者帳號的狀態 */
 
 export async function setAdminUserRole(id: string | undefined, role_id: number, context: ServerContext): Promise<setAdminUserRoleResponse> {
   if (!context.user) {
