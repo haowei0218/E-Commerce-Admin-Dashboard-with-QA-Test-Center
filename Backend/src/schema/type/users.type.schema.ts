@@ -60,4 +60,16 @@ export const ChangePasswordResponse = gql`
   }
 `
 
-export const mergeUserTypeDefs = mergeTypeDefs([User, UserLoginResponse, UserResponse, UserInformation, GetUsersResponse, LogoutResponse, GetUserByIdResponse, ChangePasswordResponse])
+export const UpdateMyProfileResponse = gql`
+  type UpdateMyProfileResponse {
+    userProfile:UserInformation
+  }
+`
+
+export const SetAdminUserRoleResponse = gql`
+  type SetAdminUserRoleResponse {
+    userProfile:UserInformation
+  }
+`
+
+export const mergeUserTypeDefs = mergeTypeDefs([User, UserLoginResponse, UserResponse, UserInformation, GetUsersResponse, LogoutResponse, GetUserByIdResponse, ChangePasswordResponse, UpdateMyProfileResponse, SetAdminUserRoleResponse])

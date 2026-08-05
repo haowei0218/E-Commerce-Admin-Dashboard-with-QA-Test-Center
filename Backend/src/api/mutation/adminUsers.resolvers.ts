@@ -1,6 +1,6 @@
 import { ServerContext } from "../../type/user.base.type.js"
-import { changePasswordPayload, StatusPayload, UserInformation } from "../../type/user.mutation.type.js"
-import { setAdminUserStatus, createAdminUser, updateAdminUser, adminUserLogout, updateProfile, changePassword } from "../../utils/adminUser.utils.js"
+import { changePasswordPayload, StatusPayload, UserInformation, updateMyProfilePayload } from "../../type/user.mutation.type.js"
+import { setAdminUserStatus, createAdminUser, updateAdminUser, adminUserLogout, updateProfile, changePassword, updateMyProfile, setAdminUserRole } from "../../utils/adminUser.utils.js"
 import { createActivityLog } from "../../utils/activity-log.utils.js"
 import { requestPermission } from "../../auth.js"
 import { userInfo } from "node:os"
@@ -60,6 +60,12 @@ export const UsersMutationResolvers = {
     },
     ChangePassword: async (_parent: unknown, { id, newPassword }: changePasswordPayload, context: ServerContext) => {
       return await changePassword(id, newPassword, context)
+    },
+    UpdateMyProfile: async (_parent: unknown, { id, name, email }: updateMyProfilePayload, context: ServerContext) => {
+      return await updateMyProfile({ id, name, email }, context)
+    },
+    SetAdminUserRole: async (_parent: unknown, { id, role_id }: Omit<UserInformation, "name" | "email" | "password_hash" | "status">, context: ServerContext) => {
+      return await setAdminUserRole(id, role_id, context)
     }
   }
 }

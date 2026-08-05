@@ -18,12 +18,16 @@ import {
   UserInformation,
   StatusPayload,
   changePasswordResponse,
+  updateMyProfilePayload,
+  updateMyProfileResponse,
+  setAdminUserRoleResponse,
 } from '../type/user.mutation.type.js'
 import { ServerContext } from '../type/user.base.type.js'
 import type {
   Request,
   Response as ExpressResponse,
 } from 'express';
+import { requestPermission } from '../auth.js'
 
 /**email format check */
 export function emailFormatCheck(email: string) {
@@ -306,7 +310,6 @@ export async function getAdminUserByProperties(
   }
 }
 
-
 export async function adminUserLogout(context: ServerContext) {
   context.res.clearCookie('access_token', {
     httpOnly: true,
@@ -344,4 +347,50 @@ export async function changePassword(id: string, newPassword: string, context: S
     userProfile: updatedUser,
   };
 
+}
+
+
+export async function updateMyProfile(myProfile: updateMyProfilePayload, context: ServerContext): Promise<updateMyProfileResponse> {
+
+  if (!context.user) {
+    throwGraphqlError("Authentication is required", "UNAUTHENTICATED")
+  }
+
+  const isSelf = myProfile.id === context.user.id
+  const currentRoleId = Number(context.user.role_id)
+  const canManageOtherUser = [1, 2, 6].includes(currentRoleId)
+
+  /**如果不是自己且又不是高權限帳號  要驗證權限是否比較高*/
+  if (!isSelf && !canManageOtherUser) {
+    const result = await context.db.query(`SELECT id,role_id FROM users WHERE id=$1`, [myProfile.id])
+    const targetUser = result.rows[0]
+
+    if ((Number(targetUser.role_id) >= currentRoleId)) {
+      throwGraphqlError("You don't have any permission to change admin user password", "FORBIDDEN")
+    }
+  }
+
+  const result = await context.db.query(`UPDATE users AS u SET name=$1,email=$2 FROM roles AS r WHERE u.id=$3 AND u.role_id=r.id RETURNING u.id,u.name,u.email,u.status,u.create_at,r.code`, [myProfile.name, myProfile.email, myProfile.id])
+  const updateMyProfile = result.rows[0]
+  return {
+    userProfile: updateMyProfile
+  }
+}
+
+/** */
+
+export async function setAdminUserRole(id: string | undefined, role_id: number, context: ServerContext): Promise<setAdminUserRoleResponse> {
+  if (!context.user) {
+    throwGraphqlError("Authentication is required", "UNAUTHENTICATED")
+  }
+
+  const requestPermissions = requestPermission(id, context)
+  if (!requestPermissions) {
+    throwGraphqlError("You don't have any permission to change admin user password", "FORBIDDEN")
+  }
+
+  const result = await context.db.query(`UPDATE users AS u SET role_id=$1 FROM roles AS r WHERE u.id=$2 AND r.id=$1 RETURNING u.id,u.name,u.email,u.status,u.create_at,r.code`, [role_id, id])
+  return {
+    userProfile: result.rows[0]
+  }
 }

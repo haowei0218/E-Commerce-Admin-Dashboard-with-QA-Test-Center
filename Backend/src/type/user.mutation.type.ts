@@ -44,10 +44,24 @@ export type SetUserStatusResponse = {
 }
 
 export type changePasswordPayload = {
-    id:string
-    newPassword:string
+    id: string
+    newPassword: string
 }
 
 export type changePasswordResponse = {
     userProfile: userInfo
+}
+
+export type updateMyProfileResponse = {
+    userProfile: UserInformation
+}
+
+export type updateMyProfilePayload = {
+    id: string
+    name: string
+    email: string
+}
+
+export type setAdminUserRoleResponse = {
+    userProfile: UserInformation
 }
