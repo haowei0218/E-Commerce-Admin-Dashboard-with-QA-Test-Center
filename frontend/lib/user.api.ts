@@ -1,4 +1,4 @@
-import { USER_LOGIN, GET_USERS, ADMIN_USER_LOGOUT, GET_ADMIN_USER_BY_PROPERTIES, CREATE_ADMIN_USER, GET_ADMIN_USER_BY_ID } from '@/graphql/user.graphql'
+import { USER_LOGIN, GET_USERS, ADMIN_USER_LOGOUT, GET_ADMIN_USER_BY_PROPERTIES, CREATE_ADMIN_USER, GET_ADMIN_USER_BY_ID, UPDATE_MY_PROFILE, CHANGE_PASSWORD, SET_ADMIN_USER_ROLE } from '@/graphql/user.graphql'
 import { Response } from '@/type/api.response.type'
 import { CreateAdminUserPayload, GetAdminUserByPropertiesPayload, UserLoginPayload } from '@/type/adminUser.type'
 import { fetchAPI } from '@/utils/api.utils'
@@ -39,5 +39,20 @@ export async function createAdminUser(adminUserInfo: CreateAdminUserPayload): Pr
 
 export async function getAdminUserById({ userId }: { userId: string }): Promise<Response['GetAdminUserById']> {
   const result = await fetchAPI<'GetAdminUserById'>(apiUrl, GET_ADMIN_USER_BY_ID, { userId: userId })
+  return result
+}
+
+export async function updateMyProfile({ updateMyProfileId, name, email }: { updateMyProfileId: string, name: string, email: string }): Promise<Response['UpdateMyProfile']> {
+  const result = await fetchAPI<'UpdateMyProfile'>(apiUrl, UPDATE_MY_PROFILE, { updateMyProfileId: updateMyProfileId, name: name, email: email })
+  return result
+}
+
+export async function changePassword({ changePasswordId, newPassword }: { changePasswordId: string, newPassword: string }): Promise<Response['ChangePassword']> {
+  const result = await fetchAPI<'ChangePassword'>(apiUrl, CHANGE_PASSWORD, { changePasswordId: changePasswordId, newPassword: newPassword })
+  return result
+}
+
+export async function setAdminUserRole({ setAdminUserRoleId, roleId }: { setAdminUserRoleId: string, roleId: number }): Promise<Response['SetAdminUserRole']> {
+  const result = await fetchAPI<'SetAdminUserRole'>(apiUrl, SET_ADMIN_USER_ROLE, { setAdminUserRoleId: setAdminUserRoleId, roleId: roleId })
   return result
 }

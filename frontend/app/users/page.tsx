@@ -111,7 +111,7 @@ export default function Users() {
   return (
     <div className='w-full h-full flex'>
       <NavigationBar navigaionbarList={navigationBarList} />
-      <div className='main w-full flex flex-col h-full'>
+      <div className='main w-full flex flex-col h-full overflow-y-auto'>
         <Header />
         <div className='bg-gray-50 w-full h-full p-5'>
           <PageTitle

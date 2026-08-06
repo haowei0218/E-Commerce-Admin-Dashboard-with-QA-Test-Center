@@ -79,3 +79,50 @@ query GetAdminUserById($userId: String) {
   }
 }
 `
+
+export const UPDATE_MY_PROFILE = /* GraphQL */`
+mutation UpdateMyProfile($updateMyProfileId: String!, $name: String, $email: String) {
+  UpdateMyProfile(id: $updateMyProfileId, name: $name, email: $email) {
+    userProfile {
+      id
+      name
+      email
+      code
+      status
+      create_at
+    }
+  }
+}
+`
+
+export const CHANGE_PASSWORD = /* GraphQL */`
+mutation ChangePassword($changePasswordId: String!, $newPassword: String!) {
+  ChangePassword(id: $changePasswordId, newPassword: $newPassword) {
+    userProfile {
+      id
+      name
+      email
+      role_id
+      status
+      create_at
+    }
+  }
+}
+
+`
+
+export const SET_ADMIN_USER_ROLE = /* GraphQL */`
+mutation SetAdminUserRole($setAdminUserRoleId: String!, $roleId: Int) {
+  SetAdminUserRole(id: $setAdminUserRoleId, role_id: $roleId) {
+    userProfile {
+      id
+      name
+      email
+      code
+      status
+      create_at
+    }
+  }
+}
+
+`

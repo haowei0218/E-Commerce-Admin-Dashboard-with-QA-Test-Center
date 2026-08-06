@@ -77,3 +77,21 @@ export type GetAdminUserByIdResponse = {
     getUserById: loginUserProfile
   }
 }
+
+export type UpdateMyProfileResponse = {
+  UpdateMyProfile: {
+    userProfile: adminUserProfile
+  }
+}
+
+export type ChangePasswordResponse = {
+  ChangePassword: {
+    userProfile: loginUserProfile
+  }
+}
+
+export type SetAdminUserRoleResponse = {
+  SetAdminUserRole: {
+    userProfile: adminUserProfile
+  }
+}
