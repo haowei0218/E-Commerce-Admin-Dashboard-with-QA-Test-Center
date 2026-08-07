@@ -10,4 +10,6 @@ export type APIPayload = {
   UpdateMyProfile: Pick<adminUserProfile, "email" | "name"> & { updateMyProfileId: string }
   ChangePassword: { changePasswordId: string, newPassword: string }
   SetAdminUserRole: { setAdminUserRoleId: string, roleId: number }
+  SetAdminUserActive: { setAdminUserActiveId: string, status: string }
+  SetAdminUserInactive: { setAdminUserInactiveId: string, status: string }
 }

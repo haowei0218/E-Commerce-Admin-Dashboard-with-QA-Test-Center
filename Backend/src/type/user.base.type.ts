@@ -12,6 +12,7 @@ export type user = {
     role_id: RoleCode
     status: string
     create_at: string
+    manage_level?: number
 }
 
 export type ServerContext = {

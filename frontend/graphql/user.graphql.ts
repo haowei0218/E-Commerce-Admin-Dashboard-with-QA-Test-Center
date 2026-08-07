@@ -124,5 +124,36 @@ mutation SetAdminUserRole($setAdminUserRoleId: String!, $roleId: Int) {
     }
   }
 }
+`
 
+export const SET_ADMIN_USER_ACTIVE = /* GraphQL */`
+mutation SetAdminUserActive($status: String, $setAdminUserActiveId: String!) {
+  SetAdminUserActive(status: $status, id: $setAdminUserActiveId) {
+    userInfo {
+      id
+      name
+      email
+      role_id
+      status
+      create_at
+      manage_level
+    }
+  }
+}
+`
+
+export const SET_ADMIN_USER_INACTIVE = /* GraphQL */`
+mutation SetAdminUserInactive($setAdminUserInactiveId: String!, $status: String) {
+  SetAdminUserInactive(id: $setAdminUserInactiveId, status: $status) {
+    userInfo {
+      id
+      name
+      email
+      role_id
+      status
+      create_at
+      manage_level
+    }
+  }
+}
 `

@@ -16,6 +16,7 @@ export type loginUserProfile = {
   role_id: number
   status: string
   create_at?: string
+  manage_level?: number
 }
 export type adminUserProfile = {
   id: string
@@ -93,5 +94,17 @@ export type ChangePasswordResponse = {
 export type SetAdminUserRoleResponse = {
   SetAdminUserRole: {
     userProfile: adminUserProfile
+  }
+}
+
+export type SetAdminUserInactiveResponse = {
+  SetAdminUserInactive: {
+    userInfo: loginUserProfile
+  }
+}
+
+export type SetAdminUserActiveResponse = {
+  SetAdminUserActive: {
+    userInfo: loginUserProfile
   }
 }

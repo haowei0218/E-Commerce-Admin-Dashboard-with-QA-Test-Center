@@ -36,14 +36,15 @@ export async function userLogin(
 ): Promise<UserLoginResponse> {
   const result = await context.db.query(
     `SELECT 
-        id,
-        name,
-        email,
-        password_hash,
-        role_id,
-        status, 
-        create_at
-        FROM users WHERE email=$1`,
+        u.id,
+        u.name,
+        u.email,
+        u.password_hash,
+        u.role_id,
+        u.status, 
+        u.create_at,
+        r.manage_level
+        FROM users AS u INNER JOIN roles AS r ON r.id = u.role_id WHERE u.email=$1`,
     [account]
   )
 
@@ -63,7 +64,7 @@ export async function userLogin(
 
   /**驗證帳戶狀態 */
   if (user.status !== 'Active') {
-    throw new GraphQLError('Account is inactive', {
+    throw new GraphQLError('帳號已停用 請聯繫管理員', {
       extensions: {
         code: 'FORBIDDEN',
       },
@@ -74,7 +75,7 @@ export async function userLogin(
     env.jwtSecret,
     {
       algorithm: 'HS256',
-      expiresIn: '1h',
+      expiresIn: '2h',
     }
   )
   context.res.cookie('access_token', token, {
@@ -92,6 +93,7 @@ export async function userLogin(
       role_id: user.role_id,
       status: user.status,
       create_at: user.create_at,
+      manage_level: user.manage_level
     },
     token: token,
   }
@@ -251,8 +253,8 @@ export async function getAdminUsers(
   context: ServerContext
 ): Promise<GetUsersResponse> {
   const result = await context.db.query(
-    'SELECT users.id,users.name,users.email,users.status,users.create_at,roles.code FROM users INNER JOIN roles ON roles.id = users.role_id WHERE users.role_id > $1',
-    [context.user.role_id]
+    'SELECT users.id,users.name,users.email,users.status,users.create_at,roles.code FROM users INNER JOIN roles ON roles.id = users.role_id WHERE roles.manage_level < $1 OR users.id = $2',
+    [context.user.manage_level, context.user.id]
   )
   return { getUsers: result.rows }
 }

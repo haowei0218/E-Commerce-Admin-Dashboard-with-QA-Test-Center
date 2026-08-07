@@ -1,4 +1,4 @@
-import { USER_LOGIN, GET_USERS, ADMIN_USER_LOGOUT, GET_ADMIN_USER_BY_PROPERTIES, CREATE_ADMIN_USER, GET_ADMIN_USER_BY_ID, UPDATE_MY_PROFILE, CHANGE_PASSWORD, SET_ADMIN_USER_ROLE } from '@/graphql/user.graphql'
+import { USER_LOGIN, GET_USERS, ADMIN_USER_LOGOUT, GET_ADMIN_USER_BY_PROPERTIES, CREATE_ADMIN_USER, GET_ADMIN_USER_BY_ID, UPDATE_MY_PROFILE, CHANGE_PASSWORD, SET_ADMIN_USER_ROLE, SET_ADMIN_USER_ACTIVE } from '@/graphql/user.graphql'
 import { Response } from '@/type/api.response.type'
 import { CreateAdminUserPayload, GetAdminUserByPropertiesPayload, UserLoginPayload } from '@/type/adminUser.type'
 import { fetchAPI } from '@/utils/api.utils'
@@ -54,5 +54,13 @@ export async function changePassword({ changePasswordId, newPassword }: { change
 
 export async function setAdminUserRole({ setAdminUserRoleId, roleId }: { setAdminUserRoleId: string, roleId: number }): Promise<Response['SetAdminUserRole']> {
   const result = await fetchAPI<'SetAdminUserRole'>(apiUrl, SET_ADMIN_USER_ROLE, { setAdminUserRoleId: setAdminUserRoleId, roleId: roleId })
+  return result
+}
+
+export async function setAdminUserActive({ setAdminUserActiveId, status }: { setAdminUserActiveId: string, status: string }): Promise<Response['SetAdminUserActive']> {
+  if (!setAdminUserActiveId || setAdminUserActiveId.length === 0 || status.length === 0) {
+    throw new Error('Invalid input data')
+  }
+  const result = await fetchAPI<'SetAdminUserActive'>(apiUrl, SET_ADMIN_USER_ACTIVE, { setAdminUserActiveId: setAdminUserActiveId, status: status })
   return result
 }
