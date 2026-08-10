@@ -187,7 +187,7 @@ export default function Users() {
           {/* table*/}
           {!Users && <Ring className='w-10 h-10 m-auto' />}
           {Users && (
-            <div className='overflow-hidden rounded-t-2xl border-t border-l border-r border-gray-300 w-[85%]'>
+            <div className='rounded-t-2xl border-t border-l border-r border-gray-300 w-[85%]'>
               <table className='w-full'>
                 <thead className='bg-gray-200'>
                   <tr className='flex justify-start gap-2 p-3'>
@@ -253,11 +253,6 @@ export default function Users() {
                           >
                             <CiEdit className='m-auto' />
                             Edit
-
-                          </button>
-                          <button className='flex items-center justify-center p-1 gap-2 rounded-md border border-red-200 px-2.5 py-1.5 text-md text-red-600 hover:bg-red-50'>
-                            <MdBlock className='m-auto' />
-                            Block
                           </button>
                         </td>
                       </tr>

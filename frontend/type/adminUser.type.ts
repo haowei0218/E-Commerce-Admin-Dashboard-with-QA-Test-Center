@@ -108,3 +108,13 @@ export type SetAdminUserActiveResponse = {
     userInfo: loginUserProfile
   }
 }
+export type RoleMap = {
+    1: "Admin",
+    2: "Manager",
+    3: "Staff",
+    4: "Viewer",
+    5: "QA",
+    6: "Developer"
+}
+
+export type RoleCode = keyof RoleMap

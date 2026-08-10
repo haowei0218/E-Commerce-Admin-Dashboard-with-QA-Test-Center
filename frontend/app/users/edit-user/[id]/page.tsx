@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { useParams } from "next/navigation";
 import { getAdminUserById } from "@/lib/user.api";
 import { loginUserProfile } from "@/type/adminUser.type";
+import { RoleCode } from "@/type/adminUser.type";
 
 
 export default function editUser() {
@@ -69,32 +70,24 @@ export default function editUser() {
 
 
     /**onSubmit function*/
-
-    async function handleProfileSubmit(data: myProfile | changePassword | setRoleId | setStatus, api: string) {
-
-    }
-
     async function myProfileSubmit(data: myProfile) {
         const result = await updateMyProfile({ ...data, updateMyProfileId: userId })
         if (result) {
             toast.success("更新個人資料成功")
         }
     }
-
     async function changePasswordSubmit(data: changePassword) {
         const result = await changePassword({ ...data, changePasswordId: userId })
         if (result) {
             toast.success('密碼變更成功')
         }
     }
-
     async function setRoleSubmit(data: setRoleId) {
-        const result = await setAdminUserRole({ setAdminUserRoleId: userId, roleId: Number(data.roleId) })
+        const result = await setAdminUserRole({ setAdminUserRoleId: userId, roleId: Number(data.roleId) as RoleCode })
         if (result) {
             toast.success('帳號角色設定成功')
         }
     }
-
     async function setStatusSubmit(data: setStatus) {
         const result = await setAdminUserActive({ setAdminUserActiveId: userId, status: (data.status) })
         if (result) {
