@@ -82,7 +82,6 @@ export function page() {
       toast.error(error instanceof Error ? error.message : '登入失敗')
     }
   }
-  const onError: SubmitHandler<LoginForm> = (errors) => console.log(errors)
 
   return (
     <div className='login w-full h-full bg-gray-50 grid justify-center items-center'>

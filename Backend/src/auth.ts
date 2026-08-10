@@ -38,3 +38,12 @@ export async function requestPermission(targetUserId: string | undefined, contex
     throw error
   }
 }
+
+export async function requestAuth(context: ServerContext) {
+  if (!context.user) {
+    throwGraphqlError(
+      'You do not have permission to perform this action',
+      'FORBIDDEN'
+    )
+  }
+}

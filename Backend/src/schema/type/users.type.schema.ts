@@ -9,17 +9,19 @@ export const User = gql`
     role_id: Int
     status: String
     create_at:String
+    manage_level:Int
   }
 `;
 
 export const UserInformation = gql`
   type UserInformation {
-    id: String
-    name: String
-    email: String
-    code: String
-    status: String
-    create_at:String
+    id: String!
+    name: String!
+    email: String!
+    code: String!
+    status: String!
+    create_at:String!
+    
   }
 `
 

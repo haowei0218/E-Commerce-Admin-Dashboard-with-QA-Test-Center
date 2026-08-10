@@ -1,4 +1,4 @@
-import { UserLoginResponse, GetUsersResponse, AdminUserLogoutResponse, GetAdminUserByPropertiesResponse, CreateAdminUserResponse, GetAdminUserByIdResponse, UpdateMyProfileResponse, ChangePasswordResponse, SetAdminUserRoleResponse } from './adminUser.type'
+import { UserLoginResponse, GetUsersResponse, AdminUserLogoutResponse, GetAdminUserByPropertiesResponse, CreateAdminUserResponse, GetAdminUserByIdResponse, UpdateMyProfileResponse, ChangePasswordResponse, SetAdminUserRoleResponse, SetAdminUserActiveResponse, SetAdminUserInactiveResponse } from './adminUser.type'
 
 export type Response = {
   UserLogin: UserLoginResponse
@@ -10,4 +10,6 @@ export type Response = {
   UpdateMyProfile: UpdateMyProfileResponse
   ChangePassword: ChangePasswordResponse
   SetAdminUserRole: SetAdminUserRoleResponse
+  SetAdminUserActive: SetAdminUserActiveResponse
+  SetAdminUserInactive: SetAdminUserInactiveResponse
 }
