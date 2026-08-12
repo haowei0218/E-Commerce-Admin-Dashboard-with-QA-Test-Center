@@ -8,26 +8,23 @@ export function buildlogsMessage(username: string, action: string, data: string)
 }
 
 export async function getActivityLogs(userid: string, context: ServerContext): Promise<ActivityLogs | undefined> {
-    try {
-        const result = await context.db.query(`SELECT * FROM activitylogs WHERE user_id = $1`, [userid])
-        const activitylogs = result?.rows ?? []
-        return activitylogs
-    } catch (error) {
-        console.error("Get activity logs failed:", error);
+    const result = await context.db.query(`SELECT * FROM activitylogs WHERE user_id = $1`, [userid])
+    const activelogs = result?.rows ?? []
+    if (!activelogs) {
         throwGraphqlError(
             "Failed to retrieve activity logs",
             "ACTIVITY_LOGS_FAILED",
         );
     }
+    return activelogs
 }
 
 export async function createActivityLog(
     log: Omit<ActivityEvent, "id" | "create_at">,
     context: ServerContext,
 ) {
-    try {
-        const result = await context.db.query(
-            `
+    const result = await context.db.query(
+        `
       INSERT INTO activitylogs (
         user_id,
         action,
@@ -38,23 +35,21 @@ export async function createActivityLog(
       VALUES ($1, $2, $3, NOW(),$4)
       RETURNING *
     `,
-            [log.user_id, log.action, log.description, log.module],
+        [log.user_id, log.action, log.description, log.module],
+    );
+
+    const event = result.rows[0];
+
+    if (!event) {
+        throwGraphqlError(
+            "Failed to create activity log",
+            "ACTIVITY_LOGS_FAILED",
         );
-
-        const event = result.rows[0];
-
-        if (!event) {
-            throwGraphqlError(
-                "Failed to create activity log",
-                "ACTIVITY_LOGS_FAILED",
-            );
-        }
-
-        return {
-            event,
-            message: "success",
-        };
-    } catch (error) {
-        throw error
     }
+
+    return {
+        event,
+        message: "success",
+    };
+
 }
