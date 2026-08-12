@@ -22,3 +22,34 @@ export const Status = [
         optionName: 'All',
     },
 ]
+
+export const Headers = [
+  {
+    headerName: 'User ID',
+    style: "w-80"
+  },
+  {
+    headerName: 'Name',
+    style: "w-45"
+  },
+  {
+    headerName: 'Email',
+    style: "w-60"
+  },
+  {
+    headerName: 'Role',
+    style: "w-40"
+  },
+  {
+    headerName: 'Status',
+    style: "w-30"
+  },
+  {
+    headerName: 'Created At',
+    style: "w-50"
+  },
+  {
+    headerName: 'Actions',
+    style: "w-10"
+  }
+]
