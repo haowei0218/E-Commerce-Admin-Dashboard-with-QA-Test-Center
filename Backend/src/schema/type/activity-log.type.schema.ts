@@ -11,6 +11,7 @@ export const activityLog = gql`
         action:String
         description:String
         create_at:String
+        module:String
     }
 `
 export const activityLogResponse = gql`

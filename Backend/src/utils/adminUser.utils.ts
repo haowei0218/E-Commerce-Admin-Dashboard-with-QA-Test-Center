@@ -244,19 +244,19 @@ export async function updateMyProfile(myProfile: updateMyProfilePayload, context
   }
 
   const isSelf = myProfile.id === context.user.id
+  const currentManageLevel = Number(context.user.manage_level)
   const currentRoleId = Number(context.user.role_id)
   const canManageOtherUser = [1, 2, 6].includes(currentRoleId)
 
   /**如果不是自己且又不是高權限帳號  要驗證權限是否比較高*/
   if (!isSelf && !canManageOtherUser) {
-    const result = await context.db.query(`SELECT id,role_id FROM users WHERE id=$1`, [myProfile.id])
+    const result = await context.db.query(`SELECT id,manage_level FROM users WHERE id=$1`, [myProfile.id])
     const targetUser = result.rows[0]
 
-    if ((Number(targetUser.role_id) >= currentRoleId)) {
+    if ((Number(targetUser.manage_level) >= currentManageLevel)) {
       throwGraphqlError("You don't have any permission to change admin user password", "FORBIDDEN")
     }
   }
-
   const result = await context.db.query(`UPDATE users AS u SET name=$1,email=$2 FROM roles AS r WHERE u.id=$3 AND u.role_id=r.id RETURNING u.id,u.name,u.email,u.status,u.create_at,r.code`, [myProfile.name, myProfile.email, myProfile.id])
   const updateMyProfile = result.rows[0]
   return {

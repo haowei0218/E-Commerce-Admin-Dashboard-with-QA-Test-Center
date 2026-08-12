@@ -32,12 +32,13 @@ export async function createActivityLog(
         user_id,
         action,
         description,
-        create_at
+        create_at,
+        module
       )
-      VALUES ($1, $2, $3, NOW())
+      VALUES ($1, $2, $3, NOW(),$4)
       RETURNING *
     `,
-            [log.user_id, log.action, log.description],
+            [log.user_id, log.action, log.description, log.module],
         );
 
         const event = result.rows[0];

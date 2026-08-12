@@ -7,7 +7,8 @@ export type ActivityEvent = {
     user_id: string
     action: action
     description: string,
-    create_at: string
+    create_at: string,
+    module:string
 }
 export type ActivityLogs = ActivityEvent[]
 export type activityLogResponse = {
