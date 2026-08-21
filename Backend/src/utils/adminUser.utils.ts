@@ -24,6 +24,7 @@ import {
 } from '../type/user.mutation.type.js'
 import { RoleCode, ServerContext } from '../type/user.base.type.js'
 import { requestPermission, requestAuth } from '../auth.js'
+import { rolePermissions } from '../type/role_permissions.type.js'
 
 /**email format check */
 export function emailFormatCheck(email: string) {
@@ -104,7 +105,7 @@ export async function createAdminUser(
   context: ServerContext
 ): Promise<RegisterUserResponse> {
   try {
-    requestAuth(context)
+    requestAuth(context,rolePermissions.USERS_CREATE)
     const hashPassword = await bcrypt.hash(password_hash, 10)
     const result = await context.db.query(
       `
@@ -121,13 +122,12 @@ export async function createAdminUser(
     throw error
   }
 }
-
 /**根據權限矩陣 部分role_id擁有更改其他使用者狀態的權限 */
 export async function setAdminUserStatus(
   { id, status }: StatusPayload,
   context: ServerContext
 ): Promise<SetUserStatusResponse> {
-  requestAuth(context)
+  requestAuth(context,rolePermissions.USERS_UPDATE)
   const result = await context.db.query(
     `UPDATE users SET status=$2 WHERE id=$1 RETURNING id,name,email,role_id,status`,
     [id, status]
@@ -138,7 +138,7 @@ export async function setAdminUserStatus(
 export async function getAdminUsers(
   context: ServerContext
 ): Promise<GetUsersResponse> {
-  requestAuth(context)
+  requestAuth(context,rolePermissions.USERS_READ)
   const result = await context.db.query(
     'SELECT users.id,users.name,users.email,users.status,users.create_at,roles.code FROM users INNER JOIN roles ON roles.id = users.role_id WHERE roles.manage_level < $1 OR users.id = $2',
     [context.user.manage_level, context.user.id]
@@ -150,7 +150,7 @@ export async function getAdminUserById(
   userId: string,
   context: ServerContext
 ): Promise<GetUserByIdResponse> {
-  requestAuth(context)
+  requestAuth(context,rolePermissions.USERS_READ)
   const result = await context.db.query(
     `SELECT users.id,users.name,users.email,users.status,users.create_at,users.role_id FROM users WHERE users.id=$1`,
     [userId]
@@ -162,7 +162,7 @@ export async function getAdminUserByProperties(
   filtersInfo: getUserByPropertiesPayload,
   context: ServerContext
 ): Promise<GetUserByPropertiesResponse> {
-  requestAuth(context)
+  requestAuth(context,rolePermissions.USERS_READ)
   const keywordValue = filtersInfo.keyword || null
   const statusValue = filtersInfo.status || null
   const isRoleId = filtersInfo.role_id || null
@@ -212,8 +212,7 @@ export async function adminUserLogout(context: ServerContext) {
 }
 
 export async function changePassword(id: string, newPassword: string, context: ServerContext): Promise<changePasswordResponse> {
-
-  requestAuth(context)
+  requestAuth(context, rolePermissions.USERS_UPDATE)
   if (id.length === 0 || newPassword.length === 0) {
     throwGraphqlError('Invalid input data', "INVALID_INPUT_DATA")
   }
@@ -236,8 +235,9 @@ export async function changePassword(id: string, newPassword: string, context: S
   };
 
 }
+
 export async function updateMyProfile(myProfile: updateMyProfilePayload, context: ServerContext): Promise<updateMyProfileResponse> {
-  requestAuth(context)
+  requestAuth(context, rolePermissions.USERS_UPDATE)
   const { email, name } = myProfile
   if (email.length === 0 || name.length === 0) {
     throwGraphqlError('Invalid input data', "INVALID_INPUT_DATA")
@@ -263,9 +263,10 @@ export async function updateMyProfile(myProfile: updateMyProfilePayload, context
     userProfile: updateMyProfile
   }
 }
+
 /**更新使用者帳號的狀態 */
 export async function setAdminUserRole(id: string | undefined, role_id: RoleCode, context: ServerContext): Promise<setAdminUserRoleResponse> {
-  requestAuth(context)
+  requestAuth(context, rolePermissions.USERS_UPDATE)
   const requestPermissions = requestPermission(id, context)
   if (!requestPermissions) {
     throwGraphqlError("You don't have any permission to change admin user password", "FORBIDDEN")

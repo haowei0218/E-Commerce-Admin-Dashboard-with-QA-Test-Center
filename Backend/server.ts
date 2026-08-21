@@ -65,15 +65,33 @@ async function startServer() {
 
 
         let user = null
+        let permissions = null
         /**身分認證流程 : get token -> verify token -> get userid from verified payload -> get user profile by userid */
         if (token) {
           try {
             const payload = jwt.verify(token, process.env.JWT_SECRET!) as TokenPayload
             const result = await SupabaseClient.query(`SELECT u.id,u.name,u.email,u.role_id,u.status,r.id AS role_code,r.manage_level FROM users AS u INNER JOIN roles AS r ON r.id=u.role_id WHERE u.id=$1`, [payload.userid])
             user = result.rows[0]
+            const permissionResult = await SupabaseClient.query(
+              `
+                SELECT p.code
+                  FROM users AS u
+                INNER JOIN roles AS r
+                  ON r.id = u.role_id
+                INNER JOIN role_permissions AS rp
+                  ON rp.role_id = r.id
+                INNER JOIN permissions AS p
+                  ON p.id = rp.permission_id
+                WHERE u.id = $1
+              `,
+              [user.id],
+            );
+
+            permissions = permissionResult.rows.map((row) => row.code);
           }
           catch (error) {
             user = null;
+            permissions = null
             console.error('verify token failed : ', error)
           }
         }
@@ -82,6 +100,7 @@ async function startServer() {
           db: SupabaseClient,
           user,
           res,
+          permissions
         };
       },
     }),

@@ -2,6 +2,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken'
 import { ServerContext } from './type/user.base.type.js'
 import { ContextUserInfo } from './type/user.mutation.type.js'
 import { errorMap, throwGraphqlError } from './utils/error.utils.js'
+import { RolePermission } from './type/role_permissions.type.js'
 export function verifyToken(token: string): JwtPayload | null {
   try {
     return jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload
@@ -39,8 +40,8 @@ export async function requestPermission(targetUserId: string | undefined, contex
   }
 }
 
-export async function requestAuth(context: ServerContext) {
-  if (!context.user) {
+export async function requestAuth(context: ServerContext, target_user_permissions: RolePermission) {
+  if (!context.user || !context.permissions?.includes(target_user_permissions)) {
     throwGraphqlError(
       'You do not have permission to perform this action',
       'FORBIDDEN'
