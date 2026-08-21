@@ -20,6 +20,7 @@ export type ServerContext = {
     token: string | null
     user: ContextUserInfo
     res: ExpressResponse
+    permissions: string[] | null
 }
 
 export type RoleMap = {
