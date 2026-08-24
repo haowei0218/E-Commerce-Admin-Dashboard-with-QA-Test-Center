@@ -5,11 +5,11 @@ import {
   GetUserByIdResponse,
   GetUserByPropertiesResponse,
   getUserByPropertiesPayload,
-} from '../type/user.query.type.js'
+} from '../type/admin-users/adminUser.query.js'
 import { GraphQLError } from 'graphql'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { throwGraphqlError } from './error.utils.js'
+import { throwGraphqlError } from './error.js'
 import { env } from '../env.local.js'
 import {
   SetUserStatusResponse,
@@ -21,10 +21,10 @@ import {
   updateMyProfilePayload,
   updateMyProfileResponse,
   setAdminUserRoleResponse,
-} from '../type/user.mutation.type.js'
-import { RoleCode, ServerContext } from '../type/user.base.type.js'
+} from '../type/admin-users/adminUser.mutation.js'
+import { RoleCode, ServerContext } from '../type/admin-users/adminUsers.base..js'
 import { requestPermission, requestAuth } from '../auth.js'
-import { rolePermissions } from '../type/role_permissions.type.js'
+import { rolePermissions } from '../type/role-permissions/role_permissions.base.js'
 
 /**email format check */
 export function emailFormatCheck(email: string) {

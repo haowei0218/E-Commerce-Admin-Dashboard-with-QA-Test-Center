@@ -1,17 +1,11 @@
-import { gql } from 'graphql-tag'
 import { mergeTypeDefs } from '@graphql-tools/merge'
-import { mergeUserTypeDefs } from './type/users.type.schema.js'
-import { UserQueryDefs } from './query/adminUsers.query.schema.js'
-import { UsersMutationDefs } from './mutation/adminUsers.mutation.schema.js'
-import { ActivityLogQueryDefs } from './query/activity-log.query.schema.js'
-export const baseTypeDefs = gql`
- type Query{
-  hello:String
- }
+import { mergeUserTypeDefs } from './admin-users/adminUsers.type.js'
+import { mergeActivityLogsTypedefs } from './active-log/activity-log.type.js'
+import { UserQueryDefs } from './admin-users/adminUsers.query.js'
+import { UsersMutationDefs } from './admin-users/adminUsers.mutation.js'
+import { ActivityLogQueryDefs } from './active-log/activity-log.query.js'
+import { OrdersMutation } from './orders/orders.mutation.js'
+import { mergeOrderTypeSchema } from './orders/orders.type.js'
 
- type Mutation{
-  hello:String
- }
-`
-export const mergeSchema = mergeTypeDefs([mergeUserTypeDefs, UserQueryDefs, UsersMutationDefs,ActivityLogQueryDefs])
+export const mergeSchema = mergeTypeDefs([mergeUserTypeDefs, UserQueryDefs, UsersMutationDefs, ActivityLogQueryDefs, mergeActivityLogsTypedefs, OrdersMutation,mergeOrderTypeSchema])
 

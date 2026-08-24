@@ -1,5 +1,5 @@
 import { gql } from 'graphql-tag'
-import { UserResponse, LogoutResponse, ChangePasswordResponse, UpdateMyProfileResponse, SetAdminUserRoleResponse } from '../type/users.type.schema.js'
+import { UserResponse, LogoutResponse, ChangePasswordResponse, UpdateMyProfileResponse, SetAdminUserRoleResponse } from './adminUsers.type.js'
 
 export const UsersMutationDefs = gql`
     ${UserResponse}

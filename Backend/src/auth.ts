@@ -1,8 +1,8 @@
 import jwt, { JwtPayload } from 'jsonwebtoken'
-import { ServerContext } from './type/user.base.type.js'
-import { ContextUserInfo } from './type/user.mutation.type.js'
-import { errorMap, throwGraphqlError } from './utils/error.utils.js'
-import { RolePermission } from './type/role_permissions.type.js'
+import { ServerContext } from './type/admin-users/adminUsers.base..js'
+import { ContextUserInfo } from './type/admin-users/adminUser.mutation.js'
+import { errorMap, throwGraphqlError } from './utils/error.js'
+import { RolePermission } from './type/role-permissions/role_permissions.base.js'
 export function verifyToken(token: string): JwtPayload | null {
   try {
     return jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload

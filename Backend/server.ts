@@ -8,7 +8,7 @@ import cookieParser from 'cookie-parser'
 import { mergeSchema } from "./src/schema/merge.shema.js";
 import SupabaseClient from "./src/db/db.js";
 import { MergeAllResolvers } from './src/api/resolverMerge.js'
-import { ServerContext } from "./src/type/user.base.type.js";
+import { ServerContext } from "./src/type/admin-users/adminUsers.base..js";
 
 // console.log("cwd:", process.cwd());
 // console.log("DATABASE_URL exists:", !!process.env.NEXT_PUBLIC_SUPABASE_URL);

@@ -1,6 +1,6 @@
-import { accountStatus, userLoginPayload } from "../../type/user.query.type.js";
-import { getAdminUserById, getAdminUserByProperties, getAdminUsers, userLogin } from "../../utils/adminUser.utils.js";
-import { ServerContext } from "../../type/user.base.type.js";
+import { accountStatus, userLoginPayload } from "../../type/admin-users/adminUser.query.js";
+import { getAdminUserById, getAdminUserByProperties, getAdminUsers, userLogin } from "../../utils/adminUser.js";
+import { ServerContext } from "../../type/admin-users/adminUsers.base..js";
 
 
 

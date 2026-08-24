@@ -1,5 +1,5 @@
 import { gql } from "graphql-tag";
-import { UserLoginResponse, GetUsersResponse,GetUserByIdResponse } from "../type/users.type.schema.js";
+import { UserLoginResponse, GetUsersResponse,GetUserByIdResponse } from "./adminUsers.type.js";
 export const UserQueryDefs = gql`
     ${UserLoginResponse}
     ${GetUsersResponse}

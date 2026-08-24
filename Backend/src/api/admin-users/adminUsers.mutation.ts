@@ -1,7 +1,7 @@
-import { ServerContext } from "../../type/user.base.type.js"
-import { changePasswordPayload, StatusPayload, UserInformation, updateMyProfilePayload } from "../../type/user.mutation.type.js"
-import { setAdminUserStatus, createAdminUser, adminUserLogout, changePassword, updateMyProfile, setAdminUserRole } from "../../utils/adminUser.utils.js"
-import { createActivityLog } from "../../utils/activity-log.utils.js"
+import { ServerContext } from "../../type/admin-users/adminUsers.base..js"
+import { changePasswordPayload, StatusPayload, UserInformation, updateMyProfilePayload } from "../../type/admin-users/adminUser.mutation.js"
+import { setAdminUserStatus, createAdminUser, adminUserLogout, changePassword, updateMyProfile, setAdminUserRole } from "../../utils/adminUser.js"
+import { createActivityLog } from "../../utils/activity-log.js"
 import { requestPermission } from "../../auth.js"
 
 export const UsersMutationResolvers = {

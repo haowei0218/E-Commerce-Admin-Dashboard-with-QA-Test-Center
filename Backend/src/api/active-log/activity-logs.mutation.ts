@@ -1,6 +1,6 @@
-import { activelogsPayload } from "../../type/activitylog.type.js";
-import { ServerContext } from "../../type/user.base.type.js";
-import { getActivityLogs } from "../../utils/activity-log.utils.js";
+import { activelogsPayload } from "../../type/active-log/activitylog.base.js";
+import { ServerContext } from "../../type/admin-users/adminUsers.base..js";
+import { getActivityLogs } from "../../utils/activity-log.js";
 
 export const ActivityLogsQueryResolvers = {
     Query: {

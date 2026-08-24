@@ -1,4 +1,4 @@
-import { RoleCode } from "./user.base.type.js"
+import { RoleCode } from "./adminUsers.base..js"
 
 export type AccountStatus = "active" | "inactive"
 

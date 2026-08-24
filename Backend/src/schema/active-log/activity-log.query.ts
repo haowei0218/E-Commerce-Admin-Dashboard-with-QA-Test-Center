@@ -1,5 +1,5 @@
 import { gql } from "graphql-tag";
-import { activityLog } from "../type/activity-log.type.schema.js";
+import { activityLog } from "./activity-log.type.js";
 export const ActivityLogQueryDefs = gql`
     ${activityLog}
     type Query {

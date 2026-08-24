@@ -1,6 +1,6 @@
-import { ActivityEvent, ActivityLogs } from "../type/activitylog.type.js";
-import { ServerContext } from "../type/user.base.type.js";
-import { throwGraphqlError } from "./error.utils.js";
+import { ActivityEvent, ActivityLogs } from "../type/active-log/activitylog.base.js";
+import { ServerContext } from "../type/admin-users/adminUsers.base..js";
+import { throwGraphqlError } from "./error.js";
 
 
 export function buildlogsMessage(username: string, action: string, data: string) {

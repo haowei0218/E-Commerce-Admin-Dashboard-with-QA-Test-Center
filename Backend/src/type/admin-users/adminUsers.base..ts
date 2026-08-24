@@ -1,5 +1,5 @@
 import { Pool } from 'pg'
-import { ContextUserInfo } from './user.mutation.type.js'
+import { ContextUserInfo } from './adminUser.mutation.js'
 import type {
     Request,
     Response as ExpressResponse,
