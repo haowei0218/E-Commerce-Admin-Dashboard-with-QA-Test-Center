@@ -13,38 +13,6 @@ const nunito = Nunito({
   weight: ['400', '600', '700', '800'],
 })
 
-const role: Role[] = [
-  {
-    id: 1,
-    code: 'Admin',
-    role_name: '系統管理員',
-  },
-  {
-    id: 2,
-    code: 'Manager',
-    role_name: '營運主管',
-  },
-  {
-    id: 3,
-    code: 'Staff',
-    role_name: '客服/營運人員',
-  },
-  {
-    id: 4,
-    code: 'Viewer',
-    role_name: '唯讀帳號',
-  },
-  {
-    id: 5,
-    code: 'QA',
-    role_name: '測試人員',
-  },
-  {
-    id: 6,
-    code: 'Developer',
-    role_name: '工程師',
-  },
-]
 
 const formSchema = z.object({
   account: z.string().min(1, '請輸入帳號').max(20),

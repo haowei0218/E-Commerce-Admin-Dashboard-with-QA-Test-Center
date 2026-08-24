@@ -17,6 +17,7 @@ export type loginUserProfile = {
   status: string
   create_at?: string
   manage_level?: number
+  permissions?: string[]
 }
 export type adminUserProfile = {
   id: string
@@ -109,12 +110,12 @@ export type SetAdminUserActiveResponse = {
   }
 }
 export type RoleMap = {
-    1: "Admin",
-    2: "Manager",
-    3: "Staff",
-    4: "Viewer",
-    5: "QA",
-    6: "Developer"
+  1: "Admin",
+  2: "Manager",
+  3: "Staff",
+  4: "Viewer",
+  5: "QA",
+  6: "Developer"
 }
 
 export type RoleCode = keyof RoleMap

@@ -10,6 +10,7 @@ export const User = gql`
     status: String
     create_at:String
     manage_level:Int
+    permissions:[String]
   }
 `;
 

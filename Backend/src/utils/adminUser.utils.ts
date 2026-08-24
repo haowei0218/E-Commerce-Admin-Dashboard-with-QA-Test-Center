@@ -36,17 +36,47 @@ export async function userLogin(
   context: ServerContext
 ): Promise<UserLoginResponse> {
   const result = await context.db.query(
-    `SELECT 
-        u.id,
-        u.name,
-        u.email,
-        u.password_hash,
-        u.role_id,
-        u.status, 
-        u.create_at,
-        r.manage_level
-        FROM users AS u INNER JOIN roles AS r ON r.id = u.role_id WHERE u.email=$1`,
-    [account]
+    `
+    SELECT 
+      u.id,
+      u.name,
+      u.email,
+      u.password_hash,
+      u.role_id,
+      u.status,
+      u.create_at,
+      r.code,
+      r.manage_level,
+
+      COALESCE(
+        ARRAY_AGG(p.code) FILTER (WHERE p.code IS NOT NULL),
+        ARRAY[]::text[]
+      ) AS permissions
+
+    FROM users AS u
+    INNER JOIN roles AS r
+      ON r.id = u.role_id
+
+    LEFT JOIN role_permissions AS rp
+      ON rp.role_id = r.id
+
+    LEFT JOIN permissions AS p
+      ON p.id = rp.permissions_id
+
+    WHERE LOWER(u.email) = LOWER($1)
+
+    GROUP BY 
+      u.id,
+      u.name,
+      u.email,
+      u.password_hash,
+      u.role_id,
+      u.status,
+      u.create_at,
+      r.code,
+      r.manage_level
+  `,
+    [account.trim().toLowerCase()]
   )
 
   const user = result.rows[0] ?? null
@@ -94,7 +124,8 @@ export async function userLogin(
       role_id: user.role_id,
       status: user.status,
       create_at: user.create_at,
-      manage_level: user.manage_level
+      manage_level: user.manage_level,
+      permissions: user.permissions
     },
     token: token,
   }
@@ -105,7 +136,7 @@ export async function createAdminUser(
   context: ServerContext
 ): Promise<RegisterUserResponse> {
   try {
-    requestAuth(context,rolePermissions.USERS_CREATE)
+    requestAuth(context, rolePermissions.USERS_CREATE)
     const hashPassword = await bcrypt.hash(password_hash, 10)
     const result = await context.db.query(
       `
@@ -127,7 +158,7 @@ export async function setAdminUserStatus(
   { id, status }: StatusPayload,
   context: ServerContext
 ): Promise<SetUserStatusResponse> {
-  requestAuth(context,rolePermissions.USERS_UPDATE)
+  requestAuth(context, rolePermissions.USERS_UPDATE)
   const result = await context.db.query(
     `UPDATE users SET status=$2 WHERE id=$1 RETURNING id,name,email,role_id,status`,
     [id, status]
@@ -138,7 +169,7 @@ export async function setAdminUserStatus(
 export async function getAdminUsers(
   context: ServerContext
 ): Promise<GetUsersResponse> {
-  requestAuth(context,rolePermissions.USERS_READ)
+  requestAuth(context, rolePermissions.USERS_READ)
   const result = await context.db.query(
     'SELECT users.id,users.name,users.email,users.status,users.create_at,roles.code FROM users INNER JOIN roles ON roles.id = users.role_id WHERE roles.manage_level < $1 OR users.id = $2',
     [context.user.manage_level, context.user.id]
@@ -150,7 +181,7 @@ export async function getAdminUserById(
   userId: string,
   context: ServerContext
 ): Promise<GetUserByIdResponse> {
-  requestAuth(context,rolePermissions.USERS_READ)
+  requestAuth(context, rolePermissions.USERS_READ)
   const result = await context.db.query(
     `SELECT users.id,users.name,users.email,users.status,users.create_at,users.role_id FROM users WHERE users.id=$1`,
     [userId]
@@ -162,7 +193,7 @@ export async function getAdminUserByProperties(
   filtersInfo: getUserByPropertiesPayload,
   context: ServerContext
 ): Promise<GetUserByPropertiesResponse> {
-  requestAuth(context,rolePermissions.USERS_READ)
+  requestAuth(context, rolePermissions.USERS_READ)
   const keywordValue = filtersInfo.keyword || null
   const statusValue = filtersInfo.status || null
   const isRoleId = filtersInfo.role_id || null

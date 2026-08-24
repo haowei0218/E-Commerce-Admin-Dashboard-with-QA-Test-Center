@@ -13,6 +13,7 @@ export type user = {
     status: string
     create_at: string
     manage_level?: number
+    permissions: string[]
 }
 
 export type ServerContext = {
