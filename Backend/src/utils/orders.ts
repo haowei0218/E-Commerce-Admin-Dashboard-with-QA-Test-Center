@@ -91,7 +91,7 @@ export async function createOrder(
             created_order_items.push(itemResponse.rows[0]);
         }
         await client.query("COMMIT");
-        return { ...order_details, order_items: created_order_items };
+        return { details: { ...order_details, order_items: created_order_items } };
     } catch (error) {
         await client.query("ROLLBACK");
         throw error;

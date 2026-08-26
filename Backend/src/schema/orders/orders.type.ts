@@ -16,9 +16,9 @@ export const OrderSchema = gql`
         created_at:String
     }
     type OrderDetails{
-        id:ID!
-        order_number:String!
-        customer_id:ID!
+        id:ID
+        order_number:String
+        customer_id:ID
         shipping_fee:Float!
         total_amount:Float!
         order_status:String!
@@ -43,7 +43,7 @@ export const OrderSchema = gql`
 
 export const OrderInput = gql`
     input orderItemsInput {
-        order_id:ID!
+        order_id:ID
         product_id:ID
         sku:String!
         product_name:String!
@@ -53,8 +53,8 @@ export const OrderInput = gql`
         total_amount:Float!
     }
     input createOrderInput{
-        order_number:String!
-        customer_id:ID!
+        order_number:String
+        customer_id:ID
         shipping_fee:Float!
         total_amount:Float!
         recipient_name:String!
