@@ -37,6 +37,7 @@ export const OrderSchema = gql`
         cancel_reason:String
         created_at:String!
         updated_at:String!
+        payment_method:String!
         order_items:[OrderItemsDetails]!
     }
 `
@@ -53,10 +54,7 @@ export const OrderInput = gql`
         total_amount:Float!
     }
     input createOrderInput{
-        order_number:String
         customer_id:ID
-        shipping_fee:Float!
-        total_amount:Float!
         recipient_name:String!
         recipient_phone:String!
         shipping_city:String!
@@ -64,10 +62,9 @@ export const OrderInput = gql`
         shipping_address:String!
         shipping_zip_code:String!
         note:String
+        payment_method:String
         order_items:[orderItemsInput]
     }
-
-
 `
 
 export const createOrderResponse = gql`
@@ -76,8 +73,55 @@ export const createOrderResponse = gql`
     }
 `
 
+export const updateOrderStatusInput = gql`
+    input updateOrderStatusInput {
+        id:ID!
+        order_status:String!
+        cancel_reason:String
+    }
+`
+
+export const updateOrderStatusResponse = gql`
+    type updateOrderStatusResponse {
+        updateDetails:OrderDetails
+    }
+`
+
+export const updatePaymentStatusInput = gql`
+    input updatePaymentStatusInput {
+        id:ID!
+        payment_status:String!
+    }
+`
+
+export const updatePaymentStatusResponse = gql`
+    type updatePaymentStatusResponse {
+        updatePaymentDetails:OrderDetails
+    }
+`
+
+export const updateShippingStatusInput = gql`
+    input updateShippingStatusInput {
+        id:ID!
+        shipping_status:String!
+    }
+`
+
+export const updateShippingStatusResponse = gql`
+    type updateShippingStatusResposne {
+        updateShippingDetails:OrderDetails
+    }
+`
+
 export const mergeOrderTypeSchema = mergeTypeDefs([
-  OrderSchema,
-  OrderInput,
-  createOrderResponse
+    OrderSchema,
+    OrderInput,
+    createOrderResponse,
+    updateOrderStatusInput,
+    updateOrderStatusResponse,
+    updatePaymentStatusInput,
+    updatePaymentStatusResponse,
+    updateShippingStatusInput,
+    updateShippingStatusResponse
+
 ])

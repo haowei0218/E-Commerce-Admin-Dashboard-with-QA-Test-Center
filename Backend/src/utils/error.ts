@@ -8,7 +8,8 @@ export const ErrorCodes = {
   ACCOUNT_INACTIVE: "ACCOUNT_INACTIVE",
   INVALID_CREDENTIALS: "INVALID_CREDENTIALS",
   INVALID_INPUT_DATA: "INVALID_INPUT_DATA",
-  EMAIL_FORMAT_INVALID: "EMAIL_FORMAT_INVALID"
+  EMAIL_FORMAT_INVALID: "EMAIL_FORMAT_INVALID",
+  ORDER_NOT_FOUND:"ORDER_NOT_FOUND"
 
 }
 
@@ -23,7 +24,8 @@ export const errorMap: Record<errorCode, string> = {
   ACTIVITY_LOGS_FAILED: "Failed to retrieve activity logs",
   ACCOUNT_INACTIVE: "This account is inactive",
   INVALID_INPUT_DATA: "Invalid input data",
-  EMAIL_FORMAT_INVALID: "Email format is invalid"
+  EMAIL_FORMAT_INVALID: "Email format is invalid",
+  ORDER_NOT_FOUND:"Order not found"
 };
 
 

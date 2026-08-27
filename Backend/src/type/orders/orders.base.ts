@@ -1,7 +1,7 @@
 export type orderStatus = "pending" | "processing" | "completed" | "cancelled"
 export type paymentStatus = "unpaid" | "paid" | "failed" | "refunded"
 export type shippingStatus = "pending" | "preparing" | "shipped" | 'delivered' | "return"
-
+export type paymentMethod = "bank_transfer" | "credit_card" | "cash_on_delivery"
 export type orderPayload = {
     order_number: string
     customer_id: string
@@ -12,6 +12,7 @@ export type orderPayload = {
     shipping_address: string
     shipping_zip_code: string
     note: string | null
+    payment_method: paymentMethod
     order_items: orderItems[]
 }
 
@@ -26,7 +27,7 @@ export type orderItems = {
     total_amount: number
 }
 
-export type orderResponse = {
+export type order = {
     id: string
     paid_at: string | null
     completed_at: string | null
@@ -35,3 +36,64 @@ export type orderResponse = {
     created_at: string
     updated_at: string
 } & orderPayload
+
+export type orderResponse = {
+    details: order
+}
+
+export type updateOrderStatusPayload = {
+    id: string
+    order_status: orderStatus
+    cancel_reason: string | null
+}
+
+export type updateOrderStatusResponse = {
+    updateDetails: order
+}
+
+export type updatePaymentStatusPayload = {
+    id: string
+    payment_status: paymentStatus
+}
+
+export type updatePaymentStatusResponse = {
+    updatePaymentDetails: order
+}
+
+export type getOrderStatusResposne = {
+    id: string
+    payment_status: paymentStatus
+    order_status: orderStatus
+    shipping_status: shippingStatus
+}
+
+export type updateShippingStatusPayload = {
+    id: string
+    shipping_status: shippingStatus
+}
+
+export type updateShippingStatusResponse = {
+    updateShippingDetails: order
+}
+
+export const orderStatusTransitions: Record<string, string[]> = {
+    pending: ["processing", "cancelled"],
+    processing: ["completed", "cancelled"],
+    completed: [],
+    cancelled: [],
+};
+
+export const paymentStatusTransitions: Record<string, string[]> = {
+    unpaid: ["paid", "failed"],
+    failed: ["unpaid", "paid"],
+    paid: ["refunded"],
+    refunded: [],
+};
+
+export const shippingStatusTransitions: Record<string, string[]> = {
+    pending: ['preparing'],
+    preparing: ['shipped'],
+    shipped: ['delivered'],
+    delivered: ['return'],
+    return: []
+}

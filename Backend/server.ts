@@ -81,7 +81,7 @@ async function startServer() {
                 INNER JOIN role_permissions AS rp
                   ON rp.role_id = r.id
                 INNER JOIN permissions AS p
-                  ON p.id = rp.permissions_id
+                  ON p.id = rp.permission_id
                 WHERE u.id = $1
               `,
               [user.id],
