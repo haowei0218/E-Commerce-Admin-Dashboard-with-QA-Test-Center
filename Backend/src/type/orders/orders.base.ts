@@ -76,6 +76,35 @@ export type updateShippingStatusResponse = {
     updateShippingDetails: order
 }
 
+export type updateOrderRecipientPayload = {
+    id: string
+    recipient_name: string
+    recipient_phone: string
+    shipping_city: string
+    shipping_district: string
+    shipping_address: string
+    shipping_zip_code: string
+}
+
+export type updateOrderRecipientResponse = {
+    updateOrderRecipientDetails: order
+}
+
+export type getOrdersResponse = {
+    getOrders: order
+}
+
+export type orderFilterPayload = {
+    keyword?: string
+    order_status?: string
+    payment_status?: string
+    shipping_status?: string
+    date_from?: string
+    date_to?: string
+    page: number
+    pageSize: number
+}
+
 export const orderStatusTransitions: Record<string, string[]> = {
     pending: ["processing", "cancelled"],
     processing: ["completed", "cancelled"],

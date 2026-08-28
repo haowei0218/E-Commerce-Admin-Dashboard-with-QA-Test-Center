@@ -1,11 +1,11 @@
 import { randomUUID } from "node:crypto";
 import { requestAuth } from "../auth.js";
 import { ServerContext } from "../type/admin-users/adminUsers.base..js";
-import { getOrderStatusResposne, orderPayload, orderResponse, orderStatusTransitions, paymentStatusTransitions, shippingStatusTransitions, updateOrderStatusPayload, updateOrderStatusResponse, updatePaymentStatusPayload, updatePaymentStatusResponse, updateShippingStatusPayload } from "../type/orders/orders.base.js";
+import { getOrderStatusResposne, orderPayload, orderResponse, orderStatusTransitions, paymentStatusTransitions, shippingStatusTransitions, updateOrderRecipientPayload, updateOrderStatusPayload, updateOrderStatusResponse, updatePaymentStatusPayload, updatePaymentStatusResponse, updateShippingStatusPayload } from "../type/orders/orders.base.js";
 import { RolePermission, rolePermissions } from "../type/role-permissions/role_permissions.base.js";
 import { throwGraphqlError } from "./error.js";
 import { updateShippingStatusInput } from "../schema/orders/orders.type.js";
-
+import { orderFilterPayload } from "../type/orders/orders.base.js";
 
 
 export function createParameters(count: number) {
@@ -15,6 +15,20 @@ export function createParameters(count: number) {
 export async function getOrderStatus(orderId: string, context: ServerContext): Promise<getOrderStatusResposne> {
     const response = await context.db.query(`SELECT id,payment_status,order_status,shipping_status FROM orders WHERE id=$1`, [orderId])
     return response.rows[0]
+}
+
+export async function getOrderItems(orderId: string, context: ServerContext) {
+    const order_items_response = await context.db.query(
+        `
+    SELECT *
+    FROM order_items
+    WHERE order_id = $1
+    ORDER BY created_at ASC
+  `, [orderId]
+    )
+
+    const order_items = order_items_response.rows
+    return order_items
 }
 
 export async function checkStatusValidity(context: ServerContext, payload: any, permission: RolePermission, allowStatus: string[], nextStatusTransitions: Record<string, string[]>, statusName: 'payment_status' | 'order_status' | 'shipping_status') {
@@ -351,4 +365,94 @@ export async function updateShippingStatus(payload: updateShippingStatusPayload,
         updateShippingDetails: { ...update_shipping_status_response.rows[0], order_items: order_items }
     }
 
+}
+
+export async function updateOrderRecipient(payload: updateOrderRecipientPayload, context: ServerContext) {
+    await requestAuth(context, rolePermissions.ORDERS_UPDATE_RECIPIENT)
+    const { recipient_name, recipient_phone, shipping_address, shipping_city, shipping_district, shipping_zip_code, id } = payload
+    const response = await context.db.query('UPDATE orders SET recipient_name=$2,recipient_phone=$3,shipping_city=$4,shipping_district=$5,shipping_address=$6,shipping_zip_code=$7 WHERE id=$1 RETURNING *', [id, recipient_name, recipient_phone, shipping_city, shipping_district, shipping_address, shipping_zip_code])
+    const update_order_recipient_result = response.rows[0]
+
+    if (!update_order_recipient_result) {
+        throwGraphqlError('Order not found', 'ORDER_NOT_FOUND')
+    }
+    const order_items = await getOrderItems(payload.id, context)
+    return {
+        updateOrderRecipientDetails: { ...update_order_recipient_result, order_items: order_items }
+    }
+}
+
+export async function getOrders(payload: orderFilterPayload, context: ServerContext) {
+    if (payload.order_status && !Object.keys(orderStatusTransitions).includes(payload.order_status)) {
+        throwGraphqlError("Invalid order status", "INVALID_INPUT_DATA");
+    }
+
+    if (payload.payment_status && !Object.keys(paymentStatusTransitions).includes(payload.payment_status)) {
+        throwGraphqlError("Invalid payment status", "INVALID_INPUT_DATA");
+    }
+
+    if (payload.shipping_status && !Object.keys(shippingStatusTransitions).includes(payload.shipping_status)) {
+        throwGraphqlError("Invalid shipping status", "INVALID_INPUT_DATA");
+    }
+
+    const page = payload?.page && payload.page > 0 ? payload.page : 1;
+    const pageSize =
+        payload?.pageSize && payload.pageSize > 0 ? payload.pageSize : 10;
+
+    const offset = (page - 1) * pageSize;
+    const response = await context.db.query(`
+        /* sql */ 
+    SELECT *
+    FROM orders
+    WHERE
+      (
+        $1::text IS NULL
+        OR id::text ILIKE '%' || $1 || '%'
+        OR order_number ILIKE '%' || $1 || '%'
+        OR recipient_name ILIKE '%' || $1 || '%'
+        OR recipient_phone ILIKE '%' || $1 || '%'
+        OR shipping_city ILIKE '%' || $1 || '%'
+        OR shipping_district ILIKE '%' || $1 || '%'
+      )
+      AND ($2::text IS NULL OR order_status = $2)
+      AND ($3::text IS NULL OR payment_status = $3)
+      AND ($4::text IS NULL OR shipping_status = $4)
+      AND ($5::timestamptz IS NULL OR created_at >= $5)
+      AND ($6::timestamptz IS NULL OR created_at <= $6)
+
+      ORDER BY created_at DESC
+    LIMIT $7
+    OFFSET $8
+  `,
+        [
+            payload.keyword,
+            payload.order_status,
+            payload.payment_status,
+            payload.shipping_status,
+            payload.date_from,
+            payload.date_to,
+            pageSize,
+            offset
+        ],
+
+    )
+    const result = response.rows
+    const total_count = response.rowCount
+    console.log('result : ', result)
+    return {
+        getOrders: result,
+        total_count: total_count,
+        page: page,
+        pageSize: pageSize
+    }
+}
+
+export async function getOrdersById(order_id: string, context: ServerContext) {
+    const response = await context.db.query(`SELECT id,order_number,customer_id,shipping_fee,total_amount,order_status,payment_status,shipping_status,recipient_name,recipient_phone,shipping_city,shipping_district,shipping_address,shipping_zip_code,note,paid_at,completed_at,cancelled_at,cancel_reason,created_at,updated_at,payment_method FROM orders WHERE id=$1`, [order_id])
+    const result = response.rows
+    const order_item_list_response = await context.db.query('SELECT * FROM order_items WHERE order_id=$1', [order_id])
+
+    return {
+        getOrdersById: [{ ...result[0], order_items: order_item_list_response.rows }]
+    }
 }

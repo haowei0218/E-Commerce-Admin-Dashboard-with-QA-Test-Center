@@ -6,7 +6,8 @@ export const rolePermissions = {
   ORDERS_CREATE: "orders.create",
   ORDERS_UPDATE_STATUS: 'orders.update_status',
   ORDERS_UPDATE_PAYMENT_STATUS: 'orders.update_payment_status',
-  ORDERS_UPDATE_SHIPPING_STATUS: 'orders.update_shipping_status'
+  ORDERS_UPDATE_SHIPPING_STATUS: 'orders.update_shipping_status',
+  ORDERS_UPDATE_RECIPIENT: 'orders.update_recipient'
 } as const;
 
 export type RolePermission =

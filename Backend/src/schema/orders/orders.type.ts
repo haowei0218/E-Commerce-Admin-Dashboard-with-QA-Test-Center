@@ -38,7 +38,7 @@ export const OrderSchema = gql`
         created_at:String!
         updated_at:String!
         payment_method:String!
-        order_items:[OrderItemsDetails]!
+        order_items:[OrderItemsDetails]
     }
 `
 
@@ -113,6 +113,51 @@ export const updateShippingStatusResponse = gql`
     }
 `
 
+export const updateOrderRecipientInput = gql`
+    input updateOrderRecipientInput {
+        id:ID!
+        recipient_name:String
+        recipient_phone:String
+        shipping_city:String
+        shipping_district:String
+        shipping_address:String
+        shipping_zip_code:String
+    }
+`
+
+export const updateOrderRecipientResponse = gql`
+    type updateOrderRecipientResponse {
+        updateOrderRecipientDetails:OrderDetails
+    }
+`
+
+export const getOrdersResponse = gql`
+    type getOrdersResponse{
+        getOrders:[OrderDetails]
+        total_count:Int
+        page:Int
+        pageSize:Int
+    }
+`
+export const getOrdersByIdResponse = gql`
+    type getOrdersByIdResponse{
+        getOrdersById:[OrderDetails]
+    }
+`
+
+export const ordersFilterInput = gql`
+    input ordersFilterInput{
+        keyword: String
+        order_status: String
+        payment_status: String
+        shipping_status: String
+        date_from: String
+        date_to: String
+        page: Int
+        pageSize: Int
+    }
+`
+
 export const mergeOrderTypeSchema = mergeTypeDefs([
     OrderSchema,
     OrderInput,
@@ -122,6 +167,10 @@ export const mergeOrderTypeSchema = mergeTypeDefs([
     updatePaymentStatusInput,
     updatePaymentStatusResponse,
     updateShippingStatusInput,
-    updateShippingStatusResponse
-
+    updateShippingStatusResponse,
+    updateOrderRecipientInput,
+    updateOrderRecipientResponse,
+    getOrdersResponse,
+    getOrdersByIdResponse,
+    ordersFilterInput
 ])
