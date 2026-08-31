@@ -1,10 +1,9 @@
 import { randomUUID } from "node:crypto";
 import { requestAuth } from "../auth.js";
 import { ServerContext } from "../type/admin-users/adminUsers.base..js";
-import { getOrderStatusResposne, orderPayload, orderResponse, orderStatusTransitions, paymentStatusTransitions, shippingStatusTransitions, updateOrderRecipientPayload, updateOrderStatusPayload, updateOrderStatusResponse, updatePaymentStatusPayload, updatePaymentStatusResponse, updateShippingStatusPayload } from "../type/orders/orders.base.js";
+import { getOrdersResponse, getOrderStatusResposne, order, orderPayload, orderResponse, orderStatusTransitions, paymentStatusTransitions, shippingStatusTransitions, updateOrderNotePayload, updateOrderNoteResponse, updateOrderRecipientPayload, updateOrderRecipientResponse, updateOrderStatusPayload, updateOrderStatusResponse, updatePaymentStatusPayload, updatePaymentStatusResponse, updateShippingStatusPayload, updateShippingStatusResponse } from "../type/orders/orders.base.js";
 import { RolePermission, rolePermissions } from "../type/role-permissions/role_permissions.base.js";
 import { throwGraphqlError } from "./error.js";
-import { updateShippingStatusInput } from "../schema/orders/orders.type.js";
 import { orderFilterPayload } from "../type/orders/orders.base.js";
 
 
@@ -261,17 +260,8 @@ export async function updateOrderStatus(payload: updateOrderStatusPayload, conte
     if (!order_update_details) {
         throwGraphqlError("Order not found", "ORDER_NOT_FOUND");
     }
-
-    const order_item_response = await context.db.query(`
-    SELECT *
-    FROM order_items
-    WHERE order_id = $1
-    ORDER BY created_at ASC
-  `, [order_update_details.id])
-    const order_items = order_item_response.rows
-
-
-    return { updateDetails: { ...order_update_details, order_items: order_items } }
+    const order_item = await getOrderItems(payload.id, context)
+    return { updateDetails: { ...order_update_details, order_items: order_item } }
 }
 
 export async function updatePaymentStatus(payload: updatePaymentStatusPayload, context: ServerContext): Promise<updatePaymentStatusResponse> {
@@ -319,24 +309,15 @@ export async function updatePaymentStatus(payload: updatePaymentStatusPayload, c
     if (!update_payment_status_details) {
         throwGraphqlError('Order not found', 'ORDER_NOT_FOUND')
     }
-
-
-    const order_item_response = await context.db.query(`
-    SELECT *
-    FROM order_items
-    WHERE order_id = $1
-    ORDER BY created_at ASC
-  `, [update_payment_status_details.id])
-    const order_items = order_item_response.rows
-
+    const order_item = await getOrderItems(payload.id, context)
     return {
         updatePaymentDetails: {
-            ...update_payment_status_details, order_items: order_items
+            ...update_payment_status_details, order_items: order_item
         }
     }
 }
 
-export async function updateShippingStatus(payload: updateShippingStatusPayload, context: ServerContext) {
+export async function updateShippingStatus(payload: updateShippingStatusPayload, context: ServerContext): Promise<updateShippingStatusResponse> {
     const allowedStatus = ['pending', 'preparing', 'shipped', 'delivered', 'return']
     await checkStatusValidity(context, payload, rolePermissions.ORDERS_UPDATE_SHIPPING_STATUS, allowedStatus, shippingStatusTransitions, 'shipping_status')
     const update_shipping_status_response = await context.db.query(`
@@ -350,24 +331,15 @@ export async function updateShippingStatus(payload: updateShippingStatusPayload,
     if (!update_shipping_status_response) {
         throwGraphqlError('Order not found', 'ORDER_NOT_FOUND')
     }
+    const order_items = await getOrderItems(payload.id, context)
 
-    const order_items_response = await context.db.query(
-        `
-    SELECT *
-    FROM order_items
-    WHERE order_id = $1
-    ORDER BY created_at ASC
-  `, [payload.id]
-    )
-
-    const order_items = order_items_response.rows
     return {
         updateShippingDetails: { ...update_shipping_status_response.rows[0], order_items: order_items }
     }
 
 }
 
-export async function updateOrderRecipient(payload: updateOrderRecipientPayload, context: ServerContext) {
+export async function updateOrderRecipient(payload: updateOrderRecipientPayload, context: ServerContext): Promise<updateOrderRecipientResponse> {
     await requestAuth(context, rolePermissions.ORDERS_UPDATE_RECIPIENT)
     const { recipient_name, recipient_phone, shipping_address, shipping_city, shipping_district, shipping_zip_code, id } = payload
     const response = await context.db.query('UPDATE orders SET recipient_name=$2,recipient_phone=$3,shipping_city=$4,shipping_district=$5,shipping_address=$6,shipping_zip_code=$7 WHERE id=$1 RETURNING *', [id, recipient_name, recipient_phone, shipping_city, shipping_district, shipping_address, shipping_zip_code])
@@ -382,7 +354,7 @@ export async function updateOrderRecipient(payload: updateOrderRecipientPayload,
     }
 }
 
-export async function getOrders(payload: orderFilterPayload, context: ServerContext) {
+export async function getOrders(payload: orderFilterPayload, context: ServerContext): Promise<getOrdersResponse> {
     if (payload.order_status && !Object.keys(orderStatusTransitions).includes(payload.order_status)) {
         throwGraphqlError("Invalid order status", "INVALID_INPUT_DATA");
     }
@@ -438,21 +410,27 @@ export async function getOrders(payload: orderFilterPayload, context: ServerCont
     )
     const result = response.rows
     const total_count = response.rowCount
-    console.log('result : ', result)
     return {
         getOrders: result,
-        total_count: total_count,
+        total_count: total_count ?? 0,
         page: page,
         pageSize: pageSize
     }
 }
 
-export async function getOrdersById(order_id: string, context: ServerContext) {
-    const response = await context.db.query(`SELECT id,order_number,customer_id,shipping_fee,total_amount,order_status,payment_status,shipping_status,recipient_name,recipient_phone,shipping_city,shipping_district,shipping_address,shipping_zip_code,note,paid_at,completed_at,cancelled_at,cancel_reason,created_at,updated_at,payment_method FROM orders WHERE id=$1`, [order_id])
+export async function getOrderById(id: string, context: ServerContext) {
+    const response = await context.db.query(`SELECT id,order_number,customer_id,shipping_fee,total_amount,order_status,payment_status,shipping_status,recipient_name,recipient_phone,shipping_city,shipping_district,shipping_address,shipping_zip_code,note,paid_at,completed_at,cancelled_at,cancel_reason,created_at,updated_at,payment_method FROM orders WHERE id=$1`, [id])
     const result = response.rows
-    const order_item_list_response = await context.db.query('SELECT * FROM order_items WHERE order_id=$1', [order_id])
+    const order_items = await getOrderItems(id, context)
 
     return {
-        getOrdersById: [{ ...result[0], order_items: order_item_list_response.rows }]
+        getOrdersById: [{ ...result[0], order_items: order_items }]
     }
+}
+
+export async function updateOrderNote(payload: updateOrderNotePayload, context: ServerContext): Promise<updateOrderNoteResponse> {
+    const updateOrderNoteResponse = await context.db.query(`UPDATE orders SET note=$2 WHERE id=$1 RETURNING *`, [payload.id, payload.note])
+    const order_details = updateOrderNoteResponse.rows[0]
+    const order_items = await getOrderItems(payload.id, context)
+    return { updateOrderNoteDetails: { ...order_details, order_items: order_items } }
 }
