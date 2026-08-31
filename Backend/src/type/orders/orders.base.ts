@@ -91,7 +91,10 @@ export type updateOrderRecipientResponse = {
 }
 
 export type getOrdersResponse = {
-    getOrders: order
+    getOrders: order[]
+    total_count: number,
+    page: number,
+    pageSize: number
 }
 
 export type orderFilterPayload = {
@@ -103,6 +106,15 @@ export type orderFilterPayload = {
     date_to?: string
     page: number
     pageSize: number
+}
+
+export type updateOrderNotePayload = {
+    id: string
+    note: string
+}
+
+export type updateOrderNoteResponse = {
+    updateOrderNoteDetails: order
 }
 
 export const orderStatusTransitions: Record<string, string[]> = {

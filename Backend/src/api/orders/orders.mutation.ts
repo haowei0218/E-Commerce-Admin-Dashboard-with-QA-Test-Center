@@ -31,6 +31,7 @@ export const OrdersMutationResolvers = {
             const recipient = [input.shipping_address ?? "", input.shipping_city ?? "", input.shipping_district ?? ""].join(',')
             if (result) await createActivityLog({ user_id: context.user.id, action: 'UPDATE', description: `使用者${context.user.name} 更改收件地址為${recipient} 訂單編號:${input.id}`, module: 'orders' }, context)
             return result
-        }
+        },
+        updateOrderNote: async () => { }
     }
 }

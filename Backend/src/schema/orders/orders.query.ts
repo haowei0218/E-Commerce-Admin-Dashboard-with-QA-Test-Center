@@ -8,6 +8,6 @@ export const OrdersQuery = gql`
     ${ordersFilterInput}
     type Query{
         getOrders(input:ordersFilterInput):getOrdersResponse!
-        getOrdersById(order_id:String!):getOrdersByIdResponse!
+        getOrderById(id:ID!):getOrdersByIdResponse!
     }
 `
