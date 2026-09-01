@@ -12,9 +12,9 @@ type navigationBar = {
 
 
 export default function NavigationBar({
-  navigaionbarList,
+  navigationList,
 }: {
-  navigaionbarList: navigationBar[]
+  navigationList: navigationBar[]
 }) {
 
   const router = useRouter()
@@ -37,7 +37,7 @@ export default function NavigationBar({
         </h1>
       </div>
       <div className='childrenbar w-62.5 gap-6 flex flex-col justify-center'>
-        {navigaionbarList.map((bar) => {
+        {navigationList.map((bar) => {
           if (bar.sidebarName === 'Logout') {
             return (
               <button

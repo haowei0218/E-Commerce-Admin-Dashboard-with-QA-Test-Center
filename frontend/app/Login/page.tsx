@@ -44,7 +44,7 @@ export function page() {
       const result = await userLogin(data)
       localStorage.setItem('user', JSON.stringify(result.UserLogin.userProfile))
       toast.success('登入成功')
-      Router.replace(safeRedirectPath)
+      Router.replace('/dashboard')
       Router.refresh()
     } catch (error) {
       toast.error(error instanceof Error ? error.message : '登入失敗')

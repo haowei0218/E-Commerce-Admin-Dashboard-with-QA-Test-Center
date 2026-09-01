@@ -26,7 +26,7 @@ export const navigationBarList = [
     route: '/dashboard',
   },
   {
-    sidebarName: 'Order',
+    sidebarName: 'Orders',
     sidebarIcon: <FaWallet className={sidebarIconStyle} />,
     route: '/orders',
   },
@@ -102,36 +102,18 @@ const dashboardCards = [
 
 export default function Dashboard() {
   return (
-    <div className='w-full h-full flex'>
-      <NavigationBar navigaionbarList={navigationBarList} />
-      <div className='main w-full flex flex-col h-full'>
-        <div className='title w-full min-h-15 bg-white flex justify-end items-center text-white border-b border-gray-200'>
-          <IoMdNotificationsOutline className='text-black text-3xl' />
+    <div className='bg-gray-50 w-full h-full p-5'>
+      <div className='flex flex-col gap-2'>
+        <h1 className='text-2xl'>
+          <strong>Dashboard </strong>
+        </h1>
+        <span className='text-gray-400 text-sm font-bold'>
+          Welcome back , Admin! Here's what's happening with your system
+          today.
+        </span>
 
-          <div className='flex w-60 h-full gap-3 items-center justify-center'>
-            <IoPersonCircleOutline className='text-black text-5xl' />
-            <div className='flex flex-col justify-center items-start h-full'>
-              <h1 className='text-gray-800 font-base text-base'>Admin</h1>
-              <span className='text-gray-400 text-sm'>user name</span>
-            </div>
-            <MdKeyboardArrowDown className='text-gray-800 text-2xl ml-4' />
-          </div>
-        </div>
-
-        <div className='bg-gray-50 w-full h-full p-5'>
-          <div className='flex flex-col gap-2'>
-            <h1 className='text-2xl'>
-              <strong>Dashboard </strong>
-            </h1>
-            <span className='text-gray-400 text-sm font-bold'>
-              Welcome back , Admin! Here's what's happening with your system
-              today.
-            </span>
-
-            <div className='w-full h-32 flex gap-4 justify-between items-center'>
-              <DashboardCards cards={dashboardCards} />
-            </div>
-          </div>
+        <div className='w-full h-32 flex gap-4 justify-between items-center'>
+          <DashboardCards cards={dashboardCards} />
         </div>
       </div>
     </div>
