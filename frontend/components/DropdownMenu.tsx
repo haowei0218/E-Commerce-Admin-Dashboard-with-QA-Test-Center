@@ -19,7 +19,7 @@ export function DropdownMenu({
 }: {
   props: dropdownMenuProps[]
   value: string
-  onRoleChange: Dispatch<SetStateAction<string>>
+  onRoleChange: Dispatch<SetStateAction<any>>
 }) {
   return (
     <select

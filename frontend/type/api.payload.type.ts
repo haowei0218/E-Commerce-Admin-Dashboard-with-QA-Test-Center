@@ -1,4 +1,4 @@
-import { adminUserProfile, CreateAdminUserPayload, GetAdminUserByPropertiesPayload, UserLoginPayload } from './adminUser.type'
+import { adminUserProfile, CreateAdminUserPayload, GetAdminUserByPropertiesPayload, UserLoginPayload } from './admin-users/adminUser.type'
 
 export type APIPayload = {
   UserLogin: UserLoginPayload

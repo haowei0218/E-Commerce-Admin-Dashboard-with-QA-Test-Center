@@ -170,6 +170,12 @@ export const updateOrderNoteResponse = gql`
     }
 `
 
+export const getAllOrdersResponse = gql`
+    type getAllOrdersResponse {
+        all:[OrderDetails]
+    }
+`
+
 export const mergeOrderTypeSchema = mergeTypeDefs([
     OrderSchema,
     OrderInput,
@@ -186,5 +192,6 @@ export const mergeOrderTypeSchema = mergeTypeDefs([
     getOrdersByIdResponse,
     ordersFilterInput,
     updateOrderNoteInput,
-    updateOrderNoteResponse
+    updateOrderNoteResponse,
+    getAllOrdersResponse
 ])

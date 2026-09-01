@@ -1,6 +1,6 @@
 import { USER_LOGIN, GET_USERS, ADMIN_USER_LOGOUT, GET_ADMIN_USER_BY_PROPERTIES, CREATE_ADMIN_USER, GET_ADMIN_USER_BY_ID, UPDATE_MY_PROFILE, CHANGE_PASSWORD, SET_ADMIN_USER_ROLE, SET_ADMIN_USER_ACTIVE } from '@/graphql/user.graphql'
 import { Response } from '@/type/api.response.type'
-import { CreateAdminUserPayload, GetAdminUserByPropertiesPayload, UserLoginPayload } from '@/type/adminUser.type'
+import { CreateAdminUserPayload, GetAdminUserByPropertiesPayload, UserLoginPayload } from '@/type/admin-users/adminUser.type'
 import { fetchAPI } from '@/lib/api-hook'
 
 const apiUrl = process.env.NEXT_PUBLIC_API ?? 'http://localhost:4201/graphql'

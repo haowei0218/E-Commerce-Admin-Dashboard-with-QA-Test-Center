@@ -354,6 +354,11 @@ export async function updateOrderRecipient(payload: updateOrderRecipientPayload,
     }
 }
 
+export async function getAllOrders(context: ServerContext) {
+    const response = await context.db.query('SELECT * FROM orders')
+    return { all: response.rows }
+}
+
 export async function getOrders(payload: orderFilterPayload, context: ServerContext): Promise<getOrdersResponse> {
     if (payload.order_status && !Object.keys(orderStatusTransitions).includes(payload.order_status)) {
         throwGraphqlError("Invalid order status", "INVALID_INPUT_DATA");
