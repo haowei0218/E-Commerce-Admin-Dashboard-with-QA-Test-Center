@@ -31,8 +31,8 @@ export function UsersTableRow(tableRowProps: UsersTableRowProps) {
             className='flex gap-2 p-3 border-b border-gray-200'
             key={tableRowProps.user.id + tableRowProps.user.email}
         >
-            <td className='text-left flex items-center text-md font-medium w-80 font-stretch-condensed '>
-                {tableRowProps.user.id}
+            <td className='text-left flex items-center text-md font-medium w-80 font-stretch-condensed'>
+                {tableRowProps.user.id.slice(0, 28) + "..."}
             </td>
             <td className='text-left flex items-center text-md font-medium w-45 font-stretch-condensed '>
                 {tableRowProps.user.name}
@@ -53,12 +53,17 @@ export function UsersTableRow(tableRowProps: UsersTableRowProps) {
             <td className='flex items-center text-left text-md font-medium w-50 font-stretch-condensed '>
                 {formatDate(tableRowProps.user.create_at)}
             </td>
+            <td className='flex items-center text-left text-md font-medium w-50 font-stretch-condensed '>
+                {formatDate(tableRowProps.user.update_at)}
+            </td>
+            <td className='flex items-center text-left text-md font-medium w-40 font-stretch-condensed '>
+                {formatDate(tableRowProps.user.last_login_at)}
+            </td>
             <td className='flex items-start gap-2 text-left text-md font-black font-stretch-condensed mb-2 '>
                 <button
-                    className='flex items-center justify-center  p-1 gap-2 rounded-md text-md  border border-gray-200 px-2.5 py-1.5  text-gray-600 hover:bg-gray-50'
+                    className='flex items-center justify-center text-white bg-amber-500 p-1 gap-2 rounded-md font-normal border border-gray-200 px-2.5 py-1.5  hover:bg-amber-600'
                     onClick={() => tableRowProps.route.push(`/users/edit-user/${tableRowProps.user.id}`)}
                 >
-                    <CiEdit className='m-auto' />
                     Edit
                 </button>
             </td>

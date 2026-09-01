@@ -34,6 +34,8 @@ export type queryUser = {
     code: roleCode
     status: string
     create_at: string
+    last_login_at:string
+    update_at:string
 }
 
 export type GetUserByPropertiesResponse = {

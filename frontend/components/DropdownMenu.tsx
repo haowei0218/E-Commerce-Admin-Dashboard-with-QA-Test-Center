@@ -22,28 +22,18 @@ export function DropdownMenu({
   onRoleChange: Dispatch<SetStateAction<string>>
 }) {
   return (
-    <div className='relative w-50'>
-      <select
-        className='w-50 h-9 border border-gray-300 rounded-lg px-4 font-bold text-md bg-white appearance-none focus:outline-none focus:ring-0 focus:border-gray-300'
-        onChange={(e) => onRoleChange(e.target.value)}
-        value={value}
-      >
-        {props.map((item) => {
-          return (
-            <option key={item.value} value={item.value}>
-              {item.optionName}
-            </option>
-          )
-        })}
-      </select>
-      <RiArrowDropDownLine
-        className='
-      pointer-events-none
-      absolute right-3 top-1/2
-      -translate-y-1/2
-      text-xl
-    '
-      ></RiArrowDropDownLine>
-    </div>
+    <select
+      className='w-120 h-12 border border-gray-300 rounded-lg px-4 font-bold text-md bg-white appearance-none focus:outline-none focus:ring-0 focus:border-gray-300'
+      onChange={(e) => onRoleChange(e.target.value)}
+      value={value}
+    >
+      {props.map((item) => {
+        return (
+          <option key={item.value} value={item.value}>
+            {item.optionName}
+          </option>
+        )
+      })}
+    </select>
   )
 }

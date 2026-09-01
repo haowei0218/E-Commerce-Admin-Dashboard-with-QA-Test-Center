@@ -14,6 +14,8 @@ export type user = {
     create_at: string
     manage_level?: number
     permissions: string[]
+    last_login_at: string
+    update_at: string
 }
 
 export type ServerContext = {

@@ -11,6 +11,8 @@ export const User = gql`
     create_at:String
     manage_level:Int
     permissions:[String]
+    last_login_at:String
+    update_at:String
   }
 `;
 
@@ -22,6 +24,8 @@ export const UserInformation = gql`
     code: String!
     status: String!
     create_at:String!
+    last_login_at:String
+    update_at:String
     
   }
 `

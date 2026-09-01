@@ -18,6 +18,8 @@ export type loginUserProfile = {
   create_at?: string
   manage_level?: number
   permissions?: string[]
+  last_login_at: string
+  update_at: string
 }
 export type adminUserProfile = {
   id: string
@@ -26,6 +28,8 @@ export type adminUserProfile = {
   code: string
   status: 'Active' | 'Inactive'
   create_at: string
+  last_login_at: string
+  update_at: string
 }
 
 export type UserLoginResponse = {

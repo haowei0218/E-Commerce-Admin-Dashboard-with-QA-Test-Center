@@ -1,6 +1,6 @@
 export default function PageTitle({ children, mainTitle, subTitle }: { children?: React.ReactNode, mainTitle: string, subTitle: string }) {
     return (
-        <div className='flex justify-between items-center gap-2 w-[85%]'>
+        <div className='flex justify-between items-center gap-2 m-auto '>
 
             <div className='flex flex-col gap-2'>
                 <h1 className='text-2xl'>

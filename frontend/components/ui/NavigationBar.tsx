@@ -48,11 +48,11 @@ export default function NavigationBar({
                 <Link
                   href={bar.route}
                   key={bar.route}
-                  className='min-w-full min-h-10 flex justify-start items-center gap-2 hover:bg-blue-700 hover:cursor-pointer rounded-xl text-white text-base font-medium p-2'
+                  className='min-w-full min-h-10 flex justify-start items-center gap-2 hover:bg-blue-700 hover:cursor-pointer rounded-xl text-gray-400 text-lg font-medium p-2'
                 >
                   {bar.sidebarIcon}
                   <span>
-                    <strong>{bar.sidebarName}</strong>
+                    {bar.sidebarName}
                   </span>
                 </Link>
               </button>
@@ -63,11 +63,11 @@ export default function NavigationBar({
               <Link
                 href={bar.route}
                 key={bar.route}
-                className='min-w-full min-h-10 flex justify-start items-center gap-2 hover:bg-blue-700 hover:cursor-pointer rounded-xl text-white text-base font-medium p-2'
+                className='min-w-full min-h-10 flex justify-start items-center gap-2 hover:bg-blue-700 hover:cursor-pointer rounded-xl text-gray-400 text-lg font-medium p-2'
               >
                 {bar.sidebarIcon}
                 <span>
-                  <strong>{bar.sidebarName}</strong>
+                  {bar.sidebarName}
                 </span>
               </Link>
             </button>
