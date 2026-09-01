@@ -40,14 +40,14 @@ export default function Users() {
   }
 
   async function fetchAdminUsers() {
-      try {
-        const res = await getUsers()
-        const adminUsers = res.GetAdminUsers.getUsers
-        setUsers(adminUsers)
-      } catch (error) {
-        console.error('Get admin users failed:', error)
-      }
+    try {
+      const res = await getUsers()
+      const adminUsers = res.GetAdminUsers.getUsers
+      setUsers(adminUsers)
+    } catch (error) {
+      console.error('Get admin users failed:', error)
     }
+  }
 
   async function resetFilter() {
     setRole('All')
@@ -66,31 +66,36 @@ export default function Users() {
       <NavigationBar navigaionbarList={navigationBarList} />
       <div className='main w-full flex flex-col h-full overflow-y-auto'>
         <Header />
-        <div className='bg-gray-50 w-full h-full p-5'>
-          <PageTitle
-            children={
-              <div className='flex gap-2'>
-                <button className='flex justify-center items-center w-25 h-9 border border-gray-300 rounded-lg bg-white gap-2 font-bold hover:bg-gray-400 hover:text-white hover:cursor-pointer' onClick={() => exportCSV(Users, ["id", "name", "email", "status", 'code', 'create_at'], "users")}>
-                  <CgExport />
-                  Export
-                </button>
-                <Link
-                  className='flex justify-center items-center w-40 h-9 border border-gray-300 rounded-lg bg-blue-500 font-bold text-white gap-2 hover:bg-blue-700 hover:cursor-pointer'
-                  href='/users/add-user'
-                >
-                  <FaPlus />
-                  Create User
-                </Link>
-              </div>
-            }
-            mainTitle='Users'
-            subTitle='Manage all system users.'
-          />
+        <div className='bg-gray-50 w-full h-full p-5 '>
+
+          <div className='border border-gray-200 rounded-lg p-5 bg-white m-auto'>
+            <PageTitle
+              children={
+                <div className='flex gap-2'>
+                  <button className='flex justify-center items-center w-25 h-9 border border-gray-300 rounded-lg bg-white gap-2 font-medium hover:bg-gray-400 hover:text-white hover:cursor-pointer' onClick={() => exportCSV(Users, ["id", "name", "email", "status", 'code', 'create_at'], "users")}>
+                    <CgExport />
+                    Export
+                  </button>
+                  <Link
+                    className='flex justify-center items-center w-40 h-9 border border-gray-300 rounded-lg bg-blue-500 font-medium text-white gap-2 hover:bg-blue-700 hover:cursor-pointer'
+                    href='/users/add-user'
+                  >
+                    <FaPlus />
+                    Create User
+                  </Link>
+                </div>
+              }
+              mainTitle='Users'
+              subTitle='Manage all system users.'
+            />
+          </div>
+
           {/* filter*/}
-          <div className='filters min-w-[60%] flex justify-start items-center gap-2 mt-5'>
-            <div className='flex min-w-85 h-9'>
+
+          <div className='filters m-auto flex justify-between items-center gap-2 mt-15'>
+            <div className='flex w-120 h-12'>
               <input
-                className='w-80 border-t border-l border-b h-full border-gray-300 bg-white rounded-l-lg p-4 outline-none focus:outline-none focus:ring-0 focus:border-gray-300'
+                className='border-t border-l border-b w-full h-full border-gray-300 bg-white rounded-l-lg p-4 outline-none focus:outline-none focus:ring-0 focus:border-gray-300'
                 placeholder='search username or email'
                 onChange={(e) => setKeywords(e.target.value)}
                 value={keywords}
@@ -103,15 +108,15 @@ export default function Users() {
               </button>
             </div>
 
-            <div className='mb-5.5'>
-              <label className='w-15 text-center relative z-2 top-3 left-4 border border-gray-50 bg-white font-black text-gray-500 text-xs'>
+            <div className='mb-5.5 w-120'>
+              <label className='w-15 text-center  bg-white font-normal text-black text-lg'>
                 Role
               </label>
               <DropdownMenu props={Roles} value={role} onRoleChange={setRole} />
             </div>
 
-            <div className='mb-5.5'>
-              <label className='w-15 text-center relative z-2 top-3 left-4 border border-gray-50 bg-white font-black text-gray-500 text-xs'>
+            <div className='mb-5.5 w-120'>
+              <label className='w-15 text-center  bg-white font-normal text-black text-lg'>
                 Status
               </label>
               <DropdownMenu
@@ -123,13 +128,13 @@ export default function Users() {
 
             <div className='flex gap-2'>
               <button
-                className='flex justify-center items-center w-25 h-9 border border-gray-300 rounded-lg bg-white gap-2 font-bold hover:bg-gray-500 hover:text-white hover:cursor-pointer'
+                className='flex justify-center items-center w-25 h-12  bg-gray-400 rounded-lg gap-2 font-bold hover:bg-gray-500 text-white hover:cursor-pointer'
                 onClick={resetFilter}
               >
                 Clear
               </button>
               <button
-                className='flex justify-center items-center w-30 h-9 border border-gray-300 rounded-lg bg-white gap-2 font-bold hover:bg-gray-500 hover:text-white hover:cursor-pointer'
+                className='flex justify-center items-center w-30 h-12  bg-blue-700 rounded-lg gap-2 font-bold hover:bg-blue-800 text-white hover:cursor-pointer'
                 onClick={() => handleAdminUserFilter('Filter')}
               >
                 <CiFilter />
@@ -140,7 +145,7 @@ export default function Users() {
           {/* table*/}
           {!Users && <Ring className='w-10 h-10 m-auto' />}
           {Users && (
-            <div className='rounded-t-2xl border-t border-l border-r w-[85%] border-gray-200 overflow-hidden'>
+            <div className='rounded-t-2xl border-t border-l border-r m-auto border-gray-200 overflow-y-auto'>
               <UsersTable users={Users} route={router} tableheaders={Headers} />
             </div>
           )}

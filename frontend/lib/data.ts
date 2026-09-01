@@ -49,6 +49,14 @@ export const Headers = [
     style: "w-50"
   },
   {
+    headerName: 'Updated At',
+    style: "w-50"
+  },
+  {
+    headerName: 'Last Login At',
+    style: "w-40"
+  },
+  {
     headerName: 'Actions',
     style: "w-10"
   }

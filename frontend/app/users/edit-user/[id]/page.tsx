@@ -132,7 +132,7 @@ export default function editUser() {
     const password = changePasswordForm.watch('newPassword')
     const isPasswordMisMatch = confirmPassword.length !== 0 && password !== confirmPassword ? "密碼不一致 請重新輸入" : ""
 
-    const isProfileSubmitDisable = myProfileForm.formState.isLoading
+    const isProfileSubmitDisable = myProfileForm.formState.isLoading || myProfileForm.watch('email').length === 0 || myProfileForm.watch('name').length === 0
     const isChangePasswordSubmitDisable = userId !== operatorUser?.id && operatorUser?.role_id !== 1
     const isSetRoleSubmitDisable = roleForm.formState.isLoading || operatorUser?.role_id !== 1 || (operatorUser?.role_id === 1 && operatorUser?.id === userId)
     const isSetStatusSubmitDisable = statusForm.formState.isLoading || operatorUser?.role_id !== 1 || operatorUser.id === userId

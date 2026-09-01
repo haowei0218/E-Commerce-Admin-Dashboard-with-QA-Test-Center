@@ -23,6 +23,8 @@ export const GET_USERS = /* GraphQL */ `
         code
         status
         create_at
+        update_at
+        last_login_at
       }
     }
   }
@@ -45,6 +47,8 @@ query GetAdminUserByProperties($status: String, $roleId: Int, $keyword: String) 
       code
       status
       create_at
+      update_at
+      last_login_at
     }
   }
 }
@@ -75,6 +79,8 @@ query GetAdminUserById($userId: String) {
       role_id
       status
       create_at
+      update_at
+      last_login_at
     } 
   }
 }

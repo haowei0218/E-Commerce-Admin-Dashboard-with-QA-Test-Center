@@ -3,7 +3,7 @@ import { RoleCode } from "./adminUsers.base..js"
 export type AccountStatus = "active" | "inactive"
 
 export type UserInformation = {
-    id?: string
+    id: string
     name: string
     email: string
     password_hash: string

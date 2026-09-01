@@ -31,6 +31,20 @@ export function emailFormatCheck(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
 
+export async function updateUserLoginAt(userId: string, context: ServerContext) {
+  const result = await context.db.query(`UPDATE users SET last_login_at=NOW() WHERE id=$1 RETURNING last_login_at,id,email`, [userId])
+  const { id, last_login_at, email } = result.rows[0]
+  return {
+    id, last_login_at, email
+  }
+}
+
+export async function userUpdateAt(userId: string, context: ServerContext) {
+  const result = await context.db.query(`UPDATE users SET update_at=NOW() WHERE id=$1 RETURNING update_at,id,email`, [userId])
+  const { id, update_at, email } = result.rows[0]
+  return { id, update_at, email }
+}
+
 export async function userLogin(
   { account, password }: userLoginPayload,
   context: ServerContext
@@ -45,6 +59,8 @@ export async function userLogin(
       u.role_id,
       u.status,
       u.create_at,
+      u.update_at,
+      u.last_login_at,
       r.code,
       r.manage_level,
 
@@ -73,6 +89,8 @@ export async function userLogin(
       u.role_id,
       u.status,
       u.create_at,
+      u.update_at,
+      u.last_login_at,
       r.code,
       r.manage_level
   `,
@@ -125,14 +143,17 @@ export async function userLogin(
       status: user.status,
       create_at: user.create_at,
       manage_level: user.manage_level,
-      permissions: user.permissions
+      permissions: user.permissions,
+      last_login_at: user.last_login_at,
+      update_at: user.update_at
+
     },
     token: token,
   }
 }
 
 export async function createAdminUser(
-  { name, email, password_hash, role_id, status }: UserInformation,
+  { name, email, password_hash, role_id, status }: Omit<UserInformation, "id">,
   context: ServerContext
 ): Promise<RegisterUserResponse> {
   try {
@@ -171,7 +192,7 @@ export async function getAdminUsers(
 ): Promise<GetUsersResponse> {
   await requestAuth(context, rolePermissions.USERS_READ)
   const result = await context.db.query(
-    'SELECT users.id,users.name,users.email,users.status,users.create_at,roles.code FROM users INNER JOIN roles ON roles.id = users.role_id WHERE roles.manage_level < $1 OR users.id = $2',
+    'SELECT users.id,users.name,users.email,users.status,users.create_at,roles.code,users.update_at,users.last_login_at FROM users INNER JOIN roles ON roles.id = users.role_id WHERE roles.manage_level < $1 OR users.id = $2',
     [context.user.manage_level, context.user.id]
   )
   return { getUsers: result.rows }
@@ -183,7 +204,7 @@ export async function getAdminUserById(
 ): Promise<GetUserByIdResponse> {
   await requestAuth(context, rolePermissions.USERS_READ)
   const result = await context.db.query(
-    `SELECT users.id,users.name,users.email,users.status,users.create_at,users.role_id FROM users WHERE users.id=$1`,
+    `SELECT users.id,users.name,users.email,users.status,users.create_at,users.role_id,users.update_at,users.last_login_at FROM users WHERE users.id=$1`,
     [userId]
   )
   return { getUserById: result.rows[0] }
@@ -206,6 +227,8 @@ export async function getAdminUserByProperties(
       u.email,
       u.status,
       u.create_at,
+      u.last_login_at,
+      u.update_at,
       r.code
     FROM users AS u
     INNER JOIN roles AS r
