@@ -153,8 +153,8 @@ export const ordersFilterInput = gql`
         shipping_status: String
         date_from: String
         date_to: String
-        page: Int
-        pageSize: Int
+        page: Int!
+        pageSize: Int!
     }
 `
 
@@ -167,6 +167,13 @@ export const updateOrderNoteInput = gql`
 export const updateOrderNoteResponse = gql`
     type updateOrderNoteResponse {
         updateOrderNoteDetails:OrderDetails!
+    }
+`
+
+export const getAllOrdersResponse = gql`
+    type getAllOrdersResponse {
+        all:[OrderDetails]
+        total_count:Int
     }
 `
 
@@ -186,5 +193,6 @@ export const mergeOrderTypeSchema = mergeTypeDefs([
     getOrdersByIdResponse,
     ordersFilterInput,
     updateOrderNoteInput,
-    updateOrderNoteResponse
+    updateOrderNoteResponse,
+    getAllOrdersResponse
 ])

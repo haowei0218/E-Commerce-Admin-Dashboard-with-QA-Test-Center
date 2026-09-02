@@ -354,6 +354,11 @@ export async function updateOrderRecipient(payload: updateOrderRecipientPayload,
     }
 }
 
+export async function getAllOrders(context: ServerContext) {
+    const response = await context.db.query('SELECT * FROM orders')
+    return { all: response.rows, total_count: response.rowCount }
+}
+
 export async function getOrders(payload: orderFilterPayload, context: ServerContext): Promise<getOrdersResponse> {
     if (payload.order_status && !Object.keys(orderStatusTransitions).includes(payload.order_status)) {
         throwGraphqlError("Invalid order status", "INVALID_INPUT_DATA");
@@ -372,6 +377,40 @@ export async function getOrders(payload: orderFilterPayload, context: ServerCont
         payload?.pageSize && payload.pageSize > 0 ? payload.pageSize : 10;
 
     const offset = (page - 1) * pageSize;
+
+    const params = [
+        payload.keyword ?? null,
+        payload.order_status ?? null,
+        payload.payment_status ?? null,
+        payload.shipping_status ?? null,
+        payload.date_from ?? null,
+        payload.date_to ?? null,
+        pageSize,
+        offset
+    ]
+    const countResult = await context.db.query(
+        `
+  SELECT COUNT(*) AS total
+  FROM orders
+  WHERE
+    (
+      $1::text IS NULL
+      OR id::text ILIKE '%' || $1 || '%'
+      OR order_number ILIKE '%' || $1 || '%'
+      OR recipient_name ILIKE '%' || $1 || '%'
+      OR recipient_phone ILIKE '%' || $1 || '%'
+      OR shipping_city ILIKE '%' || $1 || '%'
+      OR shipping_district ILIKE '%' || $1 || '%'
+    )
+    AND ($2::text IS NULL OR order_status = $2)
+    AND ($3::text IS NULL OR payment_status = $3)
+    AND ($4::text IS NULL OR shipping_status = $4)
+    AND ($5::timestamptz IS NULL OR created_at >= $5)
+    AND ($6::timestamptz IS NULL OR created_at <= $6)
+  `,
+        params.slice(0, 6)
+    );
+
     const response = await context.db.query(`
         /* sql */ 
     SELECT *
@@ -396,23 +435,14 @@ export async function getOrders(payload: orderFilterPayload, context: ServerCont
     LIMIT $7
     OFFSET $8
   `,
-        [
-            payload.keyword,
-            payload.order_status,
-            payload.payment_status,
-            payload.shipping_status,
-            payload.date_from,
-            payload.date_to,
-            pageSize,
-            offset
-        ],
-
+        params
     )
     const result = response.rows
-    const total_count = response.rowCount
+    const total = countResult.rows[0].total
+    const total_page = Math.ceil(total / pageSize)
     return {
         getOrders: result,
-        total_count: total_count ?? 0,
+        total_count: total_page,
         page: page,
         pageSize: pageSize
     }

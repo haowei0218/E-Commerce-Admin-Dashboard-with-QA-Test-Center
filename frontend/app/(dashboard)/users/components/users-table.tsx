@@ -1,4 +1,4 @@
-import { adminUserProfile } from "@/type/adminUser.type";
+import { adminUserProfile } from "@/type/admin-users/adminUser.type";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { formatDate } from "@/lib/utils";
 import { CiEdit } from "react-icons/ci";

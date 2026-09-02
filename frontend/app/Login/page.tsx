@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { Role } from '@/type/adminUser.type'
+import { Role } from '@/type/admin-users/adminUser.type'
 import { RiAdminFill } from 'react-icons/ri'
 import { Nunito } from 'next/font/google'
 import { z } from 'zod'
@@ -44,7 +44,7 @@ export function page() {
       const result = await userLogin(data)
       localStorage.setItem('user', JSON.stringify(result.UserLogin.userProfile))
       toast.success('登入成功')
-      Router.replace(safeRedirectPath)
+      Router.replace('/dashboard')
       Router.refresh()
     } catch (error) {
       toast.error(error instanceof Error ? error.message : '登入失敗')
