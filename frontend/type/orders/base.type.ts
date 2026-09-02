@@ -1,6 +1,6 @@
 export type orderStatus = "pending" | "processing" | "completed" | "cancelled"
 export type paymentStatus = "unpaid" | "paid" | "failed" | "refunded"
-export type shippingStatus = "pending" | "preparing" | "shipped" | 'delivered' | "return"
+export type shippingStatus = "pending" | "preparing" | "shipped" | 'delivered' | "returned"
 export type paymentMethod = "bank_transfer" | "credit_card" | "cash_on_delivery"
 export type orderPayload = {
     order_number: string
@@ -35,6 +35,10 @@ export type order = {
     cancel_reason: string | null
     created_at: string
     updated_at: string
+    total_amount: number
+    order_status: orderStatus
+    payment_status: paymentStatus
+    shipping_status: shippingStatus
 } & orderPayload
 
 export type orderResponse = {
@@ -91,10 +95,12 @@ export type updateOrderRecipientResponse = {
 }
 
 export type getOrdersResponse = {
-    getOrders: order[]
-    total_count: number,
-    page: number,
-    pageSize: number
+    getOrders: {
+        getOrders: order[]
+        total_count: number,
+        page: number,
+        pageSize: number
+    }
 }
 
 export type orderFilterPayload = {
@@ -115,6 +121,13 @@ export type updateOrderNotePayload = {
 
 export type updateOrderNoteResponse = {
     updateOrderNoteDetails: order
+}
+
+export type getAllOrdersResponse = {
+    getAllOrders: {
+        all: order[]
+        total_count: number
+    }
 }
 
 export const orderStatusTransitions: Record<string, string[]> = {

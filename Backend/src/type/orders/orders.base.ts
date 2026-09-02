@@ -35,6 +35,10 @@ export type order = {
     cancel_reason: string | null
     created_at: string
     updated_at: string
+    total_amount:number
+    order_status:string
+    payment_status:string
+    shipping_status:string
 } & orderPayload
 
 export type orderResponse = {

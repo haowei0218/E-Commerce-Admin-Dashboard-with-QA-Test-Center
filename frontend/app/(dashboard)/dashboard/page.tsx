@@ -1,71 +1,10 @@
-import { LuChurch } from 'react-icons/lu'
-import { MdDashboard, MdAdminPanelSettings } from 'react-icons/md'
-import { FaWallet } from 'react-icons/fa6'
-import { FaUser, FaLock } from 'react-icons/fa'
-import { AiFillFile } from 'react-icons/ai'
-import { IoMdSettings } from 'react-icons/io'
-import { HiDocumentReport } from 'react-icons/hi'
-import { TfiLayoutMediaCenterAlt } from 'react-icons/tfi'
-import { IoLogOutOutline } from 'react-icons/io5'
-import { IoMdNotificationsOutline } from 'react-icons/io'
-import { IoPersonCircleOutline } from 'react-icons/io5'
-import { MdKeyboardArrowDown } from 'react-icons/md'
+
 import { TbReportAnalytics } from 'react-icons/tb'
 import { FiUsers } from 'react-icons/fi'
 import { BsBox } from 'react-icons/bs'
 import { RiTodoLine } from 'react-icons/ri'
 import { IoIosMenu } from 'react-icons/io'
-import NavigationBar from '@/components/ui/NavigationBar'
-import DashboardCards from '@/components/ui/DashboardCards'
-const sidebarIconStyle = 'text-2xl'
-
-export const navigationBarList = [
-  {
-    sidebarName: 'Dashboard',
-    sidebarIcon: <MdDashboard className={sidebarIconStyle} />,
-    route: '/dashboard',
-  },
-  {
-    sidebarName: 'Orders',
-    sidebarIcon: <FaWallet className={sidebarIconStyle} />,
-    route: '/orders',
-  },
-  {
-    sidebarName: 'Users',
-    sidebarIcon: <FaUser className={sidebarIconStyle} />,
-    route: '/users',
-  },
-  {
-    sidebarName: 'Products',
-    sidebarIcon: <AiFillFile className={sidebarIconStyle} />,
-    route: '/products',
-  },
-  {
-    sidebarName: 'Test Center',
-    sidebarIcon: <TfiLayoutMediaCenterAlt className={sidebarIconStyle} />,
-    route: '/test-center',
-  },
-  {
-    sidebarName: 'Report',
-    sidebarIcon: <HiDocumentReport className={sidebarIconStyle} />,
-    route: '/report',
-  },
-  {
-    sidebarName: 'Roles & Permissions',
-    sidebarIcon: <FaLock className={sidebarIconStyle} />,
-    route: '/roles-permissions',
-  },
-  {
-    sidebarName: 'Settings',
-    sidebarIcon: <IoMdSettings className={sidebarIconStyle} />,
-    route: '/settings',
-  },
-  {
-    sidebarName: 'Logout',
-    sidebarIcon: <IoLogOutOutline className={sidebarIconStyle} />,
-    route: '/login',
-  },
-]
+import DashboardCards from '@/components/DashboardCards'
 
 const dashboardCards = [
   {

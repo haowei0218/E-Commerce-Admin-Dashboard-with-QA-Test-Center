@@ -44,24 +44,24 @@ export const orderStatusList = [
 
 export const paymentStatusList = [
   {
-    value:'unpaid',
-    optionName:'未付款'
+    value: 'unpaid',
+    optionName: '未付款'
   },
   {
-    value:'paid',
-    optionName:'已付款'
+    value: 'paid',
+    optionName: '已付款'
   },
   {
-    value:'failed',
-    optionName:'付款失敗'
+    value: 'failed',
+    optionName: '付款失敗'
   },
   {
-    value:'refunded',
-    optionName:'已退款'
+    value: 'refunded',
+    optionName: '已退款'
   },
 ]
 
-export const Headers = [
+export const usersTableHeaders = [
   {
     headerName: 'User ID',
     style: "w-80"
@@ -100,3 +100,41 @@ export const Headers = [
   }
 ]
 
+export const ordersTableHeaders = [
+  {
+    headerName: 'Order ID',
+    style: "w-80"
+  },
+  {
+    headerName: 'Order Number',
+    style: "w-45"
+  },
+  {
+    headerName: 'Customer ID',
+    style: "w-60"
+  },
+  {
+    headerName: 'Total Amount',
+    style: "w-40"
+  },
+  {
+    headerName: "Order Status",
+    style: 'w-30'
+  },
+  {
+    headerName: "Payment Status",
+    style: 'w-30'
+  },
+  {
+    headerName: "Shipping Status",
+    style: 'w-50'
+  },
+  {
+    headerName: 'Payment Method',
+    style: 'w-50'
+  },
+  {
+    headerName: 'Action',
+    style: 'w-40'
+  },
+]

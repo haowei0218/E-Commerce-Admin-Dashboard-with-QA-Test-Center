@@ -153,8 +153,8 @@ export const ordersFilterInput = gql`
         shipping_status: String
         date_from: String
         date_to: String
-        page: Int
-        pageSize: Int
+        page: Int!
+        pageSize: Int!
     }
 `
 
@@ -173,6 +173,7 @@ export const updateOrderNoteResponse = gql`
 export const getAllOrdersResponse = gql`
     type getAllOrdersResponse {
         all:[OrderDetails]
+        total_count:Int
     }
 `
 
