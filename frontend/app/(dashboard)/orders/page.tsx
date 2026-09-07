@@ -10,12 +10,11 @@ import { orderStatus, paymentStatus } from "@/type/orders/base.type"
 import { ordersTableHeaders, orderStatusList, paymentStatusList } from "@/lib/data"
 import { FilterButton, SearchBox } from "@/components/Filter"
 import { order } from "@/type/orders/base.type"
-import { getAllOrders, getOrders } from "@/lib/orders.api"
+import { getOrders } from "@/lib/orders.api"
 import { Ring } from '@/components/ring'
 import { OrdersTable } from "./components/orders-table"
 import { useRouter } from 'next/navigation'
-import { IoIosArrowForward } from "react-icons/io";
-import { IoIosArrowBack } from "react-icons/io";
+import Pagination from "@/components/Pagination"
 export default function Orders() {
 
   const [keywords, setKeywords] = useState<string>('')
@@ -48,6 +47,8 @@ export default function Orders() {
   return (
     <>
       <div className='bg-gray-50 w-full h-full p-5 overflow-y-auto'>
+
+        {/* page title */}
         <div className='border border-gray-200 rounded-lg p-5 bg-white m-auto'>
           <PageTitle
             children={
@@ -90,58 +91,7 @@ export default function Orders() {
             <OrdersTable orders={orders} headers={ordersTableHeaders} router={router} />
           </div>
         }
-
-        <div className='w-full flex justify-center items-center mt-10'>
-
-          <div className="w-20 flex justify-start">
-            <button className="text-lg font-medium" onClick={() => setPage(1)}>第一頁</button>
-          </div>
-
-          <div className="w-20 flex justify-start">
-
-            <button onClick={() => setPage((prev) => {
-              if (prev - 1 >= 0) {
-                return prev - 1
-              }
-
-              return prev
-            })}>
-              <IoIosArrowBack className="text-2xl" />
-            </button>
-
-          </div>
-
-
-          <div className="flex items-center gap-2">
-            <div className='w-15 h-8 border border-gray-500 flex items-center justify-center rounded-md'>
-              <span className="font-bold text-black text-lg ">{PAGE}</span>
-            </div>
-
-            <p className="font-bold text-black text-lg ">/</p>
-
-            <div className='w-15 h-8 border border-gray-500 flex items-center justify-center rounded-md'>
-              <span className="font-bold text-black text-lg ">{totalPage}</span>
-            </div>
-          </div>
-
-          <div className="w-20 flex justify-end">
-            <button onClick={() => setPage((prev) => {
-              if (prev + 1 <= totalPage) {
-                return prev + 1
-              }
-
-              return prev
-            })}>
-              <IoIosArrowForward className="text-2xl" />
-            </button>
-
-          </div>
-
-          <div className="w-20 flex justify-end">
-            <button className="text-lg font-medium" onClick={() => setPage(totalPage)}>最後一頁</button>
-          </div>
-        </div>
-
+        <Pagination totalPage={totalPage} PAGE={PAGE} setPageFn={setPage} />
       </div>
 
     </>

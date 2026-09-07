@@ -10,9 +10,9 @@ export default function OrderDetails() {
             <div className="flex items-start gap-10">
                 <button className="flex items-center gap-2 hover:text-blue-900 hover:cursor-pointer">
                     <FaLongArrowAltLeft className="font-black text-blue-500" />
-                    <Link href='/users' className="text-lg font-black text-blue-500">back</Link>
+                    <Link href='/orders' className="text-lg font-black text-blue-500">back</Link>
                 </button>
-                <PageTitle mainTitle="order details" subTitle="manage your order and edit details" />
+                <PageTitle mainTitle={`order details - ${params.id}`} subTitle="manage your order and edit details" />
             </div>
         </div>
     )
