@@ -1,7 +1,13 @@
-'use client'
-import { FaBullseye, FaLongArrowAltLeft } from "react-icons/fa";
-import PageTitle from "@/components/ui/PageTitle";
-import Link from "next/link";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogClose
+} from "@/components/ui/dialog"
+import { TiUserAdd } from "react-icons/ti"
 import { z } from 'zod'
 import { useForm } from "react-hook-form";
 import { RiArrowDropDownLine } from 'react-icons/ri'
@@ -11,13 +17,14 @@ import { createAdminUser } from "@/lib/user.api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ImSpinner2 } from 'react-icons/im'
+import { refresh } from "next/cache";
 
 
-
-export default function createUser() {
+export default function CreateAdminUserDialog() {
     const [confirmPassword, setConfirmPassword] = useState<string>('')
     const [passwordDisable, setPasswordDisable] = useState<boolean>(true)
     const [confirmPasswordDisable, setConfirmPasswordDisable] = useState<boolean>(true)
+    const [open, setOpen] = useState(false)
     const router = useRouter()
     const userInfo = z.object({
         name: z.string().min(1).max(30),
@@ -29,7 +36,7 @@ export default function createUser() {
 
     type UserInformation = z.infer<typeof userInfo>
 
-    const { register, handleSubmit, watch, formState: { errors, isSubmitting, isSubmitted } } = useForm<UserInformation>({
+    const { register, handleSubmit, watch, formState: { errors, isSubmitting, isSubmitted }, reset } = useForm<UserInformation>({
         defaultValues: {
             name: "",
             roleId: 0,
@@ -41,13 +48,13 @@ export default function createUser() {
 
     async function onSubmit(data: UserInformation) {
         try {
-            const response = await createAdminUser({
+            await createAdminUser({
                 ...data,
                 roleId: Number(data.roleId),
             })
-            console.log(response)
             toast.success('create successfully')
-            router.push('/users')
+            setOpen(false)
+            refresh()
         } catch (error) {
             console.error(error)
         }
@@ -56,20 +63,39 @@ export default function createUser() {
     const password = watch('passwordHash')
     const isPasswordMisMatch = confirmPassword.length !== 0 && password !== confirmPassword ? "密碼不一致 請重新輸入" : ""
     const submitDisable = watch('name').length === 0 || watch('roleId') === 0 || watch('email').length === 0 || watch('passwordHash').length === 0 || watch('status').length === 0
-
     return (
-        <div className='bg-gray-50 w-full h-full p-5 flex gap-2'>
-            <div className="flex items-start gap-10 w-50">
-                <button className="flex items-center gap-2 hover:text-blue-900 hover:cursor-pointer">
-                    <FaLongArrowAltLeft className="font-normal text-blue-500" />
-                    <Link href='/users' className="text-lg font-normal text-blue-500">Back to users</Link>
-                </button>
+        <Dialog open={open} onOpenChange={(value) => {
+            setOpen(value)
 
-            </div>
-            <div className="w-full">
-                <PageTitle mainTitle="Create User" subTitle="Create a new system user and assign their access." />
-                <form onSubmit={handleSubmit(onSubmit)} className=" w-full max-w-6xl mt-10 border border-gray-300 rounded-2xl bg-white p-10 ">
-                    <h1 className="text-2xl font-black mb-10">User Information</h1>
+            if (!value) {
+                reset()
+                setConfirmPassword("")
+            }
+        }}>
+            <DialogTrigger
+                render={
+                    <button
+                        type="button"
+                        className="flex justify-center items-center w-40 h-9 border border-blue-500 rounded-lg bg-white font-medium text-blue-500 gap-2 hover:bg-blue-700 hover:text-white hover:cursor-pointer"
+                    />
+                }
+            >
+                <TiUserAdd size={24} />
+                Create User
+            </DialogTrigger>
+
+            <DialogContent style={{
+                width: "900px",
+                maxWidth: "90vw",
+                background: "white"
+            }}>
+                <DialogHeader>
+                    <DialogTitle className='text-2xl'>Create Admin User</DialogTitle>
+                    <DialogDescription>
+                        Create a new system user and assign their access.
+                    </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-6xl">
 
                     <div className="grid grid-cols-1 gap-8 md:grid-cols-2 mb-5">
                         <div className="flex flex-col items-start gap-2">
@@ -80,7 +106,7 @@ export default function createUser() {
 
                             <input
                                 {...register('name')}
-                                className="h-10 w-full rounded-xl border-2 border-gray-200 px-3"
+                                className=" h-10 w-full rounded-xl border-2 border-gray-200 px-3"
                                 placeholder="Enter full name"
                             />
                         </div>
@@ -117,11 +143,11 @@ export default function createUser() {
                                 </select>
                                 <RiArrowDropDownLine
                                     className='
-                                      pointer-events-none
-                                      absolute right-3 top-1/2
-                                      -translate-y-1/2
-                                      text-2xl
-                                    '
+                                                      pointer-events-none
+                                                      absolute right-3 top-1/2
+                                                      -translate-y-1/2
+                                                      text-2xl
+                                                    '
                                 ></RiArrowDropDownLine>
                             </div>
 
@@ -135,17 +161,17 @@ export default function createUser() {
                             <div className="relative w-full">
                                 <select {...register('status')} className="h-10 w-full rounded-xl border-2 appearance-none border-gray-200 px-3 text-gray-500 text-md font-bold">
                                     <option value="">Select status</option>
-                                    <option value="active">Active</option>
-                                    <option value="inactive">Inactive</option>
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
 
                                 </select>
                                 <RiArrowDropDownLine
                                     className='
-                                      pointer-events-none
-                                      absolute right-3 top-1/2
-                                      -translate-y-1/2
-                                      text-2xl
-                                    '
+                                                      pointer-events-none
+                                                      absolute right-3 top-1/2
+                                                      -translate-y-1/2
+                                                      text-2xl
+                                                    '
                                 ></RiArrowDropDownLine>
                             </div>
                         </div>
@@ -206,14 +232,23 @@ export default function createUser() {
                     <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
                         <div className="w-full flex items-end gap-2"></div>
                         <div className="w-full flex items-end justify-end gap-2">
-                            <Link className="w-30 h-9 border border-gray-300 rounded-lg bg-white font-bold  gap-2 hover:bg-gray-700 hover:text-white hover:cursor-pointer text-center pt-1" href={"/users"}>Cancel</Link>
-                            <button className="w-30 h-9 border flex justify-center items-center border-gray-300 rounded-lg bg-blue-500 font-bold text-white gap-2 hover:bg-blue-700 disabled:bg-gray-400" disabled={submitDisable || isSubmitting} type="submit">{isSubmitting && <ImSpinner2 className="animate-spin" />}
+                            <DialogClose
+                                render={
+                                    <button
+                                        type="button"
+                                        className="w-30 h-9 border border-gray-500 rounded-lg bg-white text-gray-500 font-bold hover:bg-gray-700 hover:text-white hover:cursor-pointer"
+                                    />
+                                }
+                            >
+                                Cancel
+                            </DialogClose>
+
+                            <button className="w-30 h-9 border flex justify-center items-center border-blue-500 rounded-lg text-blue-500 font-bold  gap-2 hover:bg-blue-700 disabled:text-gray-500 disabled:border-gray-500 disabled:bg-white" disabled={submitDisable || isSubmitting} type="submit">{isSubmitting && <ImSpinner2 className="animate-spin" />}
                                 {isSubmitting ? 'Creating...' : 'Create User'}</button>
                         </div>
                     </div>
                 </form>
-            </div>
-
-        </div>
+            </DialogContent>
+        </Dialog>
     )
 }

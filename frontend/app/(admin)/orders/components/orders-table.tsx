@@ -86,7 +86,7 @@ export function OrdersTableRow(tableRowProps: orderTableRowProps) {
             <td className='flex items-start gap-2 text-left text-md font-black font-stretch-condensed mb-2 '>
                 <button
                     className='flex items-center justify-center text-white bg-amber-500 p-1 gap-2 rounded-md font-normal border border-gray-200 px-2.5 py-1.5  hover:bg-amber-600'
-                    onClick={() => tableRowProps.router.push(`/users/edit-user/${tableRowProps.order.id}`)}
+                    onClick={() => tableRowProps.router.push(`/orders/details/${tableRowProps.order.id}`)}
                 >
                     Details
                 </button>

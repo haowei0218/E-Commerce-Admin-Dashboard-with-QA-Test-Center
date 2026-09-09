@@ -1,6 +1,7 @@
 import { SelectMenu } from "./SelectMenu"
 import { CiSearch, CiFilter } from "react-icons/ci"
 import { SetStateAction, Dispatch } from 'react'
+import { CgClose } from "react-icons/cg"
 export type selectMenu = {
     label: string
     props: dropdownMenuProps[]
@@ -21,13 +22,14 @@ export function FilterButton({ clearFilterFn, FilterFn }: {
     return (
         <div className='flex gap-2'>
             <button
-                className='flex justify-center items-center w-25 h-12  bg-gray-400 rounded-lg gap-2 font-bold hover:bg-gray-500 text-white hover:cursor-pointer'
+                className='flex justify-center items-center text-xl w-25 h-12  bg-gray-400 rounded-lg gap-2 font-medium hover:bg-gray-500 text-white hover:cursor-pointer'
                 onClick={clearFilterFn}
             >
+                <CgClose />
                 Clear
             </button>
             <button
-                className='flex justify-center items-center w-30 h-12  bg-blue-700 rounded-lg gap-2 font-bold hover:bg-blue-800 text-white hover:cursor-pointer'
+                className='flex justify-center items-center text-xl w-30 h-12  bg-blue-700 rounded-lg gap-2 font-medium hover:bg-blue-800 text-white hover:cursor-pointer'
                 onClick={FilterFn}
             >
                 <CiFilter />

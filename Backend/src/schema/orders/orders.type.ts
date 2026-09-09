@@ -133,7 +133,7 @@ export const updateOrderRecipientResponse = gql`
 
 export const getOrdersResponse = gql`
     type getOrdersResponse{
-        getOrders:[OrderDetails]
+        result:[OrderDetails]
         total_count:Int
         page:Int
         pageSize:Int
@@ -141,7 +141,7 @@ export const getOrdersResponse = gql`
 `
 export const getOrdersByIdResponse = gql`
     type getOrdersByIdResponse{
-        getOrdersById:[OrderDetails]
+        result:OrderDetails
     }
 `
 

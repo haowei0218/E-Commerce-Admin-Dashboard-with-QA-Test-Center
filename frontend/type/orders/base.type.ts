@@ -96,11 +96,18 @@ export type updateOrderRecipientResponse = {
 
 export type getOrdersResponse = {
     getOrders: {
-        getOrders: order[]
+        result: order[]
         total_count: number,
         page: number,
         pageSize: number
     }
+}
+
+export type getOrderByIdResponse = {
+    getOrderById: {
+        result: order
+    }
+
 }
 
 export type orderFilterPayload = {

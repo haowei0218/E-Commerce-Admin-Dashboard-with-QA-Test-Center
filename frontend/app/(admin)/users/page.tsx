@@ -16,49 +16,53 @@ import { UsersTable } from './components/users-table'
 import { exportCSV } from '@/lib/utils'
 import { ordersTableHeaders, Roles, Status, usersTableHeaders } from '@/lib/data'
 import { FilterButton, SearchBox } from '@/components/Filter'
+import { useQuery } from '@tanstack/react-query'
+import { TiUserAdd } from "react-icons/ti";
+import CreateAdminUserDialog from './components/create-admin-user-dialog'
 
 
 export default function Users() {
   const [role, setRole] = useState<string>('All')
   const [userStatus, setUserStatus] = useState<string>('All')
   const [keywords, setKeywords] = useState<string>('')
-  const [Users, setUsers] = useState<adminUserProfile[] | null>(null)
-  
+  const [filters, setFilters] = useState({
+    keyword: '',
+    role: 'All',
+    status: 'All',
+  })
+
   const router = useRouter()
-
-  async function handleAdminUserFilter(type: 'Filter' | 'Search') {
-    const variables = {
-      keyword: type === 'Filter' ? null : keywords.trim(),
-      roleId: type === 'Search' ? null : role === 'All' ? null : Number(role),
-      status:
-        type === 'Search' ? null : userStatus === 'All' ? null : userStatus,
-    }
-    const result = await getAdminUserByProperties(variables)
-    if (result.GetAdminUserByProperties.getUsers) {
-      setUsers(result.GetAdminUserByProperties.getUsers)
-    }
+  async function handleAdminUserFilter() {
+    setFilters({
+      keyword: keywords,
+      role,
+      status: userStatus,
+    })
   }
-
-  async function fetchAdminUsers() {
-    try {
-      const res = await getUsers()
-      const adminUsers = res.GetAdminUsers.getUsers
-      setUsers(adminUsers)
-    } catch (error) {
-      console.error('Get admin users failed:', error)
-    }
-  }
-
   async function resetFilter() {
     setRole('All')
     setUserStatus('All')
     setKeywords('')
-    fetchAdminUsers()
   }
 
-  useEffect(() => {
-    fetchAdminUsers()
-  }, [])
+  const adminUsersQuery = useQuery({
+    queryKey: ['admin-users', filters],
+    queryFn: () =>
+      getAdminUserByProperties({
+        keyword: filters.keyword.trim() || null,
+        roleId:
+          filters.role === 'All'
+            ? null
+            : Number(filters.role),
+
+        status:
+          filters.status === 'All'
+            ? null
+            : filters.status,
+      }),
+  })
+
+  const adminUsers = adminUsersQuery.data?.GetAdminUserByProperties.getUsers ?? []
 
 
   return (
@@ -67,17 +71,11 @@ export default function Users() {
         <PageTitle
           children={
             <div className='flex gap-2'>
-              <button className='flex justify-center items-center w-25 h-9 border border-gray-300 rounded-lg bg-white gap-2 font-medium hover:bg-gray-400 hover:text-white hover:cursor-pointer' onClick={() => exportCSV(Users, ["id", "name", "email", "status", 'code', 'create_at'], "users")}>
+              <button className='flex justify-center items-center w-25 h-9 border border-green-500 rounded-lg bg-white gap-2 font-medium text-green-500 hover:bg-green-700 hover:text-white hover:cursor-pointer' onClick={() => exportCSV(adminUsers, ["id", "name", "email", "status", 'code', 'create_at'], "users")}>
                 <CgExport />
                 Export
               </button>
-              <Link
-                className='flex justify-center items-center w-40 h-9 border border-gray-300 rounded-lg bg-blue-500 font-medium text-white gap-2 hover:bg-blue-700 hover:cursor-pointer'
-                href='/users/add-user'
-              >
-                <FaPlus />
-                Create User
-              </Link>
+              <CreateAdminUserDialog />
             </div>
           }
           mainTitle='Users'
@@ -88,7 +86,7 @@ export default function Users() {
       {/* filter*/}
 
       <div className='m-auto flex justify-between items-end gap-2 mt-15 mb-10'>
-        <SearchBox setKeyWords={setKeywords} keywords={keywords} onHandleSearch={() => handleAdminUserFilter('Search')} />
+        <SearchBox setKeyWords={setKeywords} keywords={keywords} onHandleSearch={() => handleAdminUserFilter()} />
         <SelectMenu
           props={Roles}
           value={role}
@@ -101,17 +99,17 @@ export default function Users() {
           onSelectMenuValueChange={setUserStatus}
           label='帳戶狀態'
         />
-        <FilterButton clearFilterFn={resetFilter} FilterFn={() => handleAdminUserFilter('Filter')} />
+        <FilterButton clearFilterFn={resetFilter} FilterFn={() => handleAdminUserFilter()} />
       </div>
       {/* table*/}
-      {!Users && <Ring className='w-10 h-10 m-auto' />}
-      {Users && (
+      {!adminUsers && <Ring className='w-10 h-10 m-auto' />}
+      {adminUsers && (
         <div className='rounded-t-2xl border-t border-l border-r m-auto border-gray-200 overflow-y-auto'>
-          <UsersTable users={Users} route={router} tableheaders={usersTableHeaders} />
+          <UsersTable users={adminUsers} route={router} tableheaders={usersTableHeaders} />
         </div>
       )}
 
-      
+
     </div>
   )
 }

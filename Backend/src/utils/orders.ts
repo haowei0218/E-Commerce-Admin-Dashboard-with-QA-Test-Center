@@ -441,7 +441,7 @@ export async function getOrders(payload: orderFilterPayload, context: ServerCont
     const total = countResult.rows[0].total
     const total_page = Math.ceil(total / pageSize)
     return {
-        getOrders: result,
+        result: result,
         total_count: total_page,
         page: page,
         pageSize: pageSize
@@ -454,7 +454,7 @@ export async function getOrderById(id: string, context: ServerContext) {
     const order_items = await getOrderItems(id, context)
 
     return {
-        getOrdersById: [{ ...result[0], order_items: order_items }]
+        result: { ...result[0], order_items: order_items }
     }
 }
 

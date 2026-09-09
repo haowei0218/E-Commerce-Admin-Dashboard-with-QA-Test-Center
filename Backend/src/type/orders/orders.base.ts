@@ -95,7 +95,7 @@ export type updateOrderRecipientResponse = {
 }
 
 export type getOrdersResponse = {
-    getOrders: order[]
+    result: order[]
     total_count: number,
     page: number,
     pageSize: number
