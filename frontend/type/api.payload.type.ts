@@ -15,4 +15,5 @@ export type APIPayload = {
   SetAdminUserInactive: { setAdminUserInactiveId: string, status: string }
   GetAllOrders: null
   GetOrders: { input: orderFilterPayload }
+  GetOrderById: { orderId: string }
 }

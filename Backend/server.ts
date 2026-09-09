@@ -19,11 +19,12 @@ type TokenPayload = {
 
 async function connectToDatabase() {
   try {
-    await SupabaseClient.connect();
+    await SupabaseClient.query("SELECT 1");
+
     console.log("Connect to supabase successfully");
-  } catch (e) {
-    console.error("Database connection error:", e);
-    throw e;
+  } catch (error) {
+    console.error("Database connection error:", error);
+    throw error;
   }
 }
 

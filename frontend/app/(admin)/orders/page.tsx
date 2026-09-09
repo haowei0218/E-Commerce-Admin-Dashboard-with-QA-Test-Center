@@ -10,39 +10,37 @@ import { orderStatus, paymentStatus } from "@/type/orders/base.type"
 import { ordersTableHeaders, orderStatusList, paymentStatusList } from "@/lib/data"
 import { FilterButton, SearchBox } from "@/components/Filter"
 import { order } from "@/type/orders/base.type"
-import { getOrders } from "@/lib/orders.api"
+import { getAllOrders, getOrders } from "@/lib/orders.api"
 import { Ring } from '@/components/ring'
 import { OrdersTable } from "./components/orders-table"
 import { useRouter } from 'next/navigation'
 import Pagination from "@/components/Pagination"
+import { useQuery } from "@tanstack/react-query"
+import { ExportButton } from "@/components/Button"
+import { CreateLink } from "@/components/Button"
 export default function Orders() {
 
   const [keywords, setKeywords] = useState<string>('')
   const [orderStatus, setOrderStatus] = useState<orderStatus>('pending')
   const [paymentStatus, setPaymentStatus] = useState<paymentStatus>('unpaid')
-  const [orders, setOrders] = useState<order[] | null>(null)
   const [PAGE, setPage] = useState<number>(1)
-  const [totalPage, setTotalPage] = useState<number>(1)
   const router = useRouter()
 
   function handleSearch() {
     console.log('')
   }
 
-  async function fetchAllOrders(input: { page: number, pageSize: number }) {
-    try {
-      const res = await getOrders({ page: input.page, pageSize: input.pageSize })
-      const orders = res.getOrders.getOrders
-      setOrders(orders)
-      setTotalPage(res.getOrders.total_count)
-    } catch (error) {
-      console.error('Get admin users failed:', error)
-    }
-  }
+  const ordersQuery = useQuery({
+    queryKey: ['all-orders', PAGE],
+    queryFn: () => getOrders({ page: PAGE, pageSize: 5 }),
+    enabled: Boolean(PAGE),
+  })
 
-  useEffect(() => {
-    fetchAllOrders({ page: PAGE, pageSize: 5 })
-  }, [PAGE])
+  const ordersResponse = ordersQuery.data?.getOrders
+  const orders = ordersResponse?.result ?? []
+  const totalPage = Math.ceil(
+    (ordersResponse?.total_count ?? 0) / 5
+  )
 
   return (
     <>
@@ -53,17 +51,8 @@ export default function Orders() {
           <PageTitle
             children={
               <div className='flex gap-2'>
-                <button className='flex justify-center items-center w-25 h-9 border border-gray-300 rounded-lg bg-white gap-2 font-medium hover:bg-gray-400 hover:text-white hover:cursor-pointer' onClick={() => console.log('')}>
-                  <CgExport />
-                  Export
-                </button>
-                <Link
-                  className='flex justify-center items-center w-40 h-9 border border-gray-300 rounded-lg bg-blue-500 font-medium text-white gap-2 hover:bg-blue-700 hover:cursor-pointer'
-                  href='/users/add-order'
-                >
-                  <FaPlus />
-                  Create Order
-                </Link>
+                <ExportButton exportFn={() => console.log('')} />
+                <CreateLink link='/orders/add-order' buttonName="Create Order" />
               </div>
             }
             mainTitle='Orders'

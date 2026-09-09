@@ -1,6 +1,7 @@
 import { adminUserProfile } from "@/type/admin-users/adminUser.type";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { formatDate } from "@/lib/utils";
+import { BsPencil } from "react-icons/bs";
 import { CiEdit } from "react-icons/ci";
 type UsersTableRowProps = {
     user: adminUserProfile;
@@ -61,9 +62,10 @@ export function UsersTableRow(tableRowProps: UsersTableRowProps) {
             </td>
             <td className='flex items-start gap-2 text-left text-md font-black font-stretch-condensed mb-2 '>
                 <button
-                    className='flex items-center justify-center text-white bg-amber-500 p-1 gap-2 rounded-md font-normal border border-gray-200 px-2.5 py-1.5  hover:bg-amber-600'
+                    className='flex w-20 h-10 items-center justify-center text-white bg-amber-500 p-1 gap-2 rounded-md font-normal border border-gray-200 px-2.5 py-1.5  hover:bg-amber-600'
                     onClick={() => tableRowProps.route.push(`/users/edit-user/${tableRowProps.user.id}`)}
                 >
+                    <CiEdit className="text-white text-lg"/>
                     Edit
                 </button>
             </td>

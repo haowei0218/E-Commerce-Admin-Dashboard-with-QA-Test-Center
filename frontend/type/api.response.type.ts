@@ -1,5 +1,5 @@
 import { UserLoginResponse, GetUsersResponse, AdminUserLogoutResponse, GetAdminUserByPropertiesResponse, CreateAdminUserResponse, GetAdminUserByIdResponse, UpdateMyProfileResponse, ChangePasswordResponse, SetAdminUserRoleResponse, SetAdminUserActiveResponse, SetAdminUserInactiveResponse } from './admin-users/adminUser.type'
-import { getAllOrdersResponse, getOrdersResponse } from './orders/base.type'
+import { getAllOrdersResponse, getOrdersResponse, getOrderByIdResponse } from './orders/base.type'
 
 export type Response = {
   UserLogin: UserLoginResponse
@@ -14,5 +14,6 @@ export type Response = {
   SetAdminUserActive: SetAdminUserActiveResponse
   SetAdminUserInactive: SetAdminUserInactiveResponse
   GetAllOrders: getAllOrdersResponse
-  GetOrders:getOrdersResponse
+  GetOrders: getOrdersResponse
+  GetOrderById: getOrderByIdResponse
 }
