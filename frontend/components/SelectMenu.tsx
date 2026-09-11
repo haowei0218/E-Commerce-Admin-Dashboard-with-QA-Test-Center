@@ -11,16 +11,24 @@ type dropdownMenuProps = {
   optionName: string
 }
 
+type menuStyle = {
+  width?: number
+  borderColor?: string
+}
+
 export function SelectMenu({
   props,
   value,
   onSelectMenuValueChange,
-  label
+  label,
+  selectMenuStyle
 }: {
   props: dropdownMenuProps[]
   value: string
   onSelectMenuValueChange: Dispatch<SetStateAction<any>>
   label: string
+  selectMenuStyle?: menuStyle
+
 }) {
   const items = props.map((item) => ({
     value: item.value,
@@ -37,7 +45,7 @@ export function SelectMenu({
         items={items}
 
       >
-        <SelectTrigger className='w-125 !h-12 border border-gray-300 rounded-lg px-4 font-bold text-md bg-white appearance-none focus:outline-none focus:ring-0 focus:border-gray-300'>
+        <SelectTrigger style={selectMenuStyle} className={`w-125 !h-12 border border-gray-300 rounded-lg px-4 font-bold text-md bg-white appearance-none focus:outline-none focus:ring-0 focus:border-gray-300`}>
           <SelectValue placeholder="Select a role" />
         </SelectTrigger>
 
@@ -50,7 +58,6 @@ export function SelectMenu({
             )
           })}
         </SelectContent>
-
       </Select>
     </div>
   )

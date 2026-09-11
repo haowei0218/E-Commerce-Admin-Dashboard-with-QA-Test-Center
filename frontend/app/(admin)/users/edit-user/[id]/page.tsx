@@ -20,6 +20,7 @@ import { MdOutlineManageAccounts } from "react-icons/md";
 import { FaRegFileAlt } from "react-icons/fa";
 import { SelectMenu } from "@/components/SelectMenu";
 import { Roles, Status } from "@/lib/data";
+import { useQuery } from "@tanstack/react-query";
 
 
 export default function editUser() {
@@ -42,6 +43,13 @@ export default function editUser() {
         status: z.string()
     })
 
+    const adminUserByIdQuery = useQuery({
+        queryKey: ['admin-user-by-id'],
+        queryFn: () => getAdminUserById({ userId: userId }),
+        enabled: Boolean(userId)
+    })
+    const adminUser = adminUserByIdQuery.data?.GetAdminUserById.getUserById
+
     type userInformation = z.infer<typeof userInfo>
     type myProfile = Omit<userInformation, 'roleId' | "passwordHash" | "status"> & { updateMyProfileId: string }
     type changePassword = { changePasswordId: string, newPassword: string }
@@ -50,8 +58,8 @@ export default function editUser() {
 
     const myProfileForm = useForm<myProfile>({
         defaultValues: {
-            name: "",
-            email: ""
+            name: adminUser?.name ?? "",
+            email: adminUser?.email ?? ""
         }
     })
 
@@ -63,13 +71,13 @@ export default function editUser() {
 
     const statusForm = useForm<setStatus>({
         defaultValues: {
-            status: ""
+            status: adminUser?.status ?? ""
         }
     })
 
     const roleForm = useForm<setRoleId>({
         defaultValues: {
-            roleId: 0
+            roleId: Number(adminUser?.role_id) ?? 0
         }
     })
 
@@ -137,7 +145,7 @@ export default function editUser() {
     const password = changePasswordForm.watch('newPassword')
     const isPasswordMisMatch = confirmPassword.length !== 0 && password !== confirmPassword ? "密碼不一致 請重新輸入" : ""
 
-    const isProfileSubmitDisable = myProfileForm.formState.isLoading || myProfileForm.watch('email').length === 0 || myProfileForm.watch('name').length === 0
+    const isProfileSubmitDisable = myProfileForm.formState.isLoading || myProfileForm.watch('email')?.length === 0 || myProfileForm.watch('name')?.length === 0
     const isChangePasswordSubmitDisable = userId !== operatorUser?.id && operatorUser?.role_id !== 1
     const isSetRoleSubmitDisable = roleForm.formState.isLoading || operatorUser?.role_id !== 1 || (operatorUser?.role_id === 1 && operatorUser?.id === userId)
     const isSetStatusSubmitDisable = statusForm.formState.isLoading || operatorUser?.role_id !== 1 || operatorUser.id === userId
@@ -188,6 +196,7 @@ export default function editUser() {
                                     {...myProfileForm.register('name')}
                                     className="h-10 w-100 rounded-xl border-2 border-gray-500 px-3"
                                     placeholder="Enter full name"
+                                    value={myProfileForm.watch('name')}
 
                                 />
                             </div>
@@ -202,6 +211,7 @@ export default function editUser() {
                                     {...myProfileForm.register('email')}
                                     className="h-10 w-100 rounded-xl border-2 border-gray-500 px-3"
                                     placeholder="Enter email"
+                                    value={myProfileForm.watch('email')}
                                 />
                             </div>
                         </div>
@@ -225,6 +235,7 @@ export default function editUser() {
                                         {...changePasswordForm.register('newPassword')}
                                         className="h-10 w-full border-l-2 border-t-2 border-b-2 rounded-l-xl border-gray-500 px-3"
                                         type={`${passwordDisable ? "password" : 'text'}`}
+
                                     />
                                     <button type="submit" className='h-10 w-[5%] border-t-2 border-r-2 border-b-2 rounded-r-xl  border-gray-500 pr-2 ' onClick={() => setPasswordDisable(!passwordDisable)}>
                                         <FaRegEyeSlash />
@@ -261,34 +272,36 @@ export default function editUser() {
                         </div>
                     </form>
 
-                    {/* 角色設定 */}
-                    <form onSubmit={roleForm.handleSubmit(setRoleSubmit)} className="flex justify-between items-center">
-                        <SelectMenu
-                            props={Roles}
-                            value={role}
-                            onSelectMenuValueChange={setRole}
-                            label='帳戶角色'
-                            
-                        />
-                        <div className="w-full flex justify-end">
-                            <button disabled={isSetRoleSubmitDisable} type="submit" className="w-30 h-9 border flex justify-center items-center border-gray-300 rounded-lg bg-blue-500 font-bold text-white gap-2 hover:bg-blue-700 disabled:bg-gray-400">{roleForm.formState.isLoading ? "變更中..." : "儲存變更"}</button>
+                    <div className="flex justify-between items-end">
+
+                        <div className="flex justify-start items-center gap-8">
+                            <form onSubmit={roleForm.handleSubmit(setRoleSubmit)} className="flex justify-between items-center">
+                                <SelectMenu
+                                    props={Roles}
+                                    value={role}
+                                    onSelectMenuValueChange={setRole}
+                                    label='帳戶角色'
+                                    selectMenuStyle={{ width: 400, borderColor: "#6a7282" }}
+
+                                />
+
+                            </form>
+
+                            {/* 帳號狀態設定 */}
+                            <form onSubmit={statusForm.handleSubmit(setStatusSubmit)} className="flex justify-between items-center">
+                                <SelectMenu
+                                    props={Status}
+                                    value={userStatus}
+                                    onSelectMenuValueChange={setUserStatus}
+                                    label='帳戶狀態'
+                                    selectMenuStyle={{ width: 400, borderColor: "#6a7282" }}
+                                />
+                            </form>
                         </div>
-                    </form>
+                        {/* 角色設定 */}
 
-                    {/* 帳號狀態設定 */}
-                    <form onSubmit={statusForm.handleSubmit(setStatusSubmit)} className="flex justify-between items-center">
-                        <SelectMenu
-                            props={Status}
-                            value={userStatus}
-                            onSelectMenuValueChange={setUserStatus}
-                            label='帳戶狀態'
-                        />
-
-                        <div className="w-full flex justify-end">
-                            <button disabled={isSetStatusSubmitDisable} type="submit" className="w-30 h-9 border flex justify-center items-center border-gray-300 rounded-lg bg-blue-500 font-bold text-white gap-2 hover:bg-blue-700 disabled:bg-gray-400">{statusForm.formState.isLoading ? "變更中..." : "儲存變更"}</button>
-                        </div>
-                    </form>
-
+                        <button disabled={isSetStatusSubmitDisable} type="submit" className="w-30 h-9 border flex justify-center items-center border-gray-300 rounded-lg bg-blue-500 font-bold text-white gap-2 hover:bg-blue-700 disabled:bg-gray-400">{statusForm.formState.isLoading ? "變更中..." : "儲存變更"}</button>
+                    </div>
 
                 </div>
             </div>

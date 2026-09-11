@@ -1,23 +1,17 @@
 'use client'
 import { CgExport } from 'react-icons/cg'
-import { FaPlus } from 'react-icons/fa'
-import { CiSearch } from 'react-icons/ci'
 
 import { SelectMenu } from '@/components/SelectMenu'
 import { useEffect, useState } from 'react'
-import { adminUserProfile } from '@/type/admin-users/adminUser.type'
 import { getAdminUserByProperties, getUsers } from '@/lib/user.api'
 import { Ring } from '@/components/ring'
-import { CiFilter } from 'react-icons/ci'
 import { useRouter } from 'next/navigation'
 import PageTitle from '@/components/ui/PageTitle'
-import Link from 'next/link'
 import { UsersTable } from './components/users-table'
 import { exportCSV } from '@/lib/utils'
 import { ordersTableHeaders, Roles, Status, usersTableHeaders } from '@/lib/data'
 import { FilterButton, SearchBox } from '@/components/Filter'
 import { useQuery } from '@tanstack/react-query'
-import { TiUserAdd } from "react-icons/ti";
 import CreateAdminUserDialog from './components/create-admin-user-dialog'
 
 
@@ -108,8 +102,6 @@ export default function Users() {
           <UsersTable users={adminUsers} route={router} tableheaders={usersTableHeaders} />
         </div>
       )}
-
-
     </div>
   )
 }
