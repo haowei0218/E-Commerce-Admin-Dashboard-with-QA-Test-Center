@@ -85,13 +85,13 @@ export default function Users() {
           props={Roles}
           value={role}
           onSelectMenuValueChange={setRole}
-          label='帳戶角色'
+          label='users role'
         />
         <SelectMenu
           props={Status}
           value={userStatus}
           onSelectMenuValueChange={setUserStatus}
-          label='帳戶狀態'
+          label='users status'
         />
         <FilterButton clearFilterFn={resetFilter} FilterFn={() => handleAdminUserFilter()} />
       </div>

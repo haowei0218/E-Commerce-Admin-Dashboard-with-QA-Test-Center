@@ -36,7 +36,7 @@ export function SelectMenu({
   }))
   return (
     <div className='grid gap-2'>
-      <label className='w-20 text-center font-normal text-black text-lg'>
+      <label className='w-30 font-semibold text-black text-lg'>
         {label}
       </label>
       <Select

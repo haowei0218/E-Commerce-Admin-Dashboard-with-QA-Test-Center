@@ -90,9 +90,9 @@ export default function CreateAdminUserDialog() {
                 background: "white"
             }}>
                 <DialogHeader>
-                    <DialogTitle className='text-2xl'>Create Admin User</DialogTitle>
+                    <DialogTitle className='text-2xl'>Create User</DialogTitle>
                     <DialogDescription>
-                        Create a new system user and assign their access.
+                        Create a user and grant account permissions
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit(onSubmit)} className="w-full max-w-6xl">
@@ -100,7 +100,7 @@ export default function CreateAdminUserDialog() {
                     <div className="grid grid-cols-1 gap-8 md:grid-cols-2 mb-5">
                         <div className="flex flex-col items-start gap-2">
                             <label className="flex gap-1 text-lg font-bold">
-                                Name
+                                name
                                 <span className="text-sm text-red-600">*</span>
                             </label>
 
@@ -113,7 +113,7 @@ export default function CreateAdminUserDialog() {
 
                         <div className="flex flex-col items-start gap-2">
                             <label className="flex gap-1 text-lg font-bold">
-                                Email
+                                email
                                 <span className="text-sm text-red-600">*</span>
                             </label>
 
@@ -128,13 +128,13 @@ export default function CreateAdminUserDialog() {
                     <div className="grid grid-cols-1 gap-8 md:grid-cols-2 mb-5">
                         <div className="flex flex-col items-start gap-2">
                             <label className="flex gap-1 text-lg font-bold">
-                                Role
+                                user role
                                 <span className="text-sm text-red-600">*</span>
                             </label>
 
                             <div className="relative w-full">
                                 <select {...register('roleId')} className="h-10 w-full rounded-xl border-2 appearance-none border-gray-200 px-3 text-gray-500 font-bold">
-                                    <option value={0} className="">Select role</option>
+                                    <option value={0} className="">Select Role</option>
                                     <option value={2}>營運主管</option>
                                     <option value={3}>客服／營運人員</option>
                                     <option value={4}>唯讀帳號</option>
@@ -155,12 +155,12 @@ export default function CreateAdminUserDialog() {
 
                         <div className="flex flex-col items-start gap-2">
                             <label className="flex gap-1 text-lg font-bold">
-                                Status
+                                user status
                                 <span className="text-sm text-red-600">*</span>
                             </label>
                             <div className="relative w-full">
                                 <select {...register('status')} className="h-10 w-full rounded-xl border-2 appearance-none border-gray-200 px-3 text-gray-500 text-md font-bold">
-                                    <option value="">Select status</option>
+                                    <option value="">Set account status</option>
                                     <option value="Active">Active</option>
                                     <option value="Inactive">Inactive</option>
 
@@ -181,7 +181,7 @@ export default function CreateAdminUserDialog() {
                     <div className="grid grid-cols-1 gap-8 md:grid-cols-2 mb-15">
                         <div className="flex flex-col items-start gap-2">
                             <label className="flex gap-1 text-lg font-bold">
-                                Password
+                                password
                                 <span className="text-sm text-red-600">*</span>
                             </label>
 
@@ -206,7 +206,7 @@ export default function CreateAdminUserDialog() {
 
                         <div className="flex flex-col items-start gap-2">
                             <label className="flex gap-1 text-lg font-bold">
-                                Confirm password
+                                confirm password
                                 <span className="text-sm text-red-600">*</span>
                             </label>
                             <div className="w-full flex items-center">
@@ -240,11 +240,11 @@ export default function CreateAdminUserDialog() {
                                     />
                                 }
                             >
-                                Cancel
+                                cancel
                             </DialogClose>
 
                             <button className="w-30 h-9 border flex justify-center items-center border-blue-500 rounded-lg text-blue-500 font-bold  gap-2 hover:bg-blue-700 disabled:text-gray-500 disabled:border-gray-500 disabled:bg-white" disabled={submitDisable || isSubmitting} type="submit">{isSubmitting && <ImSpinner2 className="animate-spin" />}
-                                {isSubmitting ? 'Creating...' : 'Create User'}</button>
+                                {isSubmitting ? 'creating...' : 'save'}</button>
                         </div>
                     </div>
                 </form>

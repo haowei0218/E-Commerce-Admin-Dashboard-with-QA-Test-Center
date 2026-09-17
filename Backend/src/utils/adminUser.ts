@@ -293,7 +293,7 @@ export async function changePassword(id: string, newPassword: string, context: S
 export async function updateMyProfile(myProfile: updateMyProfilePayload, context: ServerContext): Promise<updateMyProfileResponse> {
   await requestAuth(context, rolePermissions.USERS_UPDATE)
   const { email, name } = myProfile
-  if (email.length === 0 || name.length === 0) {
+  if (email.length === 0 && name.length === 0) {
     throwGraphqlError('Invalid input data', "INVALID_INPUT_DATA")
   }
 

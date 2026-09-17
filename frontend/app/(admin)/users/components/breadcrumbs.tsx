@@ -15,7 +15,7 @@ export default function Breadcrumbs({ action }: { action: string }) {
                         href="/users"
                         className="text-gray-500 font-medium"
                     >
-                        users
+                        Users
                     </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="[&>svg]:size-6">

@@ -62,10 +62,10 @@ export function UsersTableRow(tableRowProps: UsersTableRowProps) {
             </td>
             <td className='flex items-start gap-2 text-left text-md font-black font-stretch-condensed mb-2 '>
                 <button
-                    className='flex w-20 h-10 items-center justify-center text-white bg-amber-500 p-1 gap-2 rounded-md font-normal border border-gray-200 px-2.5 py-1.5  hover:bg-amber-600'
+                    className='flex w-25 h-10 items-center justify-center text-white bg-amber-500 p-1 gap-2 rounded-md border border-gray-200 px-2.5 py-1.5 font-bold hover:bg-amber-600'
                     onClick={() => tableRowProps.route.push(`/users/edit-user/${tableRowProps.user.id}`)}
                 >
-                    <CiEdit className="text-white text-lg"/>
+                    <CiEdit />
                     Edit
                 </button>
             </td>

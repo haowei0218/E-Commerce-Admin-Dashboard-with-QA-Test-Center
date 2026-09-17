@@ -3,7 +3,7 @@
 import { FaBullseye, FaLongArrowAltLeft } from "react-icons/fa";
 import PageTitle from "@/components/ui/PageTitle";
 import Link from "next/link";
-import { z } from 'zod'
+import { promise, z } from 'zod'
 import { useForm } from "react-hook-form";
 import { RiArrowDropDownLine } from 'react-icons/ri'
 import { useEffect, useState } from "react";
@@ -21,6 +21,9 @@ import { FaRegFileAlt } from "react-icons/fa";
 import { SelectMenu } from "@/components/SelectMenu";
 import { Roles, Status } from "@/lib/data";
 import { useQuery } from "@tanstack/react-query";
+import { FaRegSave } from "react-icons/fa";
+import { MdOutlineCancel } from "react-icons/md";
+
 
 
 export default function editUser() {
@@ -108,38 +111,66 @@ export default function editUser() {
         }
     }
 
+    async function onSubmit() {
+        const task = [];
 
-
-
-    useEffect(() => {
-        if (!userId) return
-        const storedUser = localStorage.getItem('user')
-        const operatorUser = storedUser ? JSON.parse(storedUser) : null
-        setOperatorUser(operatorUser)
-
-        const operatorManagePermission = operatorUser?.manage_level
-        if (operatorManagePermission === undefined) {
-            return
+        if (myProfileForm.formState.dirtyFields.email || myProfileForm.formState.dirtyFields.name) {
+            task.push(myProfileSubmit(myProfileForm.getValues()))
         }
-        const roleDisable: boolean[] = ["20", "40", "50", "60", "80", "100"].map((item: string) => operatorManagePermission < Number(item))
-        setRoleMap(roleDisable)
-        async function GetAdminUserById() {
-            try {
-                const response = await getAdminUserById({ userId: userId })
-                const user = response.GetAdminUserById.getUserById
 
-                console.log('user : ', user)
-
-                myProfileForm.reset({ name: user?.name ?? "", email: user?.email ?? "" })
-                roleForm.reset({ roleId: Number(user?.role_id ?? 0) })
-                statusForm.reset({ status: user?.status ?? "" })
-
-            } catch (error) {
-                console.log(error)
-            }
+        if (roleForm.formState.dirtyFields.roleId) {
+            task.push(setRoleSubmit())
         }
-        GetAdminUserById()
-    }, [])
+
+        if (changePasswordForm.formState.dirtyFields.newPassword) {
+            task.push(changePasswordSubmit({ newPassword: changePasswordForm.getValues().newPassword, changePasswordId: userId }))
+        }
+
+        if (statusForm.formState.dirtyFields.status) {
+            task.push(setStatusSubmit())
+        }
+
+        const [response] = await Promise.all(task)
+
+        return response
+    }
+
+
+
+
+
+
+
+
+    // useEffect(() => {
+    //     if (!userId) return
+    //     const storedUser = localStorage.getItem('user')
+    //     const operatorUser = storedUser ? JSON.parse(storedUser) : null
+    //     setOperatorUser(operatorUser)
+
+    //     const operatorManagePermission = operatorUser?.manage_level
+    //     if (operatorManagePermission === undefined) {
+    //         return
+    //     }
+    //     const roleDisable: boolean[] = ["20", "40", "50", "60", "80", "100"].map((item: string) => operatorManagePermission < Number(item))
+    //     setRoleMap(roleDisable)
+    //     async function GetAdminUserById() {
+    //         try {
+    //             const response = await getAdminUserById({ userId: userId })
+    //             const user = response.GetAdminUserById.getUserById
+
+    //             console.log('user : ', user)
+
+    //             myProfileForm.reset({ name: user?.name ?? "", email: user?.email ?? "" })
+    //             roleForm.reset({ roleId: Number(user?.role_id ?? 0) })
+    //             statusForm.reset({ status: user?.status ?? "" })
+
+    //         } catch (error) {
+    //             console.log(error)
+    //         }
+    //     }
+    //     GetAdminUserById()
+    // }, [])
 
 
     const password = changePasswordForm.watch('newPassword')
@@ -154,11 +185,11 @@ export default function editUser() {
         <div className='bg-gray-50 w-full h-full p-10 overflow-y-auto'>
             <div className="flex justify-between items-center">
                 <div className="flex flex-col justify-center items-start gap-2">
-                    <Breadcrumbs action="Edit" />
+                    <Breadcrumbs action="edit" />
                     <h1 className='text-3xl font-bold'>
-                        Edit Admin User
+                        Edit User
                     </h1>
-                    <h3 className="text-lg font-medium text-gray-500">Update user information、role and status</h3>
+                    <h3 className="text-lg font-medium text-gray-500">Update user's status 、 role and basic information</h3>
                 </div>
                 <button className="flex w-50 h-15 justify-center items-center gap-2 hover:bg-gray-300 hover:cursor-pointer border-2 border-gray-300 rounded-lg bg-white" >
                     <FaLongArrowAltLeft className="font-normal text-black" />
@@ -174,136 +205,148 @@ export default function editUser() {
                     </button>
                     <button className="w-95 h-15 flex justify-start items-center text-lg font-bold text-gray-400 gap-4 hover:bg-blue-200 hover:text-blue-500 rounded-xl p-4">
                         <FaRegFileAlt size={24} />
-                        Active Log
+                        Activity Logs
                     </button>
                 </div>
 
                 <div className="w-[75%] p-6 border-l-2 border-l-gray-200 flex flex-col gap-2">
                     <h1 className="text-2xl font-medium ">Basic Information</h1>
-                    <p className="text-gray-500 text-lg">Update the user's basic profile information</p>
+                    <p className="text-gray-500 text-lg">Update admin user basic information</p>
 
-                    {/* 基本資料 */}
-                    <form onSubmit={myProfileForm.handleSubmit(myProfileSubmit)} className="flex justify-between items-center">
+                    <div className="flex flex-col gap-4">
+                        {/* 基本資料 */}
+                        <form onSubmit={myProfileForm.handleSubmit(myProfileSubmit)} className="flex justify-between items-center">
 
-                        <div className="flex justify-start items-center gap-8">
-                            <div className="flex flex-col items-start gap-2">
-                                <label className="flex gap-1 text-lg font-black">
-                                    Name
-                                    <span className="text-sm text-red-600">*</span>
-                                </label>
+                            <div className="flex justify-start items-center gap-8">
+                                <div className="flex flex-col items-start gap-2">
+                                    <label className="flex gap-1 font-semibold text-black">
+                                        name
+                                        <span className="text-sm text-red-600">*</span>
+                                    </label>
 
-                                <input
-                                    {...myProfileForm.register('name')}
-                                    className="h-10 w-100 rounded-xl border-2 border-gray-500 px-3"
-                                    placeholder="Enter full name"
-                                    value={myProfileForm.watch('name')}
-
-                                />
-                            </div>
-
-                            <div className="flex flex-col items-start gap-2">
-                                <label className="flex gap-1 text-lg font-black">
-                                    Email
-                                    <span className="text-sm text-red-600">*</span>
-                                </label>
-
-                                <input
-                                    {...myProfileForm.register('email')}
-                                    className="h-10 w-100 rounded-xl border-2 border-gray-500 px-3"
-                                    placeholder="Enter email"
-                                    value={myProfileForm.watch('email')}
-                                />
-                            </div>
-                        </div>
-
-                        <div className="w-full flex justify-end mt-5">
-                            <button type="submit" className="w-30 h-9 border flex justify-center items-center border-gray-300 rounded-lg bg-blue-500 font-bold text-white gap-2 hover:bg-blue-700 disabled:bg-gray-400" disabled={isProfileSubmitDisable}>{myProfileForm.formState.isLoading ? "變更中..." : "儲存變更"}</button>
-                        </div>
-                    </form>
-
-                    {/* 變更密碼 */}
-                    <form onSubmit={changePasswordForm.handleSubmit(changePasswordSubmit)} className="flex justify-between items-center">
-                        <div className="flex justify-start items-center gap-8">
-                            <div className="flex flex-col items-start gap-2">
-                                <label className="flex gap-1 text-lg font-black">
-                                    Password
-                                    <span className="text-sm text-red-600">*</span>
-                                </label>
-
-                                <div className="w-100 flex items-center">
                                     <input
-                                        {...changePasswordForm.register('newPassword')}
-                                        className="h-10 w-full border-l-2 border-t-2 border-b-2 rounded-l-xl border-gray-500 px-3"
-                                        type={`${passwordDisable ? "password" : 'text'}`}
+                                        {...myProfileForm.register('name')}
+                                        className="h-12 w-100 rounded-lg border-2 border-gray-500 px-3"
+                                        placeholder="Enter full name"
+                                        value={myProfileForm.watch('name')}
 
                                     />
-                                    <button type="submit" className='h-10 w-[5%] border-t-2 border-r-2 border-b-2 rounded-r-xl  border-gray-500 pr-2 ' onClick={() => setPasswordDisable(!passwordDisable)}>
-                                        <FaRegEyeSlash />
-                                    </button>
                                 </div>
 
+                                <div className="flex flex-col items-start gap-2">
+                                    <label className="flex gap-1 font-semibold text-black">
+                                        email
+                                        <span className="text-sm text-red-600">*</span>
+                                    </label>
 
-                            </div>
-
-                            <div className="flex flex-col items-start gap-2">
-                                <label className="flex gap-1 text-lg font-black">
-                                    Comfirm Password
-                                    <span className="text-sm text-red-600">*</span>
-                                </label>
-                                <div className="w-100 flex items-center">
                                     <input
-                                        onChange={(e) => setConfirmPassword(e.target.value)}
-                                        className="h-10 w-full border-l-2 border-t-2 border-b-2 rounded-l-xl border-gray-500 px-3"
-                                        type={`${confirmPasswordDisable ? "password" : 'text'}`}
-                                        value={confirmPassword}
+                                        {...myProfileForm.register('email')}
+                                        className="h-12 w-100 rounded-lg border-2 border-gray-500 px-3"
+                                        placeholder="Enter email"
+                                        value={myProfileForm.watch('email')}
                                     />
-                                    <button className='h-10 w-[5%] border-t-2 border-r-2 border-b-2 rounded-r-xl  border-gray-500 pr-2' onClick={() => setConfirmPasswordDisable(!confirmPasswordDisable)}>
-                                        <FaRegEyeSlash />
-                                    </button>
                                 </div>
-                                <p className={`text-sm text-red-500 ${isPasswordMisMatch.length === 0 ? "hidden" : ""}`}>
-                                    {isPasswordMisMatch}
-                                </p>
-
                             </div>
+
+
+                        </form>
+
+                        {/* 變更密碼 */}
+                        <form onSubmit={changePasswordForm.handleSubmit(changePasswordSubmit)} className="flex justify-between items-center">
+                            <div className="flex justify-start items-center gap-8">
+                                <div className="flex flex-col items-start gap-2">
+                                    <label className="flex gap-1 font-semibold text-black">
+                                        password
+                                        <span className="text-sm text-red-600">*</span>
+                                    </label>
+
+                                    <div className="w-100 flex items-center">
+                                        <input
+                                            {...changePasswordForm.register('newPassword')}
+                                            className="h-12 w-full border-l-2 border-t-2 border-b-2 rounded-l-lg border-gray-500 px-3"
+                                            type={`${passwordDisable ? "password" : 'text'}`}
+
+                                        />
+                                        <button type="submit" className='h-12 w-[5%] border-t-2 border-r-2 border-b-2 rounded-r-lg  border-gray-500 pr-2 ' onClick={() => setPasswordDisable(!passwordDisable)}>
+                                            <FaRegEyeSlash />
+                                        </button>
+                                    </div>
+
+
+                                </div>
+
+                                <div className="flex flex-col items-start gap-2">
+                                    <label className="flex gap-1 font-semibold text-black">
+                                        Confirm password
+                                        <span className="text-sm text-red-600">*</span>
+                                    </label>
+                                    <div className="w-100 flex items-center">
+                                        <input
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                            className="h-12 w-full border-l-2 border-t-2 border-b-2 rounded-l-lg border-gray-500 px-3"
+                                            type={`${confirmPasswordDisable ? "password" : 'text'}`}
+                                            value={confirmPassword}
+                                        />
+                                        <button className='h-12 w-[5%] border-t-2 border-r-2 border-b-2 rounded-r-lg  border-gray-500 pr-2' onClick={() => setConfirmPasswordDisable(!confirmPasswordDisable)}>
+                                            <FaRegEyeSlash />
+                                        </button>
+                                    </div>
+                                    <p className={`text-sm text-red-500 ${isPasswordMisMatch.length === 0 ? "hidden" : ""}`}>
+                                        {isPasswordMisMatch}
+                                    </p>
+
+                                </div>
+                            </div>
+
+                        </form>
+
+                        <div className="flex justify-between items-end">
+
+                            <div className="flex justify-start items-center gap-8">
+                                <form onSubmit={roleForm.handleSubmit(setRoleSubmit)} className="flex justify-between items-center">
+                                    <SelectMenu
+                                        props={Roles}
+                                        value={role}
+                                        onSelectMenuValueChange={setRole}
+                                        label='user role'
+                                        selectMenuStyle={{ width: 400, borderColor: "#6a7282" }}
+
+                                    />
+
+                                </form>
+
+                                {/* 帳號狀態設定 */}
+                                <form onSubmit={statusForm.handleSubmit(setStatusSubmit)} className="flex justify-between items-center">
+                                    <SelectMenu
+                                        props={Status}
+                                        value={userStatus}
+                                        onSelectMenuValueChange={setUserStatus}
+                                        label='user status'
+                                        selectMenuStyle={{ width: 400, borderColor: "#6a7282" }}
+                                    />
+                                </form>
+                            </div>
+
+
                         </div>
-                        <div className="w-full flex justify-end mt-5">
-                            <button type="submit" disabled={isChangePasswordSubmitDisable} className="w-30 h-9 border flex justify-center items-center border-gray-300 rounded-lg bg-blue-500 font-bold text-white gap-2 hover:bg-blue-700 disabled:bg-gray-400">儲存變更</button>
-                        </div>
-                    </form>
-
-                    <div className="flex justify-between items-end">
-
-                        <div className="flex justify-start items-center gap-8">
-                            <form onSubmit={roleForm.handleSubmit(setRoleSubmit)} className="flex justify-between items-center">
-                                <SelectMenu
-                                    props={Roles}
-                                    value={role}
-                                    onSelectMenuValueChange={setRole}
-                                    label='帳戶角色'
-                                    selectMenuStyle={{ width: 400, borderColor: "#6a7282" }}
-
-                                />
-
-                            </form>
-
-                            {/* 帳號狀態設定 */}
-                            <form onSubmit={statusForm.handleSubmit(setStatusSubmit)} className="flex justify-between items-center">
-                                <SelectMenu
-                                    props={Status}
-                                    value={userStatus}
-                                    onSelectMenuValueChange={setUserStatus}
-                                    label='帳戶狀態'
-                                    selectMenuStyle={{ width: 400, borderColor: "#6a7282" }}
-                                />
-                            </form>
-                        </div>
-                        {/* 角色設定 */}
-
-                        <button disabled={isSetStatusSubmitDisable} type="submit" className="w-30 h-9 border flex justify-center items-center border-gray-300 rounded-lg bg-blue-500 font-bold text-white gap-2 hover:bg-blue-700 disabled:bg-gray-400">{statusForm.formState.isLoading ? "變更中..." : "儲存變更"}</button>
                     </div>
 
+
+
                 </div>
+
+                <div className="w-100 flex justify-center items-center border-l-3 border-l-gray-200 gap-4">
+
+                    <Link href={'/users'} className="w-30 h-15 flex justify-center items-center text-lg font-bold bg-white text-gray-400 gap-4 hover:bg-gray-400 hover:text-gray-600 border border-gray-300 rounded-xl p-4">
+                        <MdOutlineCancel />
+                        close
+                    </Link>
+                    <button onClick={() => onSubmit()} className="w-30 h-15 flex justify-center items-center text-lg font-bold bg-blue-300 text-blue-600 gap-4 hover:bg-blue-700 hover:text-white rounded-xl p-4">
+                        <FaRegSave />
+                        save
+                    </button>
+                </div>
+
             </div>
 
 

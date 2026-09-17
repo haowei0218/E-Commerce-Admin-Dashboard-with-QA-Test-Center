@@ -51,8 +51,8 @@ export function SearchBox({
 }) {
     return (
         <div className="grid gap-2">
-            <label className="w-20 font-normal text-black text-lg">
-                搜尋
+            <label className="w-20 font-semibold text-black text-lg">
+                Search
             </label>
             <div className='flex w-120'>
                 <input
