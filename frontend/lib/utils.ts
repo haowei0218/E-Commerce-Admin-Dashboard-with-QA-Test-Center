@@ -36,3 +36,7 @@ export function exportCSV(data: any, dataFields: string[], methodName: string) {
   URL.revokeObjectURL(url);
   toast.success('下載報表成功')
 }
+
+export function randomKey() {
+  return String(Math.floor(Math.random() * 999999))
+}

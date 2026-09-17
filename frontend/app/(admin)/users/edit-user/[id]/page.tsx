@@ -53,6 +53,13 @@ export default function editUser() {
     })
     const adminUser = adminUserByIdQuery.data?.GetAdminUserById.getUserById
 
+    useEffect(() => {
+        if (adminUser) {
+            setUserStatus(adminUser.status)
+            setRole(String(adminUser.role_id))
+        }
+    }, [adminUser])
+
     type userInformation = z.infer<typeof userInfo>
     type myProfile = Omit<userInformation, 'roleId' | "passwordHash" | "status"> & { updateMyProfileId: string }
     type changePassword = { changePasswordId: string, newPassword: string }
@@ -112,80 +119,45 @@ export default function editUser() {
     }
 
     async function onSubmit() {
-        const task = [];
+        try {
+            const task = [];
 
-        if (myProfileForm.formState.dirtyFields.email || myProfileForm.formState.dirtyFields.name) {
-            task.push(myProfileSubmit(myProfileForm.getValues()))
+            if (myProfileForm.formState.dirtyFields.email || myProfileForm.formState.dirtyFields.name) {
+                task.push(myProfileSubmit(myProfileForm.getValues()))
+            }
+
+            if (roleForm.formState.dirtyFields.roleId) {
+                task.push(setRoleSubmit())
+            }
+
+            if (changePasswordForm.formState.dirtyFields.newPassword) {
+                task.push(changePasswordSubmit({ newPassword: changePasswordForm.getValues().newPassword, changePasswordId: userId }))
+            }
+
+            if (statusForm.formState.dirtyFields.status) {
+                task.push(setStatusSubmit())
+            }
+
+            const [response] = await Promise.all(task)
+
+            return response
+        } catch (error) {
+            toast.error('update admin user information failed ')
         }
 
-        if (roleForm.formState.dirtyFields.roleId) {
-            task.push(setRoleSubmit())
-        }
-
-        if (changePasswordForm.formState.dirtyFields.newPassword) {
-            task.push(changePasswordSubmit({ newPassword: changePasswordForm.getValues().newPassword, changePasswordId: userId }))
-        }
-
-        if (statusForm.formState.dirtyFields.status) {
-            task.push(setStatusSubmit())
-        }
-
-        const [response] = await Promise.all(task)
-
-        return response
     }
 
-
-
-
-
-
-
-
-    // useEffect(() => {
-    //     if (!userId) return
-    //     const storedUser = localStorage.getItem('user')
-    //     const operatorUser = storedUser ? JSON.parse(storedUser) : null
-    //     setOperatorUser(operatorUser)
-
-    //     const operatorManagePermission = operatorUser?.manage_level
-    //     if (operatorManagePermission === undefined) {
-    //         return
-    //     }
-    //     const roleDisable: boolean[] = ["20", "40", "50", "60", "80", "100"].map((item: string) => operatorManagePermission < Number(item))
-    //     setRoleMap(roleDisable)
-    //     async function GetAdminUserById() {
-    //         try {
-    //             const response = await getAdminUserById({ userId: userId })
-    //             const user = response.GetAdminUserById.getUserById
-
-    //             console.log('user : ', user)
-
-    //             myProfileForm.reset({ name: user?.name ?? "", email: user?.email ?? "" })
-    //             roleForm.reset({ roleId: Number(user?.role_id ?? 0) })
-    //             statusForm.reset({ status: user?.status ?? "" })
-
-    //         } catch (error) {
-    //             console.log(error)
-    //         }
-    //     }
-    //     GetAdminUserById()
-    // }, [])
 
 
     const password = changePasswordForm.watch('newPassword')
     const isPasswordMisMatch = confirmPassword.length !== 0 && password !== confirmPassword ? "密碼不一致 請重新輸入" : ""
 
-    const isProfileSubmitDisable = myProfileForm.formState.isLoading || myProfileForm.watch('email')?.length === 0 || myProfileForm.watch('name')?.length === 0
-    const isChangePasswordSubmitDisable = userId !== operatorUser?.id && operatorUser?.role_id !== 1
-    const isSetRoleSubmitDisable = roleForm.formState.isLoading || operatorUser?.role_id !== 1 || (operatorUser?.role_id === 1 && operatorUser?.id === userId)
-    const isSetStatusSubmitDisable = statusForm.formState.isLoading || operatorUser?.role_id !== 1 || operatorUser.id === userId
 
     return (
         <div className='bg-gray-50 w-full h-full p-10 overflow-y-auto'>
             <div className="flex justify-between items-center">
                 <div className="flex flex-col justify-center items-start gap-2">
-                    <Breadcrumbs action="edit" />
+                    <Breadcrumbs action="Edit User" />
                     <h1 className='text-3xl font-bold'>
                         Edit User
                     </h1>
@@ -346,12 +318,7 @@ export default function editUser() {
                         save
                     </button>
                 </div>
-
             </div>
-
-
-
-
         </div>
     )
 }

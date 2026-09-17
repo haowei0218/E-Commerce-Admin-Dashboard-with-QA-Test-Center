@@ -63,12 +63,12 @@ export default function Orders() {
         {/* filter*/}
         <div className='m-auto flex justify-between items-end gap-2 mt-15 mb-10'>
           <SearchBox setKeyWords={setKeywords} keywords={keywords} onHandleSearch={handleSearch} />
-          <SelectMenu props={orderStatusList} value={orderStatus} onSelectMenuValueChange={setOrderStatus} label="訂單狀態" />
+          <SelectMenu props={orderStatusList} value={orderStatus} onSelectMenuValueChange={setOrderStatus} label="Order Status" />
           <SelectMenu
             props={paymentStatusList}
             value={paymentStatus}
             onSelectMenuValueChange={setPaymentStatus}
-            label="付款狀態"
+            label="Payment Status"
           />
           <FilterButton clearFilterFn={() => console.log('')} FilterFn={() => console.log('')} />
         </div>
