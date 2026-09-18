@@ -6,16 +6,16 @@ import {
     BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb'
 import { IoMdArrowDropright } from "react-icons/io";
-export default function Breadcrumbs({ action }: { action: string }) {
+export default function Breadcrumbs({ action, route }: { action: string, route: string }) {
     return (
         <Breadcrumb>
             <BreadcrumbList className="text-lg font-medium">
                 <BreadcrumbItem>
                     <BreadcrumbLink
-                        href="/users"
+                        href={`/${route}`}
                         className="text-gray-500 font-medium"
                     >
-                        Users
+                        {route}
                     </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="[&>svg]:size-6">

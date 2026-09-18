@@ -157,7 +157,7 @@ export default function editUser() {
         <div className='bg-gray-50 w-full h-full p-10 overflow-y-auto'>
             <div className="flex justify-between items-center">
                 <div className="flex flex-col justify-center items-start gap-2">
-                    <Breadcrumbs action="Edit User" />
+                    <Breadcrumbs action="Edit User" route="users"/>
                     <h1 className='text-3xl font-bold'>
                         Edit User
                     </h1>
@@ -298,13 +298,8 @@ export default function editUser() {
                                     />
                                 </form>
                             </div>
-
-
                         </div>
                     </div>
-
-
-
                 </div>
 
                 <div className="w-100 flex justify-center items-center border-l-3 border-l-gray-200 gap-4">
