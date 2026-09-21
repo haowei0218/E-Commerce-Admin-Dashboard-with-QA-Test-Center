@@ -1,7 +1,8 @@
+import { create } from "node:domain";
 import { ServerContext } from "../../type/admin-users/adminUsers.base..js";
-import { orderPayload, updateOrderRecipientPayload, updateOrderStatusPayload, updatePaymentStatusPayload, updateShippingStatusPayload } from "../../type/orders/orders.base.js";
+import { orderPayload, updateOrderNotePayload, updateOrderRecipientPayload, updateOrderStatusPayload, updatePaymentStatusPayload, updateShippingStatusPayload } from "../../type/orders/orders.base.js";
 import { createActivityLog } from "../../utils/activity-log.js";
-import { createOrder, updateOrderRecipient, updateOrderStatus, updatePaymentStatus, updateShippingStatus } from "../../utils/orders.js";
+import { createOrder, updateOrderRecipient, updateOrderStatus, updatePaymentStatus, updateShippingStatus, updateOrderNote } from "../../utils/orders.js";
 
 
 export const OrdersMutationResolvers = {
@@ -32,6 +33,10 @@ export const OrdersMutationResolvers = {
             if (result) await createActivityLog({ user_id: context.user.id, action: 'UPDATE', description: `使用者${context.user.name} 更改收件地址為${recipient} 訂單編號:${input.id}`, module: 'orders' }, context)
             return result
         },
-        updateOrderNote: async () => { }
+        updateOrderNote: async (_parent: unknown, { input }: { input: updateOrderNotePayload }, context: ServerContext) => {
+            const result = await updateOrderNote(input, context)
+            if (result) await createActivityLog({ user_id: context.user.id, action: 'UPDATE', description: `使用者${context.user.name} 更改訂單備註 訂單編號:${input.id}`, module: 'orders' }, context)
+            return result
+        }
     }
 }

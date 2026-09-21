@@ -11,6 +11,7 @@ export type orderPayload = {
     shipping_district: string
     shipping_address: string
     shipping_zip_code: string
+    shipping_fee?: number
     note: string | null
     payment_method: paymentMethod
     order_items: orderItems[]
@@ -35,10 +36,10 @@ export type order = {
     cancel_reason: string | null
     created_at: string
     updated_at: string
-    total_amount:number
-    order_status:string
-    payment_status:string
-    shipping_status:string
+    total_amount: number
+    order_status: string
+    payment_status: string
+    shipping_status: string
 } & orderPayload
 
 export type orderResponse = {
@@ -48,7 +49,7 @@ export type orderResponse = {
 export type updateOrderStatusPayload = {
     id: string
     order_status: orderStatus
-    cancel_reason: string | null
+    cancel_reason?: string | null
 }
 
 export type updateOrderStatusResponse = {

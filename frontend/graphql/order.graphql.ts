@@ -127,5 +127,90 @@ query GetOrderById($orderId: ID!) {
     }
   }
 }
+`
 
+export const UPDATE_ORDER_STATUS = /* GraphQL */`
+mutation UpdateOrderStatus($input: updateOrderStatusInput) {
+  updateOrderStatus(input: $input) {
+    updateDetails {
+      id
+      order_number
+      customer_id
+      shipping_fee
+      total_amount
+      order_status
+      payment_status
+      shipping_status
+      recipient_name
+      recipient_phone
+      shipping_city
+      shipping_district
+      shipping_address
+      shipping_zip_code
+      note
+      paid_at
+      completed_at
+      cancelled_at
+      cancel_reason
+      created_at
+      updated_at
+      payment_method
+      order_items {
+        id
+        order_id
+        product_id
+        sku
+        product_name
+        product_image_url
+        purchase_quantity
+        price
+        total_amount
+        created_at
+      }
+    }
+  }
+}
+`
+
+export const UPDATE_ORDER_NOTE = /* GraphQL */`
+mutation UpdateOrderNote($input: updateOrderNoteInput) {
+  updateOrderNote(input: $input) {
+    updateOrderNoteDetails {
+      id
+      order_number
+      customer_id
+      shipping_fee
+      total_amount
+      order_status
+      payment_status
+      shipping_status
+      recipient_name
+      recipient_phone
+      shipping_city
+      shipping_district
+      shipping_address
+      shipping_zip_code
+      note
+      paid_at
+      completed_at
+      cancelled_at
+      cancel_reason
+      created_at
+      updated_at
+      payment_method
+      order_items {
+        id
+        order_id
+        product_id
+        sku
+        product_name
+        product_image_url
+        purchase_quantity
+        price
+        total_amount
+        created_at
+      }
+    }
+  }
+}
 `

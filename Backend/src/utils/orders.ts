@@ -255,7 +255,7 @@ export async function updateOrderStatus(payload: updateOrderStatusPayload, conte
       updated_at = NOW()
     WHERE id = $1
     RETURNING *
-  `, [payload.id, payload.order_status, payload.cancel_reason ?? null])
+  `, [payload.id, payload.order_status, payload.cancel_reason])
     const order_update_details = order_update_response.rows[0]
     if (!order_update_details) {
         throwGraphqlError("Order not found", "ORDER_NOT_FOUND");
