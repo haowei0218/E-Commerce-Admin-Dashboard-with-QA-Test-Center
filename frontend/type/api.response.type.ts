@@ -1,5 +1,6 @@
 import { UserLoginResponse, GetUsersResponse, AdminUserLogoutResponse, GetAdminUserByPropertiesResponse, CreateAdminUserResponse, GetAdminUserByIdResponse, UpdateMyProfileResponse, ChangePasswordResponse, SetAdminUserRoleResponse, SetAdminUserActiveResponse, SetAdminUserInactiveResponse } from './admin-users/adminUser.type'
-import { getAllOrdersResponse, getOrdersResponse, getOrderByIdResponse, updateOrderStatusResponse } from './orders/base.type'
+import { orderEventResponse } from './order-event/base.type'
+import { getAllOrdersResponse, getOrdersResponse, getOrderByIdResponse, updateOrderStatusResponse, updatePaymentStatusResponse, updateShippingStatusResponse, updateOrderNoteResponse } from './orders/base.type'
 
 export type Response = {
   UserLogin: UserLoginResponse
@@ -17,4 +18,8 @@ export type Response = {
   GetOrders: getOrdersResponse
   GetOrderById: getOrderByIdResponse
   UpdateOrderStatus: updateOrderStatusResponse
+  UpdatePaymentStatus: updatePaymentStatusResponse
+  UpdateShippingStatus: updateShippingStatusResponse
+  UpdateOrderNote: updateOrderNoteResponse
+  GetOrderEvent: orderEventResponse
 }

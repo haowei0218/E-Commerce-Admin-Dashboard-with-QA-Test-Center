@@ -1,5 +1,5 @@
 import { adminUserProfile, CreateAdminUserPayload, GetAdminUserByPropertiesPayload, UserLoginPayload } from './admin-users/adminUser.type'
-import { orderFilterPayload, updateOrderStatusPayload } from './orders/base.type'
+import { orderFilterPayload, updateOrderNotePayload, updateOrderStatusPayload, updatePaymentStatusPayload, updateShippingStatusPayload } from './orders/base.type'
 
 export type APIPayload = {
   UserLogin: UserLoginPayload
@@ -17,4 +17,8 @@ export type APIPayload = {
   GetOrders: { input: orderFilterPayload }
   GetOrderById: { orderId: string }
   UpdateOrderStatus: { input: updateOrderStatusPayload }
+  UpdatePaymentStatus: { input: updatePaymentStatusPayload }
+  UpdateShippingStatus: { input: updateShippingStatusPayload }
+  UpdateOrderNote: { input: updateOrderNotePayload }
+  GetOrderEvent: { orderId: string }
 }

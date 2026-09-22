@@ -26,6 +26,7 @@ export const errorMap: Record<errorCode, string> = {
   INVALID_INPUT_DATA: "Invalid input data",
   EMAIL_FORMAT_INVALID: "Email format is invalid",
   ORDER_NOT_FOUND:"Order not found"
+  
 };
 
 

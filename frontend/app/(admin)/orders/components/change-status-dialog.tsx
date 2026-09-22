@@ -64,12 +64,14 @@ export function ChangeStatusDialog<T extends statusType, K extends keyof ApiResp
                     );
                 }}
             >
-                <SelectTrigger className={`w-100 !h-10 flex justify-center items-center bg-white ${color} hover:text-white font-semibold rounded-xl`}>
+                <SelectTrigger className={`w-100 !h-10 flex justify-center items-center bg-white ${color} hover:text-white font-semibold rounded-xl [&>svg:last-child]:hidden pr-4` }>
                     <FaEdit />
-                    <span>Edit Order Status</span>
+                    <div className="w-25">
+                        <span>Edit {type.toUpperCase()} Status</span>
+                    </div>
                 </SelectTrigger>
 
-                <SelectContent className="bg-white">
+                <SelectContent className="bg-white" side="bottom">
                     {statusList.map(
                         (status: orderStatus | paymentStatus | shippingStatus) => (
                             <SelectItem

@@ -1,35 +1,23 @@
 'use client'
 import { useParams } from "next/navigation";
-import PageTitle from "@/components/ui/PageTitle";
 import Link from "next/link";
-import { FaLongArrowAltDown, FaLongArrowAltLeft } from "react-icons/fa";
-import { useEffect, useState } from "react";
-import { order, orderItems, orderStatus, paymentStatus, shippingStatus } from "@/type/orders/base.type";
-import { getOrderById, updateOrderStatus } from "@/lib/orders.api";
+import { FaLongArrowAltLeft } from "react-icons/fa";
+import { useState } from "react";
+import { orderItems, orderStatus, paymentStatus, shippingStatus } from "@/type/orders/base.type";
+import { getOrderById, updateOrderNote, updateOrderStatus, updatePaymentStatus, updateShippingStatus } from "@/lib/orders.api";
 import { formatDate } from "@/lib/utils";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { OrderItemCard } from "../../components/order-item-card";
 import { randomKey } from "@/lib/utils";
 import { LuMapPin } from "react-icons/lu";
 import { IoWalletOutline } from "react-icons/io5";
 import { FaCheckCircle, FaEdit } from "react-icons/fa";
 import Breadcrumbs from "@/app/(admin)/users/components/breadcrumbs";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-} from "@/components/ui/dialog"
-import { Button } from "@base-ui/react";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select'
-import { CiCircleQuestion } from "react-icons/ci";
 import { toast } from "sonner";
 import { ChangeStatusDialog } from "../../components/change-status-dialog";
+import { CiEdit } from "react-icons/ci";
+import { LuNotebook } from "react-icons/lu";
+import { getOrderEvent } from "@/lib/order-event.api";
 
 
 
@@ -70,8 +58,11 @@ export default function OrderDetails() {
     const [shippingStatusOpen, setShippingStatusOpen] = useState<boolean>(false)
     const [shipping_status, setShippingStatus] = useState<shippingStatus>('pending')
 
+    const [editNoteOpen, setEditNoteOpen] = useState<boolean>(false)
+    const [note, setNote] = useState<string>('')
+
     const getOrderByIdQuery = useQuery({
-        queryKey: ['order-by-id'],
+        queryKey: ["order-by-id", orderId],
         queryFn: () => getOrderById(orderId),
         enabled: Boolean(orderId)
     })
@@ -94,28 +85,69 @@ export default function OrderDetails() {
     }
     const orderTotalAmount = (orderItems.map((item) => Number(item.purchase_quantity) * item.price).reduce((a, b) => a + b, 0))
     const orderStatus = orderDetails?.order_status ?? 'pending'
+    const queryClient = useQueryClient()
 
 
-    // order time line = create + process(order status) + shipped + delivered(shipping status)
-    const orderTimeLine = {
-        create_at: orderDetails?.created_at,
-        process_at: orderDetails?.created_at,
-        shipped_at: "",
-        delivered_at: ""
-    }
-    const orderSummary = {
-        order_status: orderDetails?.order_status ?? 'pending'
-    }
+    const orderEventQuery = useQuery({
+        queryKey: ['order-events'],
+        queryFn: () => getOrderEvent(orderId),
+        enabled: Boolean(orderId)
+    })
+
+    const orderEvents = orderEventQuery.data?.getOrderEvent.result
+    console.log('order events : ', orderEvents)
 
     const updateOrderStatusMutation = useMutation({
         mutationFn: () => updateOrderStatus({ id: orderId, order_status: order_status, cancel_reason: "admin cancel this order" }),
         onSuccess: () => {
             toast.success('變更訂單狀態成功')
             setOpen(false)
+            getOrderByIdQuery.refetch()
+            queryClient.invalidateQueries({
+                queryKey: ["order-by-id", orderId],
+            })
+        },
+
+    })
+
+    const updatePaymentStatusMutation = useMutation({
+        mutationFn: () => updatePaymentStatus({ id: orderId, payment_status: payment_status }),
+        onSuccess: () => {
+            toast.success('變更訂單付款狀態成功')
+            setPaymentStatusOpen(false)
+            queryClient.invalidateQueries({
+                queryKey: ["order-by-id", orderId],
+            })
+        }
+    })
+
+    const updateShippingStatusMutation = useMutation({
+        mutationFn: () => updateShippingStatus({ id: orderId, shipping_status: shipping_status }),
+        onSuccess: () => {
+            toast.success('變更訂單物流狀態成功')
+            setShippingStatusOpen(false)
+            queryClient.invalidateQueries({
+                queryKey: ["order-by-id", orderId],
+            })
+        }
+    })
+
+    const updateOrderNoteMutation = useMutation({
+        mutationFn: () => updateOrderNote({ id: orderId, note: note }),
+        onSuccess: () => {
+            toast.success('變更訂單備註成功')
+            setEditNoteOpen(false)
+            queryClient.invalidateQueries({
+                queryKey: ["order-by-id", orderId],
+            })
+        },
+        onError: () => {
+            toast.error("變更訂單備註失敗")
         },
     })
 
-    console.log('update order status payload : ', { id: orderId, order_status: order_status, cancel_reason: "admin cancel this order" })
+
+
 
     return (
         <div className='bg-gray-50 w-full h-full p-10 overflow-y-auto'>
@@ -212,66 +244,7 @@ export default function OrderDetails() {
                         </div>
                     </div>
 
-                    {/* Order TimeLine*/}
-                    <div className="flex flex-col gap-4 mt-5 bg-white w-210 border border-gray-200 rounded-lg p-4">
-                        <h1 className="font-extrabold text-lg">Order TimeLine</h1>
-                        <div className="flex gap-4 justify-start items-start">
 
-                            <div className="flex flex-col">
-
-                                <div className="flex items-center gap-4 w-50">
-                                    <FaCheckCircle className="text-green-600" size={30} />
-                                    <div className="flex flex-col justify-start">
-                                        <h2 className="font-bold text-[16px]">Order create</h2>
-                                        <span className="text-sm">{formatDate(orderDetails?.created_at ?? "")}</span>
-                                    </div>
-                                </div>
-
-                                <div className="grid">
-                                    <span className="font-bold text-black text-lg pl-3">|</span>
-                                </div>
-
-                                <div className="flex items-center gap-4 w-50">
-                                    <FaCheckCircle className="text-green-600" size={30} />
-                                    <div className="flex flex-col justify-start">
-                                        <h2 className="font-bold text-[16px]">Processing</h2>
-
-                                        {/* 更新成準備中的時候 */}
-                                        <span className="text-sm">{formatDate(orderDetails?.created_at ?? "")}</span>
-                                    </div>
-                                </div>
-
-                                <div className="grid">
-                                    <span className="font-bold text-black text-lg pl-3">|</span>
-                                </div>
-
-
-                                <div className="flex items-center gap-4 w-50">
-                                    <FaCheckCircle className="text-green-600" size={30} />
-                                    <div className="flex flex-col justify-start">
-                                        <h2 className="font-bold text-[16px]">Shipping</h2>
-
-                                        {/* 出貨中 */}
-                                        <span className="text-sm">{formatDate(orderDetails?.created_at ?? "")}</span>
-                                    </div>
-                                </div>
-
-                                <div className="grid">
-                                    <span className="font-bold text-black text-lg pl-3">|</span>
-                                </div>
-
-                                <div className="flex items-center gap-4 w-50">
-                                    <FaCheckCircle className="text-green-600" size={30} />
-                                    <div className="flex flex-col justify-start">
-                                        <h2 className="font-bold text-[16px]">Delivered</h2>
-
-                                        {/* 送達 */}
-                                        <span className="text-sm">{formatDate(orderDetails?.created_at ?? "")}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </section>
 
                 <section>
@@ -279,68 +252,10 @@ export default function OrderDetails() {
                     <div className={`flex flex-col gap-4 mt-10 bg-white w-full rounded-lg p-5 border border-gray-200`}>
                         <h1 className="font-extrabold text-lg">Quick Action</h1>
                         <div className="py-5 gap-3 flex flex-col m-auto">
-                            <ChangeStatusDialog openControl={open} openController={setOpen} status={order_status} statusController={setOrderStatus} statusList={['pending', 'processing', 'completed', 'cancelled']} type="order" changeStatusMutation={updateOrderStatusMutation} color="text-blue-500 border-blue-500 border"/>
+                            <ChangeStatusDialog openControl={open} openController={setOpen} status={order_status} statusController={setOrderStatus} statusList={['pending', 'processing', 'completed', 'cancelled']} type="order" changeStatusMutation={updateOrderStatusMutation} color="text-blue-500 border-blue-500 border hover:bg-blue-500" />
+                            <ChangeStatusDialog openControl={paymentStatusOpen} openController={setPaymentStatusOpen} status={payment_status} statusController={setPaymentStatus} statusList={['unpaid', 'paid', 'failed', 'refunded']} type="payment" changeStatusMutation={updatePaymentStatusMutation} color="text-green-500 border-green-500 border hover:bg-green-500" />
+                            <ChangeStatusDialog openControl={shippingStatusOpen} openController={setShippingStatusOpen} status={shipping_status} statusController={setShippingStatus} statusList={['pending', 'preparing', 'shipped', 'delivered', 'returned']} type="shipping" changeStatusMutation={updateShippingStatusMutation} color="text-yellow-500 border-yellow-500 border hover:bg-yellow-500" />
                         </div>
-
-                        <div className="py-5 gap-3 flex flex-col m-auto">
-                            <Dialog open={open} onOpenChange={setOpen}>
-                                <Select onValueChange={(value) => {
-                                    setOpen(true)
-                                    setOrderStatus(value as orderStatus)
-                                }}>
-                                    <SelectTrigger className="w-100 !h-10 flex justify-center items-center bg-white text-blue-500 hover:bg-blue-500 hover:text-white font-semibold rounded-xl border border-blue-500">
-                                        <FaEdit />
-                                        <span>Edit Order Status</span>
-                                    </SelectTrigger>
-
-                                    <SelectContent className="bg-white">
-                                        {["pending", "processing", "completed", "cancelled"].map((status) => (
-                                            <SelectItem
-                                                key={status}
-                                                value={status}
-                                                className="cursor-pointer capitalize hover:bg-gray-100"
-                                            >
-                                                {status}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-
-
-
-                                <DialogContent className="w-120 max-w-[600px] sm:max-w-[600px] h-80 bg-white ">
-                                    <DialogDescription className="flex flex-col items-center mt-5 gap-5">
-                                        <CiCircleQuestion size={80} className="text-gray-400" />
-                                        <span className="text-gray-800 text-2xl">Confirm status change</span>
-                                        <span className="font-medium text-gray-900 text-lg">
-                                            change the order status to <strong>{order_status}</strong>?
-                                        </span>
-
-                                    </DialogDescription>
-                                    <div className="flex justify-center gap-4 items-center">
-                                        <Button
-                                            onClick={() => setOpen(false)}
-                                            className='w-40 h-10 bg-red-500  hover:bg-red-600 text-white font-bold rounded-xl'
-                                        >
-                                            Cancel
-                                        </Button>
-
-                                        <Button
-                                            onClick={async () => {
-                                                updateOrderStatusMutation.mutate()
-
-                                            }}
-                                            className='w-40 h-10 bg-blue-500  hover:bg-blue-600 text-white font-bold rounded-xl'
-                                        >
-                                            {updateOrderStatusMutation.isPending ? "updating..." : "Confirm"}
-                                        </Button>
-                                    </div>
-
-
-                                </DialogContent>
-                            </Dialog>
-                        </div>
-
                     </div>
                     {/* order summary */}
                     <div className={`flex flex-col gap-4 mt-5 bg-white w-120 border border-gray-200 rounded-lg p-5`}>
@@ -396,13 +311,53 @@ export default function OrderDetails() {
                         </div>
                     </div>
 
+                    <div className="flex flex-col gap-4 mt-5 bg-white w-120 border border-gray-200 rounded-lg p-5 ">
+                        <div className="flex justify-between items-center">
+                            <div className="flex items-center gap-2">
+                                <LuNotebook size={30} />
+                                <h1 className="font-extrabold text-lg">Edit Note</h1>
+                            </div>
+                            {editNoteOpen ? <div className="flex items-center gap-2">
+                                <button className="flex w-20 h-6 justify-center items-center border-2 border-gray-500 text-gray-600 hover:bg-gray-500 hover:text-white rounded-lg" onClick={() => setEditNoteOpen(!editNoteOpen)}>cancel</button>
+                                <button className="flex w-20 h-6 justify-center items-center border-2 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white rounded-lg" onClick={() => updateOrderNoteMutation.mutate()}> {updateOrderNoteMutation.isPending ? "saving..." : "save"}</button>
+                            </div>
+                                : <CiEdit size={30} className="hover:cursor-pointer hover:text-gray-500" onClick={() => setEditNoteOpen(!editNoteOpen)} />}
+                        </div>
 
-
+                        {editNoteOpen ?
+                            <div className="grid gap-2">
+                                <textarea onChange={(e) => setNote(e.target.value)} className="w-110 h-40 p-2 border-2 border-gray-300 rounded-xl" placeholder="edit note..." maxLength={250} />
+                                <div className="flex justify-end">
+                                    <p>{note.length} / 250</p>
+                                </div>
+                            </div> :
+                            <span className="m-auto font-normal text-sm">{orderDetails?.note}</span>}
+                    </div>
                 </section>
 
+                <section>
+                    {/* Order TimeLine*/}
+                    <div className="flex flex-col gap-4 mt-10 bg-white w-100 border border-gray-200 rounded-lg p-4">
+                        <h1 className="font-extrabold text-lg">Order TimeLine</h1>
+                        <div className="flex gap-4 justify-start items-start">
+
+                            <div className="flex flex-col">
+                                {orderEvents?.map((events, index) => {
+                                    return (
+                                        <div className="flex items-center gap-4 w-50">
+                                            <FaCheckCircle className="text-green-600" size={30} />
+                                            <div className="flex flex-col justify-start">
+                                                <h2 className="font-bold text-[16px]">{events.event_type.toLowerCase()}</h2>
+                                                <span className="text-sm">{formatDate(events?.create_at ?? "")}</span>
+                                            </div>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
-
-
         </div>
     )
 
