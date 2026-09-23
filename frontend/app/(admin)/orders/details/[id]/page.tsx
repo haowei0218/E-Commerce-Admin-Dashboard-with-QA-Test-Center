@@ -18,6 +18,8 @@ import { ChangeStatusDialog } from "../../components/change-status-dialog";
 import { CiEdit } from "react-icons/ci";
 import { LuNotebook } from "react-icons/lu";
 import { getOrderEvent } from "@/lib/order-event.api";
+import { Fragment } from "react";
+import OrderDetailsLoading from "../../components/loading";
 
 
 
@@ -89,13 +91,16 @@ export default function OrderDetails() {
 
 
     const orderEventQuery = useQuery({
-        queryKey: ['order-events'],
+        queryKey: ['order-events', orderId],
         queryFn: () => getOrderEvent(orderId),
         enabled: Boolean(orderId)
     })
 
     const orderEvents = orderEventQuery.data?.getOrderEvent.result
     console.log('order events : ', orderEvents)
+
+
+    const getEventTitle = (event_type: string) => { return event_type.toLowerCase().split("_").filter((value, index) => index % 2 === 0).join(" ") }
 
     const updateOrderStatusMutation = useMutation({
         mutationFn: () => updateOrderStatus({ id: orderId, order_status: order_status, cancel_reason: "admin cancel this order" }),
@@ -146,9 +151,6 @@ export default function OrderDetails() {
         },
     })
 
-
-
-
     return (
         <div className='bg-gray-50 w-full h-full p-10 overflow-y-auto'>
             <div className="flex justify-between items-center">
@@ -177,9 +179,7 @@ export default function OrderDetails() {
                 </button>
             </div>
 
-
-            <div className="flex items-start gap-4">
-
+            {getOrderByIdQuery.isLoading ? <OrderDetailsLoading /> : <div className="flex items-start gap-4">
                 <section>
                     {/* order items */}
                     <div className={`flex flex-col gap-4 mt-10 bg-white w-210 border border-gray-200 rounded-lg p-4`}>
@@ -343,21 +343,36 @@ export default function OrderDetails() {
 
                             <div className="flex flex-col">
                                 {orderEvents?.map((events, index) => {
-                                    return (
-                                        <div className="flex items-center gap-4 w-50">
+                                    return index === orderEvents.length - 1 ? (
+                                        <div key={index} className="flex items-center gap-4 w-100">
                                             <FaCheckCircle className="text-green-600" size={30} />
                                             <div className="flex flex-col justify-start">
-                                                <h2 className="font-bold text-[16px]">{events.event_type.toLowerCase()}</h2>
-                                                <span className="text-sm">{formatDate(events?.create_at ?? "")}</span>
+                                                <h2 className="font-bold text-[16px]">{getEventTitle(events.event_type)}</h2>
+                                                <span className="text-sm">{formatDate(events?.created_at ?? "")}</span>
                                             </div>
-                                        </div>
+                                        </div>) : (
+                                        <Fragment key={index}>
+                                            <div className="flex items-center gap-4 w-100">
+                                                <FaCheckCircle className="text-green-600" size={30} />
+                                                <div className="flex flex-col justify-start">
+                                                    <h2 className="font-bold text-[16px]">{getEventTitle(events.event_type)}</h2>
+                                                    <span className="text-sm">{formatDate(events?.created_at ?? "")}</span>
+                                                </div>
+                                            </div>
+
+                                            <div className="pl-3">
+                                                <p className="font-bold text-xl">|</p>
+                                            </div>
+                                        </Fragment>
+
                                     )
                                 })}
                             </div>
                         </div>
                     </div>
                 </section>
-            </div>
+            </div>}
+
         </div>
     )
 

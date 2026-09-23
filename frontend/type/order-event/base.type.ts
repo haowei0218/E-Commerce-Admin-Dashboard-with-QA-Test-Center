@@ -8,7 +8,7 @@ export type orderEvent<> = {
     next_status: string | null
     description: string
     operator_id: string
-    create_at: string
+    created_at: string
 }
 
 export type orderEventResponse = {
