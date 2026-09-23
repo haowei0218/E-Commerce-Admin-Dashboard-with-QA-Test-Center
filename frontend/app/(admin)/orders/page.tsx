@@ -52,7 +52,6 @@ export default function Orders() {
             children={
               <div className='flex gap-2'>
                 <ExportButton exportFn={() => console.log('')} />
-                <CreateLink link='/orders/add-order' buttonName="Create Order" />
               </div>
             }
             mainTitle='Orders'
