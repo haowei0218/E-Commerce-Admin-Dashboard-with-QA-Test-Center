@@ -2,6 +2,7 @@ import { clsx, type ClassValue } from 'clsx'
 import { Parser } from '@json2csv/plainjs'
 import { twMerge } from 'tailwind-merge'
 import { toast } from 'sonner'
+import { supabaseClient } from './supabaseClient'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -40,3 +41,4 @@ export function exportCSV(data: any, dataFields: string[], methodName: string) {
 export function randomKey() {
   return String(Math.floor(Math.random() * 999999))
 }
+

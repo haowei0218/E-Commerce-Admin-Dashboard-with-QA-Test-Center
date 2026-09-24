@@ -9,6 +9,9 @@ import { mergeOrderTypeSchema } from './orders/orders.type.js'
 import { OrdersQuery } from './orders/orders.query.js'
 import { mergeOrderEventSchema } from './order-event/orderEvent.type.js'
 import { orderEventQuery } from './order-event/orderEvent.query.js'
+import { mergeProductTypeDefs } from './products/product.type.js'
+import { productQuery } from './products/product.query.js'
+import { productMutation } from './products/product.mutation.js'
 
-export const mergeSchema = mergeTypeDefs([mergeUserTypeDefs, UserQueryDefs, UsersMutationDefs, ActivityLogQueryDefs, mergeActivityLogsTypedefs, OrdersMutation, mergeOrderTypeSchema, OrdersQuery, mergeOrderEventSchema, orderEventQuery])
+export const mergeSchema = mergeTypeDefs([mergeUserTypeDefs, UserQueryDefs, UsersMutationDefs, ActivityLogQueryDefs, mergeActivityLogsTypedefs, OrdersMutation, mergeOrderTypeSchema, OrdersQuery, mergeOrderEventSchema, orderEventQuery, mergeProductTypeDefs, productQuery, productMutation])
 
