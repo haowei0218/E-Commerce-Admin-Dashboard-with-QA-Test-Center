@@ -127,6 +127,7 @@ export const orderStatusTransitions: Record<string, string[]> = {
     processing: ["completed", "cancelled"],
     completed: [],
     cancelled: [],
+    all: []
 };
 
 export const paymentStatusTransitions: Record<string, string[]> = {
@@ -134,6 +135,7 @@ export const paymentStatusTransitions: Record<string, string[]> = {
     failed: ["unpaid", "paid"],
     paid: ["refunded"],
     refunded: [],
+    all: []
 };
 
 export const shippingStatusTransitions: Record<string, string[]> = {

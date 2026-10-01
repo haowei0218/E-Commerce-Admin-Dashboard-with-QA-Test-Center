@@ -21,10 +21,12 @@ export type filterProductPayload = {
     pageSize: number
 }
 export type getProductsResponse = {
-    result: product[]
-    total_count: number
-    page: number
-    pageSize: number
+    getProducts: {
+        result: product[]
+        total_count: number
+        page: number
+        pageSize: number
+    }
 }
 
 export type updateProductDetailsPayload = productPayload & { id: string }

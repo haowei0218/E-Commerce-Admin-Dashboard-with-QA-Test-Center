@@ -57,7 +57,7 @@ export function SearchBox({
             <div className='flex w-120'>
                 <input
                     className='border-t border-l border-b w-full h-12 border-gray-300 bg-white rounded-l-lg p-4 outline-none focus:outline-none focus:ring-0 focus:border-gray-300'
-                    placeholder='search username or email'
+                    placeholder='enter keywords.....'
                     onChange={(e) => setKeyWords(e.target.value)}
                     value={keywords}
                 />

@@ -1,4 +1,4 @@
-import { GET_ORDER_EVENT } from "@/graphql/order-event.graphql"
+import { GET_ORDER_EVENT } from "@/graphql/order-event"
 import { fetchAPI } from "./api-hook"
 import { orderEventResponse, statusType } from "@/type/order-event/base.type"
 

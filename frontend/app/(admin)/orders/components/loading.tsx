@@ -11,28 +11,28 @@ export default function OrderDetailsLoading() {
                     <div className={`py-5 gap-5 flex flex-col`}>
                         <div className="flex items-center gap-4 h-40 border-b-3 border-b-gray-200">
                             <div className="w-25 h-25 flex items-center rounded-lg shadow shadow-gray-400">
-                                <Skeleton className="h-24 w-24 bg-gray-400" />
+                                <Skeleton className="h-24 w-24 bg-gray-200" />
                             </div>
 
                             <div className="flex justify-between gap-10">
                                 <div className="flex flex-col gap-5 justify-center w-70 h-25">
-                                    <Skeleton className="h-4 w-24 bg-gray-400" />
-                                    <span className="text-gray-500 text-lg">型號 : <Skeleton className="h-4 w-44 bg-gray-400" /></span>
+                                    <Skeleton className="h-4 w-24 bg-gray-200" />
+                                    <span className="text-gray-500 text-lg">型號 : <Skeleton className="h-4 w-44 bg-gray-200" /></span>
                                 </div>
 
                                 <div className="flex flex-col gap-4 justify-center w-25 h-25">
                                     <h3 className="font-bold text-sm">Unit Price</h3>
-                                    <Skeleton className="h-4 w-20 bg-gray-400" />
+                                    <Skeleton className="h-4 w-20 bg-gray-200" />
                                 </div>
 
                                 <div className="flex flex-col gap-4 justify-center w-25 h-25">
                                     <h3 className="font-bold text-sm">QTY</h3>
-                                    <Skeleton className="h-4 w-20 bg-gray-400" />
+                                    <Skeleton className="h-4 w-20 bg-gray-200" />
                                 </div>
 
                                 <div className="flex flex-col gap-4 justify-center pl-4 w-30 h-25 border-l-3 border-l-gray-300">
                                     <h3 className="font-bold text-sm">SubTotal</h3>
-                                    <Skeleton className="h-4 w-20 bg-gray-400" />
+                                    <Skeleton className="h-4 w-20 bg-gray-200" />
                                 </div>
                             </div>
                         </div>
@@ -45,23 +45,23 @@ export default function OrderDetailsLoading() {
                     <div className="flex gap-4 justify-start items-start">
 
                         <div className="grid gap-2 w-50">
-                            <Skeleton className="h-4 w-24 bg-gray-400" />
-                            <Skeleton className="h-4 w-28 bg-gray-400" />
-                            <Skeleton className="h-4 w-44 bg-gray-400" />
-                            <Skeleton className="h-4 w-24 bg-gray-400" />
+                            <Skeleton className="h-4 w-24 bg-gray-200" />
+                            <Skeleton className="h-4 w-28 bg-gray-200" />
+                            <Skeleton className="h-4 w-44 bg-gray-200" />
+                            <Skeleton className="h-4 w-24 bg-gray-200" />
                         </div>
 
                         <div className="grid gap-2 w-50">
                             <Skeleton />
                             <span className="text-sm font-bold">Shipping Status</span>
                             <div className={`w-25 h-8  flex justify-center items-center rounded-2xl text-sm font-bold`}>
-                                <Skeleton className="h-8 w-25 rounded-2xl bg-gray-400" />
+                                <Skeleton className="h-8 w-25 rounded-2xl bg-gray-200" />
                             </div>
                         </div>
 
                         <div className="grid gap-2 w-50">
                             <span className="text-sm font-bold">Note</span>
-                            <Skeleton className="h-4 w-12 bg-gray-400" />
+                            <Skeleton className="h-4 w-12 bg-gray-200" />
                         </div>
                     </div>
                 </div>

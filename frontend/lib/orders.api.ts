@@ -1,6 +1,6 @@
 import { getAllOrdersResponse, getOrderByIdResponse, getOrdersResponse, orderFilterPayload, orderStatus, updateOrderNotePayload, updateOrderNoteResponse, updateOrderStatusPayload, updateOrderStatusResponse, updatePaymentStatusPayload, updatePaymentStatusResponse, updateShippingStatusPayload, updateShippingStatusResponse } from "@/type/orders/base.type";
 import { fetchAPI } from "./api-hook";
-import { GET_ALL_ORDERS, GET_ORDERS, GET_ORDERS_BY_ID, UPDATE_ORDER_NOTE, UPDATE_ORDER_STATUS, UPDATE_PAYMENT_STATUS, UPDATE_SHIPPING_STATUS } from "@/graphql/order.graphql";
+import { GET_ALL_ORDERS, GET_ORDERS, GET_ORDERS_BY_ID, UPDATE_ORDER_NOTE, UPDATE_ORDER_STATUS, UPDATE_PAYMENT_STATUS, UPDATE_SHIPPING_STATUS } from "@/graphql/order";
 const apiUrl = process.env.NEXT_PUBLIC_API ?? 'http://localhost:4201/graphql'
 
 export async function getAllOrders(): Promise<getAllOrdersResponse> {

@@ -4,6 +4,8 @@ import { twMerge } from 'tailwind-merge'
 import { toast } from 'sonner'
 import { supabaseClient } from './supabaseClient'
 
+export const apiUrl = process.env.NEXT_PUBLIC_API ?? 'http://localhost:4201/graphql'
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }

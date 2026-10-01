@@ -21,18 +21,53 @@ import { CreateLink } from "@/components/Button"
 export default function Orders() {
 
   const [keywords, setKeywords] = useState<string>('')
-  const [orderStatus, setOrderStatus] = useState<orderStatus>('pending')
-  const [paymentStatus, setPaymentStatus] = useState<paymentStatus>('unpaid')
+  const [orderStatus, setOrderStatus] = useState<orderStatus | 'all'>('all')
+  const [paymentStatus, setPaymentStatus] = useState<paymentStatus | 'all'>('all')
+  const [searchKeywords, setSearchKeywords] = useState<string>('')
+  const [filter, setFilter] = useState<{
+    keyword: string
+    payment_status: paymentStatus | 'all'
+    order_status: orderStatus | 'all'
+  }>({
+    keyword: "",
+    payment_status: 'all',
+    order_status: 'all'
+  })
   const [PAGE, setPage] = useState<number>(1)
   const router = useRouter()
 
   function handleSearch() {
-    console.log('')
+    setFilter({
+      keyword: keywords,
+      payment_status: 'all',
+      order_status: 'all'
+    })
+  }
+
+  function handleFilter() {
+    setFilter({
+      keyword: "",
+      payment_status: paymentStatus,
+      order_status: orderStatus
+    })
+  }
+
+  function resetFilter() {
+    setFilter({
+      keyword: "",
+      payment_status: "all",
+      order_status: "all"
+    }
+    )
+
+    setKeywords('')
+    setOrderStatus('all')
+    setPaymentStatus('all')
   }
 
   const ordersQuery = useQuery({
-    queryKey: ['all-orders', PAGE],
-    queryFn: () => getOrders({ page: PAGE, pageSize: 5 }),
+    queryKey: ['all-orders', PAGE, filter],
+    queryFn: () => getOrders({ keyword: keywords, order_status: orderStatus, payment_status: paymentStatus, page: PAGE, pageSize: 5 }),
     enabled: Boolean(PAGE),
   })
 
@@ -69,7 +104,7 @@ export default function Orders() {
             onSelectMenuValueChange={setPaymentStatus}
             label="Payment Status"
           />
-          <FilterButton clearFilterFn={() => console.log('')} FilterFn={() => console.log('')} />
+          <FilterButton clearFilterFn={resetFilter} FilterFn={handleFilter} />
         </div>
 
         {/* table*/}

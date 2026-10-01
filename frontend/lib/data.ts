@@ -39,6 +39,10 @@ export const orderStatusList = [
   {
     value: 'cancelled',
     optionName: '訂單取消'
+  },
+  {
+    value: 'all',
+    optionName: '全部'
   }
 ]
 
@@ -59,6 +63,10 @@ export const paymentStatusList = [
     value: 'refunded',
     optionName: '已退款'
   },
+  {
+    value: 'all',
+    optionName: '全部'
+  }
 ]
 
 export const usersTableHeaders = [
@@ -137,4 +145,70 @@ export const ordersTableHeaders = [
     headerName: 'Action',
     style: 'w-40'
   },
+]
+
+export const productStatusList = [
+  {
+    value: 'draft',
+    optionName: '草稿'
+  },
+  {
+    value: 'published',
+    optionName: '已上架'
+  },
+  {
+    value: 'unpublished',
+    optionName: '尚未上架'
+  },
+  {
+    value: 'archived',
+    optionName: '下架'
+  },
+  {
+    value: 'all',
+    optionName: '全部'
+  }
+]
+
+export const productsTableHeaders = [
+  {
+    headerName: 'Id',
+    style: 'w-80'
+  },
+  {
+    headerName: 'Name',
+    style: 'w-40'
+  },
+  {
+    headerName: 'Sku',
+    style: 'w-60'
+  },
+  {
+    headerName: 'Price',
+    style: 'w-40'
+  },
+  {
+    headerName: 'Color',
+    style: 'w-30'
+  },
+  {
+    headerName: 'Stock Quantity',
+    style: 'w-35'
+  },
+  {
+    headerName: 'Status',
+    style: 'w-50'
+  },
+  {
+    headerName: 'Created At',
+    style: 'w-50'
+  },
+  {
+    headerName: 'Updated At',
+    style: 'w-50'
+  },
+  {
+    headerName: 'Actions',
+    style: 'w-30'
+  }
 ]

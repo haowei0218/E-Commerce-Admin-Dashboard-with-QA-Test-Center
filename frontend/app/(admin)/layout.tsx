@@ -64,9 +64,9 @@ export default function DashboardLayout({
     children: React.ReactNode
 }>) {
     return (
-        <div className="flex h-dvh overflow-hidden">
+        <div className="flex h-dvh">
             <NavigationBar navigationList={navigationBarList} />
-            <div className="main w-full flex flex-col h-full">
+            <div className="main w-full flex flex-col h-full overflow-x-auto">
                 <Header />
                 {children}
             </div>

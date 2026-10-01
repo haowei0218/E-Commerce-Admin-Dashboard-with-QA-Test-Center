@@ -380,8 +380,8 @@ export async function getOrders(payload: orderFilterPayload, context: ServerCont
 
     const params = [
         payload.keyword ?? null,
-        payload.order_status ?? null,
-        payload.payment_status ?? null,
+        !payload.order_status || payload.order_status === 'all' ? null : payload.order_status,
+        !payload.payment_status || payload.payment_status === 'all' ? null : payload.payment_status,
         payload.shipping_status ?? null,
         payload.date_from ?? null,
         payload.date_to ?? null,

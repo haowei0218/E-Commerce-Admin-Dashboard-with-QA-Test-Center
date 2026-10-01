@@ -3,9 +3,9 @@ import { filterProductPayload, productPayload, productResponse, productStatus, u
 import { throwGraphqlError } from "./error.js";
 
 export async function fetchProducts(payload: filterProductPayload, context: ServerContext) {
-    const keywords = payload.keywords ?? null
-    const status = payload.status ?? null
-    const price = payload.price ?? null
+    const keywords = !payload.keywords || payload.keywords?.length === 0 ? null : payload.keywords
+    const status = !payload.status || payload.status === 'all' ? null : payload.status
+    const price = !payload.price || payload.price === 0 ? null : payload.price
 
     const page = payload.page > 0 ? payload.page : 1
     const pageSize = payload.pageSize > 0 ? payload.pageSize : 1
@@ -26,7 +26,7 @@ export async function fetchProducts(payload: filterProductPayload, context: Serv
       )
       AND (
         $3::numeric IS NULL
-        OR product_price = $3
+        OR product_price <= $3
       )
     ORDER BY created_at DESC
     LIMIT $4
@@ -136,7 +136,7 @@ export async function updateProductDetails(
     };
 }
 
-export async function updateProductStatus(id: string, status: productStatus , context: ServerContext) {
+export async function updateProductStatus(id: string, status: productStatus, context: ServerContext) {
     const response = await context.db.query('UPDATE products SET status=$2 WHERE id=$1 RETURNING *', [id, status])
     const result = response.rows[0] ?? null
     return { result: result }
