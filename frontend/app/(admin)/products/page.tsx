@@ -1,6 +1,6 @@
 'use client'
 import PageTitle from "@/components/ui/PageTitle"
-import { ExportButton } from "@/components/Button"
+import { CreateLink, ExportButton } from "@/components/Button"
 import { useState } from "react"
 import { productStatus } from "@/type/products/products.base"
 import { Slider } from "@/components/ui/slider"
@@ -14,6 +14,8 @@ import { ProductsTable } from "./components/products-table"
 import { productsTableHeaders } from "@/lib/data"
 import { useRouter } from "next/navigation"
 import Ring from "@/components/ring"
+import { Plus } from "lucide-react"
+import Pagination from "@/components/Pagination"
 export default function Products() {
   const [keywords, setKeywords] = useState<string>('')
   const [status, setStatus] = useState<productStatus | 'all'>('all')
@@ -30,6 +32,7 @@ export default function Products() {
   })
   const [page, setPage] = useState<number>(1)
   const router = useRouter()
+  const PAGE_SIZE = 6
 
   const handleSerachParams = () => {
     setFilter({
@@ -63,12 +66,18 @@ export default function Products() {
     queryFn: () => fetchProducts({
       ...filter,
       page: page,
-      pageSize: 8
+      pageSize: PAGE_SIZE
+    }),
+    select: (data) => ({
+      products: data.getProducts.result,
+      totalCount: data.getProducts.total_count,
+      totalPage: Math.ceil(data.getProducts.total_count / PAGE_SIZE),
     }),
     enabled: Boolean(page)
   })
 
-  const products = productsQuery.data?.getProducts.result
+  const products = productsQuery.data?.products ?? []
+  const totalPage = productsQuery.data?.totalPage ?? 1
 
   return (
     <div className='bg-gray-50 h-full p-5 '>
@@ -78,6 +87,7 @@ export default function Products() {
           children={
             <div className='flex gap-2'>
               <ExportButton exportFn={() => console.log('')} />
+              <CreateLink link="/products/create-product" buttonName="create product" />
             </div>
           }
           mainTitle='Products'
@@ -124,6 +134,8 @@ export default function Products() {
           <ProductsTable products={products} headers={productsTableHeaders} router={router} />
         </div>
       }
+
+      <Pagination setPageFn={setPage} PAGE={page} totalPage={totalPage} />
     </div>
   )
 }

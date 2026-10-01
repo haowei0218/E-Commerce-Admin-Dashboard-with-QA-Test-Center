@@ -40,9 +40,32 @@ export async function fetchProducts(payload: filterProductPayload, context: Serv
             offset,
         ])
 
+    const countResult = await context.db.query(`
+        SELECT COUNT(*) AS total_count
+    FROM products
+    WHERE
+      (
+        $1::text IS NULL
+        OR product_name ILIKE '%' || $1 || '%'
+        OR product_sku ILIKE '%' || $1 || '%'
+        OR color ILIKE '%' || $1 || '%'
+      )
+      AND (
+        $2::text IS NULL
+        OR status = $2
+      )
+      AND (
+        $3::numeric IS NULL
+        OR product_price <= $3
+      ) 
+        `, [
+        keywords,
+        status,
+        price,
+    ])
     return {
         result: response.rows,
-        total_count: response.rowCount,
+        total_count: Number(countResult.rows[0].total_count),
         page: page,
         pageSize: pageSize
     }

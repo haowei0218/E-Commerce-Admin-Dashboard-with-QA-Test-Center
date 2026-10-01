@@ -14,7 +14,7 @@ export default function Pagination(
             <div className="w-20 flex justify-start">
 
                 <button onClick={() => setPageFn((prev) => {
-                    if (prev - 1 >= 0) {
+                    if (prev - 1 > 0) {
                         return prev - 1
                     }
 
