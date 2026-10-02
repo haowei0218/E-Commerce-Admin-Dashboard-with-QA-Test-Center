@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation"
 import Ring from "@/components/ring"
 import { Plus } from "lucide-react"
 import Pagination from "@/components/Pagination"
+import { exportCSV } from "@/lib/utils"
 export default function Products() {
   const [keywords, setKeywords] = useState<string>('')
   const [status, setStatus] = useState<productStatus | 'all'>('all')
@@ -86,7 +87,7 @@ export default function Products() {
         <PageTitle
           children={
             <div className='flex gap-2'>
-              <ExportButton exportFn={() => console.log('')} />
+              <ExportButton exportFn={() => exportCSV(products, ['id', 'name', 'sku', 'price', 'stock_quantity', 'status', 'created_at', 'updated_at'], 'products')} />
               <CreateLink link="/products/create-product" buttonName="create product" />
             </div>
           }

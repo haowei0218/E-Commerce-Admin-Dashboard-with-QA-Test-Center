@@ -13,7 +13,6 @@ type product = {
     product_name: string
     product_sku: string
     product_price: string
-    color: string
     stock_quantity: number
     status: productStatus
     created_at: string
@@ -55,17 +54,12 @@ export function ProductsTableRow(tableRowProps: productTableRowProps) {
                 NTD${tableRowProps.product.product_price}
             </td>
             <td
-                className="text-left flex items-center text-md font-medium w-30 font-stretch-condensed  "
-            >
-                {tableRowProps.product.color}
-            </td>
-            <td
                 className="text-left flex items-center text-md font-medium w-35 font-stretch-condensed  "
             >
-                {tableRowProps.product.stock_quantity}
+                {tableRowProps.product.stock_quantity} / 個
             </td>
             <td
-                className="text-left flex items-center text-md font-medium w-50 font-stretch-condensed  "
+                className="text-left flex items-center text-md font-medium w-30 font-stretch-condensed  "
             >
                 <div className={`w-25 h-6 mt-1.5 flex justify-center items-center ${statusStyle[tableRowProps.product.status]} rounded-md`}>
                     <span >{tableRowProps.product.status}</span>

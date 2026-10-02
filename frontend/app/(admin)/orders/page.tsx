@@ -86,7 +86,7 @@ export default function Orders() {
           <PageTitle
             children={
               <div className='flex gap-2'>
-                <ExportButton exportFn={() => console.log('')} />
+                <ExportButton exportFn={() => exportCSV(orders, ["id", "order_number", "customer_id", "total_amount", 'order_status', 'payment_status','shipping_status','payment_method'], "orders")} />
               </div>
             }
             mainTitle='Orders'

@@ -188,16 +188,12 @@ export const productsTableHeaders = [
     style: 'w-40'
   },
   {
-    headerName: 'Color',
-    style: 'w-30'
-  },
-  {
     headerName: 'Stock Quantity',
     style: 'w-35'
   },
   {
     headerName: 'Status',
-    style: 'w-50'
+    style: 'w-30'
   },
   {
     headerName: 'Created At',
