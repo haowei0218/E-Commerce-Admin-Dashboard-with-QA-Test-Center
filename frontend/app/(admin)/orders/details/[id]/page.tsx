@@ -155,7 +155,6 @@ export default function OrderDetails() {
         <div className='bg-gray-50 w-full h-full p-10 overflow-y-auto'>
             <div className="flex justify-between items-center">
                 <div className="flex flex-col justify-center items-start gap-5">
-                    <Breadcrumbs action="Orders Details" route="orders" />
                     <h1 className='text-3xl font-bold'>
                         View Details
                     </h1>

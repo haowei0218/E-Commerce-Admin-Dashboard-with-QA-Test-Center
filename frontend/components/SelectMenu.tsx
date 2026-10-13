@@ -36,7 +36,7 @@ export function SelectMenu({
   }))
   return (
     <div className='grid gap-2'>
-      <label className='w-50 font-semibold text-black text-lg'>
+      <label className='w-50 font-semibold  text-[16px] text-gray-500'>
         {label}
       </label>
       <Select
@@ -45,7 +45,7 @@ export function SelectMenu({
         items={items}
 
       >
-        <SelectTrigger style={selectMenuStyle} className={`w-125 !h-12 border border-gray-300 rounded-lg px-4 font-bold text-md bg-white appearance-none focus:outline-none focus:ring-0 focus:border-gray-300`}>
+        <SelectTrigger style={selectMenuStyle} className={`w-80 !h-10 border border-gray-300 rounded-lg px-4 font-bold text-md bg-white appearance-none focus:outline-none focus:ring-0 focus:border-gray-300`}>
           <SelectValue placeholder="Select a role" />
         </SelectTrigger>
 

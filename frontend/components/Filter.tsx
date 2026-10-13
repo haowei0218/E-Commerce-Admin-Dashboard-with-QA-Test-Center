@@ -2,6 +2,7 @@ import { SelectMenu } from "./SelectMenu"
 import { CiSearch, CiFilter } from "react-icons/ci"
 import { SetStateAction, Dispatch } from 'react'
 import { CgClose } from "react-icons/cg"
+import { FaCircle } from "react-icons/fa";
 export type selectMenu = {
     label: string
     props: dropdownMenuProps[]
@@ -22,14 +23,14 @@ export function FilterButton({ clearFilterFn, FilterFn }: {
     return (
         <div className='flex gap-2'>
             <button
-                className='flex justify-center items-center text-xl w-25 h-12  bg-gray-400 rounded-lg gap-2 font-medium hover:bg-gray-500 text-white hover:cursor-pointer'
+                className='flex justify-center items-center text-[16px] w-25 h-10  bg-gray-400 rounded-lg gap-2 font-medium hover:bg-gray-500 text-white hover:cursor-pointer'
                 onClick={clearFilterFn}
             >
                 <CgClose />
                 Clear
             </button>
             <button
-                className='flex justify-center items-center text-xl w-30 h-12  bg-blue-700 rounded-lg gap-2 font-medium hover:bg-blue-800 text-white hover:cursor-pointer'
+                className='flex justify-center items-center text-[16px] w-30 h-10  bg-blue-600 rounded-lg gap-2 font-medium hover:bg-blue-800 text-white hover:cursor-pointer'
                 onClick={FilterFn}
             >
                 <CiFilter />
@@ -42,22 +43,24 @@ export function FilterButton({ clearFilterFn, FilterFn }: {
 export function SearchBox({
     setKeyWords,
     keywords,
-    onHandleSearch
+    onHandleSearch,
+    placeholder
 }: {
     setKeyWords: Dispatch<SetStateAction<string>>
     keywords: string
-    onHandleSearch: () => void
+    onHandleSearch: () => void,
+    placeholder?: string
 
 }) {
     return (
         <div className="grid gap-2">
-            <label className="w-20 font-semibold text-black text-lg">
+            <label className="w-20 font-semibold text-[16px] text-gray-500">
                 Search
             </label>
-            <div className='flex w-120'>
+            <div className='flex w-150'>
                 <input
-                    className='border-t border-l border-b w-full h-12 border-gray-300 bg-white rounded-l-lg p-4 outline-none focus:outline-none focus:ring-0 focus:border-gray-300'
-                    placeholder='enter keywords.....'
+                    className='border-t border-l border-b w-full h-10 border-gray-300 bg-white rounded-l-lg p-4 outline-none focus:outline-none focus:ring-0 focus:border-gray-300'
+                    placeholder={placeholder}
                     onChange={(e) => setKeyWords(e.target.value)}
                     value={keywords}
                 />

@@ -3,7 +3,7 @@ import Link from "next/link"
 import { FaPlus } from "react-icons/fa6"
 export function ExportButton({ exportFn }: { exportFn: () => void }) {
     return (
-        <button className='flex justify-center items-center w-25 h-9 border-2 border-green-500 rounded-lg bg-white gap-2 font-medium text-green-500 hover:bg-green-700 hover:text-white hover:cursor-pointer' onClick={exportFn}>
+        <button className='flex justify-center items-center w-28 h-12 rounded-lg gap-2 font-medium border-2 border-blue-600 text-blue-600  bg-white hover:border-3 hover:text-blue-800 hover:border-blue-800 hover:cursor-pointer' onClick={exportFn}>
             <CgExport />
             Export
         </button>
@@ -13,7 +13,7 @@ export function ExportButton({ exportFn }: { exportFn: () => void }) {
 export function CreateLink({ link, buttonName }: { link: string, buttonName: string }) {
     return (
         <Link
-            className="flex justify-center items-center w-40 h-9 border-2 border-blue-500 rounded-lg bg-white font-medium text-blue-500 gap-2 hover:bg-blue-700 hover:text-white hover:cursor-pointer"
+            className="flex justify-center items-center w-45 h-12  rounded-lg font-normal text-lg  gap-3 bg-blue-600 text-white  hover:bg-blue-700 hover:cursor-pointer"
             href={link}
         >
             <FaPlus />

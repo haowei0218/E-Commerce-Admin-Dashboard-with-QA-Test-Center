@@ -17,6 +17,14 @@ import Ring from "@/components/ring"
 import { Plus } from "lucide-react"
 import Pagination from "@/components/Pagination"
 import { exportCSV } from "@/lib/utils"
+import { FiBox } from "react-icons/fi";
+import { MdOutlineShoppingCart } from "react-icons/md";
+import { IoTimeOutline } from "react-icons/io5";
+import { AiOutlineStock } from "react-icons/ai";
+import { Input } from "@base-ui/react"
+
+
+
 export default function Products() {
   const [keywords, setKeywords] = useState<string>('')
   const [status, setStatus] = useState<productStatus | 'all'>('all')
@@ -79,11 +87,51 @@ export default function Products() {
 
   const products = productsQuery.data?.products ?? []
   const totalPage = productsQuery.data?.totalPage ?? 1
+  const calculatePercentage = (count: number, total: number) => {
+    if (total === 0) return 0
+
+    return Number(((count / total) * 100).toFixed(1))
+  }
+
+  const cardList = [
+    {
+      icon: <FiBox />,
+      title: "Total Products",
+      data: 256,
+      percent: 100,
+      subtile: 'all products',
+      backgroundColor: "bg-blue-100 text-blue-600"
+    },
+    {
+      icon: <MdOutlineShoppingCart />,
+      title: "Published Products",
+      data: 198,
+      percent: calculatePercentage(198, 256),
+      subtile: 'Available for purchase',
+      backgroundColor: "bg-green-100 text-green-500"
+    },
+    {
+      icon: <IoTimeOutline />,
+      title: "Draft Products",
+      data: 42,
+      percent: calculatePercentage(42, 256),
+      subtile: 'Not published yet',
+      backgroundColor: "bg-orange-100 text-orange-500"
+    },
+    {
+      icon: <AiOutlineStock />,
+      title: "Low Stock Products",
+      data: 8,
+      percent: calculatePercentage(8, 256),
+      subtile: 'Stock below 10',
+      backgroundColor: "bg-red-100 text-red-500"
+    }
+  ]
 
   return (
-    <div className='bg-gray-50 h-full p-5 '>
+    <div className='bg-gray-100 h-full p-5 '>
       {/* page title */}
-      <div className='border border-gray-200 rounded-lg p-5 bg-white m-auto'>
+      <div className='m-auto py-5'>
         <PageTitle
           children={
             <div className='flex gap-2'>
@@ -92,51 +140,81 @@ export default function Products() {
             </div>
           }
           mainTitle='Products'
-          subTitle='Manage all products.'
+          subTitle='Manage all products in the store'
         />
       </div>
 
-      {/* filter  */}
-      <div className="flex justify-between items-end m-auto mb-10 mt-15">
-        <SearchBox setKeyWords={setKeywords} keywords={keywords} onHandleSearch={handleSerachParams} />
-        <SelectMenu props={productStatusList} value={status} onSelectMenuValueChange={setStatus} label="Product status" />
 
-        <div className="flex flex-col gap-2">
-          <h1 className="w-20 font-semibold text-black text-lg">Price</h1>
+      {/* card */}
 
-          <div className="flex items-center justify-between">
-            <span>NTD$ 0</span>
-            <span>NTD$ {price}</span>
-          </div>
+      <div className="flex justify-between items-center">
+        {
+          cardList.map((card) => {
+            return (
+              <div key={card.title} className="flex gap-2 itmes-start p-5 bg-white w-105 rounded-lg shadow shadow-gray-300">
+                <div className={`flex items-center justify-center rounded-full w-15 h-15 ${card.backgroundColor} text-3xl`}>
+                  {card.icon}
+                </div>
 
-          <Slider
-            min={0}
-            max={30000}
-            step={100}
-            value={price}
+                <div className="w-[80%]">
+                  <h2 className="text-[16px] text-gray-500 font-bold">{card.title}</h2>
+                  <div className="flex justify-between items-end w-full">
+                    <p className="text-3xl font-bold">{card.data}</p>
+                    <p className={`text-sm ${card.backgroundColor.includes('red') ? "text-red-500 " : "text-green-500"} font-bold`}>{card.percent}%</p>
+                  </div>
 
-            onValueChange={(value) => {
-              if (typeof value === "number") {
-                setPrice(value)
-              }
-            }}
-            className="w-120 h-4"
-          />
-
-        </div>
-
-        <FilterButton clearFilterFn={resetFilter} FilterFn={handleFilter} />
+                  <p className="text-sm font-bold text-slate-500">{card.subtile}</p>
+                </div>
+              </div>
+            )
+          })
+        }
       </div>
 
-      {/* table */}
-      {!products && <Ring className='w-10 h-10 m-auto' />}
-      {products &&
-        <div className='rounded-t-2xl border-t border-l border-r m-auto border-gray-200 overflow-y-auto'>
-          <ProductsTable products={products} headers={productsTableHeaders} router={router} />
-        </div>
-      }
 
-      <Pagination setPageFn={setPage} PAGE={page} totalPage={totalPage} />
+      {/* filter  */}
+
+      <div className="bg-white rounded-md p-7 mt-5 ">
+        <div className="flex justify-between items-end m-auto mb-10 ">
+          <SearchBox setKeyWords={setKeywords} keywords={keywords} onHandleSearch={handleSerachParams} placeholder="Search by product name 、sku or color...." />
+          <SelectMenu props={productStatusList} value={status} onSelectMenuValueChange={setStatus} label="Product status" />
+
+          <div className="flex flex-col gap-2">
+            <h1 className="w-50 font-semibold text-[16px] text-gray-500">Price range</h1>
+
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2">
+                <p className="text-lg font-normal text-gray-700">NTD$</p>
+                <Input type="number" min={0} placeholder="0" className={'w-45 h-10 border border-gray-300 rounded-md p-5'} />
+              </div>
+              <div className="w-10 h-0.5 bg-gray-300"></div>
+              <Input type="number" min={0} placeholder="0" className={'w-45 h-10 border border-gray-300 rounded-md p-5'} />
+            </div>
+
+
+
+
+          </div>
+
+          <FilterButton clearFilterFn={resetFilter} FilterFn={handleFilter} />
+        </div>
+
+        {/* table */}
+        {!products && <Ring className='w-10 h-10 m-auto' />}
+        {products &&
+          <div className='rounded-t-2xl border-t border-l border-r m-auto border-gray-200 overflow-y-auto'>
+            <ProductsTable products={products} headers={productsTableHeaders} router={router} />
+          </div>
+        }
+
+        <div className="flex justify-between items-center w-full mt-5">
+          <p className="text-lg text-gray-500 font-bold">Showing 1-6 of {256} products</p>
+          <Pagination setPageFn={setPage} PAGE={page} totalPage={totalPage} />
+        </div>
+
+
+      </div>
+
     </div>
   )
 }

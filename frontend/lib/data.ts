@@ -171,13 +171,10 @@ export const productStatusList = [
 ]
 
 export const productsTableHeaders = [
-  {
-    headerName: 'Id',
-    style: 'w-80'
-  },
+
   {
     headerName: 'Name',
-    style: 'w-40'
+    style: 'w-70'
   },
   {
     headerName: 'Sku',
@@ -189,11 +186,11 @@ export const productsTableHeaders = [
   },
   {
     headerName: 'Stock Quantity',
-    style: 'w-35'
+    style: 'w-45'
   },
   {
     headerName: 'Status',
-    style: 'w-30'
+    style: 'w-40'
   },
   {
     headerName: 'Created At',
