@@ -35,7 +35,7 @@ export const filterProductsPayload = gql`
     input filterProductsPayload{
         keywords:String
         status:String
-        price:Int
+        priceRange:[Int]
         page:Int
         pageSize:Int
     }

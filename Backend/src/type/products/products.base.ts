@@ -16,7 +16,7 @@ export type productPayload = Omit<product, 'id' | 'created_at' | 'updated_at'>
 export type filterProductPayload = {
     keywords?: string | null
     status?: productStatus | null | 'all'
-    price?: number | null
+    priceRange: number[]
     page: number
     pageSize: number
 }

@@ -29,15 +29,18 @@ export default function Products() {
   const [keywords, setKeywords] = useState<string>('')
   const [status, setStatus] = useState<productStatus | 'all'>('all')
   const [price, setPrice] = useState<number>(0)
+  const [lowPrice, setLowPrice] = useState<number>(0)
+  const [highPrice, setHighPrice] = useState<number>(0)
   const [searchKeywords, setSearchKeywords] = useState('')
+  const [image, setImage] = useState<File | null>(null)
   const [filter, setFilter] = useState<{
     keywords: string,
     status: productStatus | 'all',
-    price: number
+    priceRange: number[]
   }>({
     keywords: '',
     status: 'all',
-    price: 0
+    priceRange: [0, 0]
   })
   const [page, setPage] = useState<number>(1)
   const router = useRouter()
@@ -47,7 +50,7 @@ export default function Products() {
     setFilter({
       keywords: keywords,
       status: 'all',
-      price: 0
+      priceRange: [0, 0]
     })
   }
 
@@ -55,18 +58,33 @@ export default function Products() {
     setFilter({
       keywords: "",
       status: status,
-      price: price
+      priceRange: [lowPrice, highPrice]
     })
+
+  }
+
+  const handlePriceRange = (type: 'low' | 'high', data: number) => {
+    switch (type) {
+      case "low":
+        setLowPrice(data)
+        break;
+      case 'high':
+        setHighPrice(data)
+        break;
+      default:
+        break
+    }
   }
 
   const resetFilter = () => {
     setFilter({
       keywords: '',
       status: 'all',
-      price: 0
+      priceRange: [0, 0]
     })
     setStatus('all')
-    setPrice(0)
+    setLowPrice(0)
+    setHighPrice(0)
     setKeywords('')
   }
 
@@ -185,15 +203,11 @@ export default function Products() {
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-2">
                 <p className="text-lg font-normal text-gray-700">NTD$</p>
-                <Input type="number" min={0} placeholder="0" className={'w-45 h-10 border border-gray-300 rounded-md p-5'} />
+                <Input type="number" min={0} placeholder="0" value={lowPrice} className={'w-45 h-10 border border-gray-300 rounded-md p-5'} onChange={(e) => handlePriceRange('low', Number(e.target.value))} />
               </div>
               <div className="w-10 h-0.5 bg-gray-300"></div>
-              <Input type="number" min={0} placeholder="0" className={'w-45 h-10 border border-gray-300 rounded-md p-5'} />
+              <Input type="number" min={0} placeholder="0" value={highPrice} className={'w-45 h-10 border border-gray-300 rounded-md p-5'} onChange={(e) => handlePriceRange('high', Number(e.target.value))} />
             </div>
-
-
-
-
           </div>
 
           <FilterButton clearFilterFn={resetFilter} FilterFn={handleFilter} />
@@ -208,7 +222,7 @@ export default function Products() {
         }
 
         <div className="flex justify-between items-center w-full mt-5">
-          <p className="text-lg text-gray-500 font-bold">Showing 1-6 of {256} products</p>
+          <p className="text-lg text-gray-500 font-bold">Showing 1-6 of {productsQuery.data?.totalCount} products</p>
           <Pagination setPageFn={setPage} PAGE={page} totalPage={totalPage} />
         </div>
 

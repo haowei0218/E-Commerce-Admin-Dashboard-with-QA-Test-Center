@@ -5,8 +5,8 @@ import { throwGraphqlError } from "./error.js";
 export async function fetchProducts(payload: filterProductPayload, context: ServerContext) {
     const keywords = !payload.keywords || payload.keywords?.length === 0 ? null : payload.keywords
     const status = !payload.status || payload.status === 'all' ? null : payload.status
-    const price = !payload.price || payload.price === 0 ? null : payload.price
-
+    const minPrice = payload.priceRange?.[0] > 0 ? payload.priceRange[0] : null;
+    const maxPrice = payload.priceRange?.[1] > 0 ? payload.priceRange[1] : null;
     const page = payload.page > 0 ? payload.page : 1
     const pageSize = payload.pageSize > 0 ? payload.pageSize : 1
     const offset = (page - 1) * pageSize
@@ -28,14 +28,19 @@ export async function fetchProducts(payload: filterProductPayload, context: Serv
         $3::numeric IS NULL
         OR product_price <= $3
       )
+        AND (
+        $4::numeric IS NULL
+        OR product_price >= $4
+      )
     ORDER BY created_at DESC
-    LIMIT $4
-    OFFSET $5
+    LIMIT $5
+    OFFSET $6
   `,
         [
             keywords,
             status,
-            price,
+            maxPrice,
+            minPrice,
             pageSize,
             offset,
         ])
@@ -57,11 +62,16 @@ export async function fetchProducts(payload: filterProductPayload, context: Serv
       AND (
         $3::numeric IS NULL
         OR product_price <= $3
-      ) 
+      )
+        AND (
+        $4::numeric IS NULL
+        OR product_price > $4
+      )
         `, [
         keywords,
         status,
-        price,
+        maxPrice,
+        minPrice,
     ])
     return {
         result: response.rows,
