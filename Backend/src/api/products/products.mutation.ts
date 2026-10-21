@@ -3,7 +3,7 @@ import { createProductResponse } from "../../schema/products/product.type.js";
 import { ServerContext } from "../../type/admin-users/adminUsers.base..js";
 import { productPayload, productResponse, updateProductDetailsPayload, updateProductStatusPayload } from "../../type/products/products.base.js";
 import { createActivityLog } from "../../utils/activity-log.js";
-import { createSingleProduct, fetchProductById, updateProductDetails, updateProductStatus } from "../../utils/products.js";
+import { createProductImageUploadUrl, createSingleProduct, fetchProductById, updateProductDetails, updateProductStatus } from "../../utils/products.js";
 
 export const ProductsMutationResolvers = {
     Mutation: {
@@ -25,6 +25,11 @@ export const ProductsMutationResolvers = {
             if (update_status) await createActivityLog({ user_id: context.user.id, action: 'UPDATE', description: `使用者${context.user.name} 更新產品狀態:${product.result.status} => ${input.status} 產品編號:${input.id}`, module: "products" }, context)
 
             return update_status
+        },
+        createProductImageUploadUrl: async (_parent: unknown, { fileName, contentType }: { fileName: string, contentType: string }, context: ServerContext) => {
+            const result = await createProductImageUploadUrl(_parent, { fileName, contentType }, context)
+            return result
         }
+
     }
 }

@@ -1,7 +1,8 @@
 import { gql } from 'graphql-tag'
 import {
     productPayload, productResponse
-    , createProductResponse, updateProductDetailsPayload, updateProductDetailsResponse, deleteProductResponse, updateProductStatusPayload, updateProductStatusResponse
+    , createProductResponse, updateProductDetailsPayload, updateProductDetailsResponse, deleteProductResponse, updateProductStatusPayload, updateProductStatusResponse,ProductImageTokenResponse
+
 } from './product.type.js'
 export const productMutation = gql`
     ${productPayload}
@@ -11,11 +12,12 @@ export const productMutation = gql`
     ${updateProductStatusPayload}
     ${updateProductStatusResponse}
     ${productResponse}
+    ${ProductImageTokenResponse}
     type Mutation{
         createProduct(input:productPayload):productResponse
         updateProductDetails(input:updateProductDetailsPayload):productResponse
         updateProductStatus(input:updateProductStatusPayload):productResponse
-
+        createProductImageUploadUrl(fileName: String!,contentType: String!): ProductImageTokenResponse!
     }
 
 `

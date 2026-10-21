@@ -5,7 +5,7 @@ export type product = {
     product_description: string
     product_image_url: string
     product_sku: string
-    product_price: string
+    product_price: number
     color: string
     stock_quantity: number
     status: productStatus
@@ -31,5 +31,10 @@ export type updateProductDetailsPayload = productPayload & { id: string }
 export type updateProductStatusPayload = {
     id: string
     status: productStatus
+}
+
+export type createImageUrlToken = {
+    path: string
+    token: string
 }
 export type productResponse = { result: product }

@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { MdDelete } from "react-icons/md";
 import { IoArchiveOutline } from "react-icons/io5";
-const statusStyle = {
+export const statusStyle = {
     draft: 'text-gray-700 bg-gray-300',
     published: 'text-green-700 bg-green-300',
     unpublished: 'text-amber-700 bg-amber-300',
@@ -48,7 +48,7 @@ const stockRule = {
     OutOfStock: "text-gray-500"
 }
 
-const checkStock = (stock: number) => {
+export const checkStock = (stock: number) => {
     if (stock >= 60) {
         return stockRule.InStock
     } else if (stock > 30 && stock <= 59) {
@@ -79,84 +79,135 @@ export function ProductQuickAction() {
 }
 
 export function ProductsTableRow(tableRowProps: productTableRowProps) {
+    const product = tableRowProps.product
+
     return (
-        <tr
-            className='flex justify-start gap-2 p-3 border-b border-gray-200'
-            key={tableRowProps.product.id}
-        >
-            <td className='text-left flex items-center text-md font-medium w-70 font-stretch-condensed '>
-                <div className="flex gap-2 items-start">
-                    <Image src={tableRowProps.product.product_image_url} alt="product image url" className="w-10 h-10 shadow shadow-gray-300" width={40}
-                        height={40} />
-                    <div>
-                        <p className="text-[16px] font-bold">{tableRowProps.product.product_name}</p>
-                        <p className="text-gray-500 text-sm">{tableRowProps.product.product_description?.split('，')[0]}</p>
+        <tr className="border-b border-gray-200 transition-colors hover:bg-gray-50">
+
+            {/* Product Name */}
+            <td className="px-4 py-3 align-middle">
+                <div className="flex items-center gap-3">
+                    <Image
+                        src={product.product_image_url}
+                        alt={product.product_name}
+                        width={40}
+                        height={40}
+                        className="w-10 h-10 shrink-0 rounded-md object-contain shadow-sm"
+                    />
+
+                    <div className="min-w-0">
+                        <p className="text-sm font-semibold text-gray-900">
+                            {product.product_name}
+                        </p>
+
+                        <p className="max-w-[200px] truncate text-xs text-gray-500">
+                            {product.product_description?.split("，")[0]}
+                        </p>
                     </div>
-
-                </div>
-
-            </td>
-            <td className='text-left flex items-center text-md font-medium w-60 font-stretch-condensed '>
-                <p className="py-1 px-2 bg-gray-300 rounded-lg text-gray-600">{tableRowProps.product.product_sku}</p>
-            </td>
-            <td className='text-left flex items-center text-md font-bold w-40 font-stretch-condensed '>
-                NTD${tableRowProps.product.product_price}
-            </td>
-            <td
-                className="text-left flex gap-2 items-center text-md font-medium w-45 font-stretch-condensed  "
-            >
-                <FaCircle size={12} className={checkStock(tableRowProps.product.stock_quantity)} /><p className="text-[16px] pt-0.5">{tableRowProps.product.stock_quantity} / 個</p>
-            </td>
-            <td
-                className="text-left flex items-center text-md font-medium w-40 font-stretch-condensed  "
-            >
-                <div className={`w-25 h-6 mt-1.5 flex justify-center p-2 items-center ${statusStyle[tableRowProps.product.status]} rounded-md`}>
-                    <span >{tableRowProps.product.status}</span>
                 </div>
             </td>
-            <td className='text-left flex items-center text-md font-medium w-50 font-stretch-condensed '>
-                {formatDate(tableRowProps.product.created_at)}
+
+            {/* SKU */}
+            <td className="px-4 py-3 align-middle">
+                <span className="inline-block whitespace-nowrap rounded-md bg-gray-200 px-2 py-1 text-sm text-gray-600">
+                    {product.product_sku}
+                </span>
             </td>
-            <td className='text-left flex items-center text-md font-medium w-50 font-stretch-condensed '>
-                {formatDate(tableRowProps.product.updated_at)}
+
+            {/* Price */}
+            <td className="px-4 py-3 align-middle">
+                <span className="whitespace-nowrap text-sm font-semibold">
+                    NTD${product.product_price}
+                </span>
             </td>
-            <td className='flex items-center gap-5 text-left text-md font-black font-stretch-condensed mb-2 justify-end'>
-                <button
-                    className='flex items-center w-25 h-10 text-lg justify-center text-blue-500 gap-2 rounded-md font-normal border border-blue-500 px-2.5 py-1.5  hover:border-blue-900 hover:text-blue-900'
-                    onClick={() => tableRowProps.router.push(`/products/details/${tableRowProps.product.id}`)}
+
+            {/* Stock Quantity */}
+            <td className="px-4 py-3 align-middle">
+                <div className="flex items-center gap-2 whitespace-nowrap">
+                    <FaCircle
+                        size={10}
+                        className={checkStock(product.stock_quantity)}
+                    />
+
+                    <span className="text-sm font-medium">
+                        {product.stock_quantity} / 個
+                    </span>
+                </div>
+            </td>
+
+            {/* Status */}
+            <td className="px-4 py-3 align-middle">
+                <span
+                    className={`
+                        inline-flex min-w-[90px]
+                        items-center justify-center
+                        rounded-md px-3 py-1
+                        text-sm font-medium
+                        ${statusStyle[product.status]}
+                    `}
                 >
-                    <MdEdit />
-                    Edit
-                </button>
-                <ProductQuickAction />
+                    {product.status}
+                </span>
             </td>
-        </tr>)
+
+            {/* Created At */}
+            <td className="px-4 py-3 align-middle">
+                <span className="whitespace-nowrap text-sm text-gray-600">
+                    {formatDate(product.created_at)}
+                </span>
+            </td>
+
+            {/* Updated At */}
+            <td className="px-4 py-3 align-middle">
+                <span className="whitespace-nowrap text-sm text-gray-600">
+                    {formatDate(product.updated_at)}
+                </span>
+            </td>
+
+            {/* Actions */}
+            <td className="px-4 py-3 align-middle">
+                <div className="flex items-center justify-center w-full">
+
+                    <button className="w-full h-10 flex items-center gap-2 justify-center border-blue-500 text-blue-500 border rounded-md hover:cursor-pointer hover:bg-blue-500 hover:text-white text-lg font-bold">
+                        <MdEdit />{" "}Edit
+                    </button>
+                    <ProductQuickAction />
+                </div>
+            </td>
+
+        </tr>
+    )
 }
 
 export function ProductsTable(tableProps: productsTableProps) {
     return (
-        <table className='w-full m-auto shadow shadow-gray-300'>
-            <thead className='bg-gray-50 rounded-lg'>
-                <tr className='flex gap-2 p-4 '>
-                    {
-                        tableProps.headers.map((header: headersProps) => {
-                            return (
-                                <th key={header.headerName} className={`text-left text-sm font-black font-stretch-condensed text-gray-600 ${header.style}`}>
-                                    <strong>{header.headerName}</strong>
-                                </th>
+        <div className="w-full overflow-x-auto rounded-lg border border-gray-200">
+            <table className="w-full min-w-[1150px] table-auto">
 
-                            )
-                        })
-                    }
-                </tr>
-            </thead>
-            <tbody className='bg-white'>
-                {tableProps.products?.map((product) => {
-                    return (
-                        <ProductsTableRow key={product.id} product={product} router={tableProps.router} />
-                    )
-                })}
-            </tbody>
-        </table>
+                <thead className="bg-gray-50">
+                    <tr>
+                        {tableProps.headers.map((header) => (
+                            <th
+                                key={header.headerName}
+                                className="px-4 py-3 text-left text-sm font-bold text-gray-600"
+                            >
+                                {header.headerName}
+                            </th>
+                        ))}
+                    </tr>
+                </thead>
+
+                <tbody className="bg-white">
+                    {tableProps.products.map((product) => (
+                        <ProductsTableRow
+                            key={product.id}
+                            product={product}
+                            router={tableProps.router}
+                        />
+                    ))}
+                </tbody>
+
+            </table>
+        </div>
     )
 }

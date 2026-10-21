@@ -1,6 +1,8 @@
+import { requestAuth } from "../auth.js";
 import { ServerContext } from "../type/admin-users/adminUsers.base..js";
 import { filterProductPayload, productPayload, productResponse, productStatus, updateProductDetailsPayload } from "../type/products/products.base.js";
 import { throwGraphqlError } from "./error.js";
+import { supabaseClient } from '../supabaseClient.js'
 
 export async function fetchProducts(payload: filterProductPayload, context: ServerContext) {
     const keywords = !payload.keywords || payload.keywords?.length === 0 ? null : payload.keywords
@@ -173,4 +175,43 @@ export async function updateProductStatus(id: string, status: productStatus, con
     const response = await context.db.query('UPDATE products SET status=$2 WHERE id=$1 RETURNING *', [id, status])
     const result = response.rows[0] ?? null
     return { result: result }
+}
+import { randomUUID } from "node:crypto"
+
+export async function createProductImageUploadUrl(
+    _: unknown,
+    args: { fileName: string; contentType: string },
+    context: ServerContext
+) {
+
+
+    // 2. 驗證檔案類型
+    const extensions: Record<string, string> = {
+        "image/png": "png",
+        "image/jpeg": "jpg",
+        "image/webp": "webp",
+    }
+
+    const extension = extensions[args.contentType]
+
+    if (!extension) {
+        throw new Error("Unsupported image type")
+    }
+
+    // 3. 產生唯一圖片路徑
+    const path = `products/${randomUUID()}.${extension}`
+
+    // 4. 產生上傳 Token
+    const { data, error } = await supabaseClient.storage
+        .from("products")
+        .createSignedUploadUrl(path)
+
+    if (error) {
+        throw new Error(error.message)
+    }
+
+    return {
+        path: data.path,
+        token: data.token,
+    }
 }

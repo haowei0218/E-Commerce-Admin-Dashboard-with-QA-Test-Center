@@ -281,7 +281,7 @@ export default function editUser() {
                                         value={role}
                                         onSelectMenuValueChange={setRole}
                                         label='user role'
-                                        selectMenuStyle={{ width: 400, borderColor: "#6a7282" }}
+                                        selectMenuStyle={{ width: "400px", borderColor: "#6a7282" }}
 
                                     />
 
@@ -294,7 +294,7 @@ export default function editUser() {
                                         value={userStatus}
                                         onSelectMenuValueChange={setUserStatus}
                                         label='user status'
-                                        selectMenuStyle={{ width: 400, borderColor: "#6a7282" }}
+                                        selectMenuStyle={{ width: "400px", borderColor: "#6a7282" }}
                                     />
                                 </form>
                             </div>

@@ -2,7 +2,7 @@ import { clsx, type ClassValue } from 'clsx'
 import { Parser } from '@json2csv/plainjs'
 import { twMerge } from 'tailwind-merge'
 import { toast } from 'sonner'
-import { supabaseClient } from './supabaseClient'
+import { supabaseClient } from '../../Backend/src/supabaseClient'
 
 export const apiUrl = process.env.NEXT_PUBLIC_API ?? 'http://localhost:4201/graphql'
 

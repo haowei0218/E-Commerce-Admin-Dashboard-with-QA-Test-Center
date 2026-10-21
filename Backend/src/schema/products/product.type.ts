@@ -8,7 +8,7 @@ export const product = gql`
         product_description:String
         product_image_url:String
         product_sku:String
-        product_price:Int
+        product_price:String
         color:String
         stock_quantity:Int
         status:String
@@ -23,7 +23,7 @@ export const productPayload = gql`
         product_description:String
         product_image_url:String
         product_sku:String
-        product_price:Int
+        product_price:String
         color:String
         stock_quantity:Int
         status:String
@@ -71,7 +71,7 @@ export const updateProductDetailsPayload = gql`
         product_description:String
         product_image_url:String
         product_sku:String
-        product_price:Int
+        product_price:String
         stock_quantity:Int
         status:String
     }
@@ -101,5 +101,12 @@ export const deleteProductResponse = gql`
     }
 `
 
+export const ProductImageTokenResponse = gql`
+    type ProductImageTokenResponse {
+        path: String!
+        token: String!
+    }
+`
 
-export const mergeProductTypeDefs = mergeTypeDefs([product, productPayload, filterProductsPayload, getProductsResponse, createProductResponse, updateProductDetailsPayload, updateProductDetailsResponse, updateProductStatusPayload, updateProductStatusResponse, deleteProductResponse])
+
+export const mergeProductTypeDefs = mergeTypeDefs([product, productPayload, filterProductsPayload, getProductsResponse, createProductResponse, updateProductDetailsPayload, updateProductDetailsResponse, updateProductStatusPayload, updateProductStatusResponse, deleteProductResponse,ProductImageTokenResponse])

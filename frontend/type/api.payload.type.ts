@@ -1,6 +1,6 @@
 import { adminUserProfile, CreateAdminUserPayload, GetAdminUserByPropertiesPayload, UserLoginPayload } from './admin-users/adminUser.type'
 import { orderFilterPayload, updateOrderNotePayload, updateOrderStatusPayload, updatePaymentStatusPayload, updateShippingStatusPayload } from './orders/base.type'
-import { filterProductPayload } from './products/products.base'
+import { filterProductPayload, productPayload } from './products/products.base'
 
 export type APIPayload = {
   UserLogin: UserLoginPayload
@@ -23,4 +23,6 @@ export type APIPayload = {
   UpdateOrderNote: { input: updateOrderNotePayload }
   GetOrderEvent: { orderId: string }
   GetProducts: { input: filterProductPayload }
+  CreateProduct: { input: productPayload }
+  GetImageToken: { fileName: string, contentType: string }
 }

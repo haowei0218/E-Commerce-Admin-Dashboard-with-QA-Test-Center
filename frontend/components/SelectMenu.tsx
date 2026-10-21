@@ -12,7 +12,7 @@ type dropdownMenuProps = {
 }
 
 type menuStyle = {
-  width?: number
+  width?: string
   borderColor?: string
 }
 

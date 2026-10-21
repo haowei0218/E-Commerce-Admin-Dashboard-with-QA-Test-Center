@@ -34,4 +34,12 @@ export type updateProductStatusPayload = {
     id: string
     status: productStatus
 }
+export type createImageUrlToken = {
+    createProductImageUploadUrl: {
+        path: string
+        token: string
+    }
+
+}
+
 export type productResponse = { result: product }

@@ -198,7 +198,7 @@ export const productsTableHeaders = [
   },
   {
     headerName: 'Updated At',
-    style: 'w-50'
+    style: 'w-55'
   },
   {
     headerName: 'Actions',

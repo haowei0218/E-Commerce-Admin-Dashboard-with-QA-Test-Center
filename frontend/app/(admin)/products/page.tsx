@@ -169,7 +169,7 @@ export default function Products() {
         {
           cardList.map((card) => {
             return (
-              <div key={card.title} className="flex gap-2 itmes-start p-5 bg-white w-105 rounded-lg shadow shadow-gray-300">
+              <div key={card.title} className="flex gap-2 itmes-start p-5 bg-white w-95 rounded-lg shadow shadow-gray-300">
                 <div className={`flex items-center justify-center rounded-full w-15 h-15 ${card.backgroundColor} text-3xl`}>
                   {card.icon}
                 </div>
@@ -195,7 +195,7 @@ export default function Products() {
       <div className="bg-white rounded-md p-7 mt-5 ">
         <div className="flex justify-between items-end m-auto mb-10 ">
           <SearchBox setKeyWords={setKeywords} keywords={keywords} onHandleSearch={handleSerachParams} placeholder="Search by product name 、sku or color...." />
-          <SelectMenu props={productStatusList} value={status} onSelectMenuValueChange={setStatus} label="Product status" />
+          <SelectMenu props={productStatusList} value={status} onSelectMenuValueChange={setStatus} label="Product status" selectMenuStyle={{ width: "200px", borderColor: "text-gray-300" }} />
 
           <div className="flex flex-col gap-2">
             <h1 className="w-50 font-semibold text-[16px] text-gray-500">Price range</h1>
@@ -213,13 +213,14 @@ export default function Products() {
           <FilterButton clearFilterFn={resetFilter} FilterFn={handleFilter} />
         </div>
 
+        {productsQuery.isLoading && <Ring className='w-10 h-10 m-auto' />}
         {/* table */}
-        {!products && <Ring className='w-10 h-10 m-auto' />}
         {products &&
           <div className='rounded-t-2xl border-t border-l border-r m-auto border-gray-200 overflow-y-auto'>
             <ProductsTable products={products} headers={productsTableHeaders} router={router} />
-          </div>
-        }
+          </div>}
+
+
 
         <div className="flex justify-between items-center w-full mt-5">
           <p className="text-lg text-gray-500 font-bold">Showing 1-6 of {productsQuery.data?.totalCount} products</p>
