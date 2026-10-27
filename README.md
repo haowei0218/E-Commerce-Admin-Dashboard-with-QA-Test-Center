@@ -442,8 +442,6 @@ PORT=4000
 NEXT_PUBLIC_GRAPHQL_API_URL=http://localhost:4000/graphql
 ```
 
-請勿將實際的 Secret、Token 或 Database Password 上傳到 GitHub。
-
 ### 5. 啟動後端
 
 ```bash
