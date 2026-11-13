@@ -44,3 +44,8 @@ export function randomKey() {
   return String(Math.floor(Math.random() * 999999))
 }
 
+export const calculatePercentage = (count: number, total: number) => {
+  if (total === 0) return 0
+
+  return Number(((count / total) * 100).toFixed(1))
+}

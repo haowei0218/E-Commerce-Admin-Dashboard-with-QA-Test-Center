@@ -32,8 +32,9 @@ export function UsersTableRow(tableRowProps: UsersTableRowProps) {
             className='flex gap-2 p-3 border-b border-gray-200'
             key={tableRowProps.user.id + tableRowProps.user.email}
         >
-            <td className='text-left flex items-center text-md font-medium w-80 font-stretch-condensed'>
-                {tableRowProps.user.id.slice(0, 28) + "..."}
+            <td className='text-left flex flex-col items-start'>
+                <p className="text-md font-medium w-80 font-stretch-condensed">{tableRowProps.user.name}</p>
+                <p className="text-[12px] text-gray-600">{tableRowProps.user.id.slice(0, 28) + "..."}</p>
             </td>
             <td className='text-left flex items-center text-md font-medium w-45 font-stretch-condensed '>
                 {tableRowProps.user.name}

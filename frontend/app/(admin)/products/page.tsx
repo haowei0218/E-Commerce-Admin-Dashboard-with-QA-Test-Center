@@ -22,6 +22,7 @@ import { MdOutlineShoppingCart } from 'react-icons/md'
 import { IoTimeOutline } from 'react-icons/io5'
 import { AiOutlineStock } from 'react-icons/ai'
 import { Input } from '@base-ui/react'
+import { StatisticsCard } from '@/components/StatisticsCard'
 
 export default function Products() {
   const [keywords, setKeywords] = useState<string>('')
@@ -115,7 +116,7 @@ export default function Products() {
       title: 'Total Products',
       data: 256,
       percent: 100,
-      subtile: 'all products',
+      subtitle: 'all products',
       backgroundColor: 'bg-blue-100 text-blue-600',
     },
     {
@@ -123,7 +124,7 @@ export default function Products() {
       title: 'Published Products',
       data: 198,
       percent: calculatePercentage(198, 256),
-      subtile: 'Available for purchase',
+      subtitle: 'Available for purchase',
       backgroundColor: 'bg-green-100 text-green-500',
     },
     {
@@ -131,7 +132,7 @@ export default function Products() {
       title: 'Draft Products',
       data: 42,
       percent: calculatePercentage(42, 256),
-      subtile: 'Not published yet',
+      subtitle: 'Not published yet',
       backgroundColor: 'bg-orange-100 text-orange-500',
     },
     {
@@ -139,7 +140,7 @@ export default function Products() {
       title: 'Low Stock Products',
       data: 8,
       percent: calculatePercentage(8, 256),
-      subtile: 'Stock below 10',
+      subtitle: 'Stock below 10',
       backgroundColor: 'bg-red-100 text-red-500',
     },
   ]
@@ -181,45 +182,8 @@ export default function Products() {
       </div>
 
       {/* card */}
+      <StatisticsCard cardList={cardList} />
 
-      <div className='flex justify-between items-center'>
-        {cardList.map((card) => {
-          return (
-            <div
-              key={card.title}
-              className='flex w-[24%] gap-4 itmes-start p-5 bg-white rounded-lg shadow shadow-gray-300'
-            >
-              <div
-                className={`flex items-center justify-center rounded-full w-15 h-15 ${card.backgroundColor} text-3xl`}
-              >
-                {card.icon}
-              </div>
-
-              <div className='w-[80%]'>
-                <h2 className='text-[16px] text-gray-500 font-bold'>
-                  {card.title}
-                </h2>
-                <div className='flex justify-between items-end w-full'>
-                  <p className='text-3xl font-bold'>{card.data}</p>
-                  <p
-                    className={`text-sm ${
-                      card.backgroundColor.includes('red')
-                        ? 'text-red-500 '
-                        : 'text-green-500'
-                    } font-bold`}
-                  >
-                    {card.percent}%
-                  </p>
-                </div>
-
-                <p className='text-sm font-bold text-slate-500'>
-                  {card.subtile}
-                </p>
-              </div>
-            </div>
-          )
-        })}
-      </div>
 
       {/* filter  */}
 

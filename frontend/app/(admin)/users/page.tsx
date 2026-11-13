@@ -13,7 +13,48 @@ import { ordersTableHeaders, Roles, Status, usersTableHeaders } from '@/lib/data
 import { FilterButton, SearchBox } from '@/components/Filter'
 import { useQuery } from '@tanstack/react-query'
 import CreateAdminUserDialog from './components/create-admin-user-dialog'
+import { ExportButton } from '@/components/Button'
+import { calculatePercentage } from '@/lib/utils'
+import { FaUserFriends } from "react-icons/fa";
+import { IoTimeOutline } from "react-icons/io5";
+import { MdBlock } from "react-icons/md";
+import { GrUserManager } from "react-icons/gr";
+import { StatisticsCard } from '@/components/StatisticsCard'
 
+const cardList = [
+    {
+      icon: <FaUserFriends />,
+      title: 'Total User',
+      data: 256,
+      percent: 100,
+      subtitle: 'all users',
+      backgroundColor: 'bg-blue-100 text-blue-600',
+    },
+    {
+      icon: <IoTimeOutline />,
+      title: 'Active User',
+      data: 198,
+      percent: calculatePercentage(198, 256),
+      subtitle: 'statistics active users',
+      backgroundColor: 'bg-green-100 text-green-500',
+    },
+    {
+      icon: <MdBlock />,
+      title: 'InActive Users',
+      data: 42,
+      percent: calculatePercentage(42, 256),
+      subtitle: 'statistics inactive users',
+      backgroundColor: 'bg-orange-100 text-orange-500',
+    },
+    {
+      icon: <GrUserManager />,
+      title: 'Manage Users',
+      data: 8,
+      percent: calculatePercentage(8, 256),
+      subtitle: 'Stock below 10',
+      backgroundColor: 'bg-red-100 text-red-500',
+    },
+  ]
 
 export default function Users() {
   const [role, setRole] = useState<string>('All')
@@ -61,14 +102,11 @@ export default function Users() {
 
   return (
     <div className='bg-gray-50 w-full h-full p-5 '>
-      <div className='border border-gray-200 rounded-lg p-5 bg-white m-auto'>
+      <div className='m-auto py-5'>
         <PageTitle
           children={
             <div className='flex gap-2'>
-              <button className='flex justify-center items-center w-25 h-9 border border-green-500 rounded-lg bg-white gap-2 font-medium text-green-500 hover:bg-green-700 hover:text-white hover:cursor-pointer' onClick={() => exportCSV(adminUsers, ["id", "name", "email", "status", 'code', 'create_at'], "users")}>
-                <CgExport />
-                Export
-              </button>
+              <ExportButton exportFn={()=>console.log('export function')}/>
               <CreateAdminUserDialog />
             </div>
           }
@@ -76,6 +114,8 @@ export default function Users() {
           subTitle='Manage all system users.'
         />
       </div>
+
+      <StatisticsCard cardList={cardList}/>
 
       {/* filter*/}
 

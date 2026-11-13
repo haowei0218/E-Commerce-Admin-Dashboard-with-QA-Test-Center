@@ -76,7 +76,7 @@ export default function CreateAdminUserDialog() {
                 render={
                     <button
                         type="button"
-                        className="flex justify-center items-center w-40 h-9 border border-blue-500 rounded-lg bg-white font-medium text-blue-500 gap-2 hover:bg-blue-700 hover:text-white hover:cursor-pointer"
+                        className="flex justify-center items-center w-45 h-12  rounded-lg font-normal text-lg  gap-3 bg-blue-600 text-white  hover:bg-blue-700 hover:cursor-pointer"
                     />
                 }
             >
