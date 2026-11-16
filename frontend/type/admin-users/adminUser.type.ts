@@ -55,6 +55,7 @@ export type AdminUserLogoutResponse = {
 export type GetAdminUserByPropertiesResponse = {
   GetAdminUserByProperties: {
     getUsers: adminUserProfile[]
+    totalCount: number
   }
 }
 
@@ -62,6 +63,8 @@ export type GetAdminUserByPropertiesPayload = {
   keyword: string | null
   roleId: number | string | null
   status: string | null
+  page: number
+  pageSize: number
 }
 
 export type CreateAdminUserPayload = {

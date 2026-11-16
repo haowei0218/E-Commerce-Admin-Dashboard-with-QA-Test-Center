@@ -11,6 +11,20 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatDate(value: string | number | Date) {
+  const date =
+    value instanceof Date
+      ? value
+      : typeof value === 'number'
+        ? new Date(value)
+        : new Date(
+          value.trim()
+            .replace(' ', 'T')
+            .replace(/(\.\d{3})\d+/, '$1')
+            .replace(/([+-]\d{2})$/, '$1:00')
+        );
+
+  if (Number.isNaN(date.getTime())) return '—';
+
   return new Intl.DateTimeFormat('zh-TW', {
     year: 'numeric',
     month: '2-digit',
@@ -18,7 +32,8 @@ export function formatDate(value: string | number | Date) {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
-  }).format(new Date(Number(value)))
+    timeZone: 'Asia/Taipei',
+  }).format(date);
 }
 
 export function exportCSV(data: any, dataFields: string[], methodName: string) {

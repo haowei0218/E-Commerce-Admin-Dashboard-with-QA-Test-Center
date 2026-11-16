@@ -21,8 +21,8 @@ export const UsersQueryResolvers = {
     GetAdminUserById: async (_parent: unknown, { userId }: { userId: string }, context: ServerContext) => {
       return await getAdminUserById(userId, context)
     },
-    GetAdminUserByProperties: async (_parent: unknown, { keyword, role_id, status }: { keyword: string, role_id: number, status: accountStatus, }, context: ServerContext) => {
-      return await getAdminUserByProperties({ keyword, role_id, status }, context)
+    GetAdminUserByProperties: async (_parent: unknown, { keyword, role_id, status, page, pageSize }: { keyword: string, role_id: number, status: accountStatus, page: number, pageSize: number }, context: ServerContext) => {
+      return await getAdminUserByProperties({ keyword, role_id, status, page, pageSize }, context)
     }
   }
 }

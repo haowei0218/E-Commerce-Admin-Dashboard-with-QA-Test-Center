@@ -38,8 +38,8 @@ export const ADMIN_USER_LOGOUT = /* GraphQL */`
   }
 `
 export const GET_ADMIN_USER_BY_PROPERTIES = /* GraphQL */`
-query GetAdminUserByProperties($status: String, $roleId: Int, $keyword: String) {
-  GetAdminUserByProperties(status: $status, role_id: $roleId, keyword: $keyword) {
+query GetAdminUserByProperties($status: String, $roleId: Int, $keyword: String, $page: Int, $pageSize: Int) {
+  GetAdminUserByProperties(status: $status, role_id: $roleId, keyword: $keyword, page: $page, pageSize: $pageSize) {
     getUsers {
       id
       name
@@ -50,6 +50,7 @@ query GetAdminUserByProperties($status: String, $roleId: Int, $keyword: String) 
       update_at
       last_login_at
     }
+    totalCount
   }
 }
 `

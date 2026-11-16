@@ -8,7 +8,7 @@ export const UserQueryDefs = gql`
         UserLogin(account:String,password:String):UserLoginResponse!
         GetAdminUsers:GetUsersResponse!
         GetAdminUserById(userId:String):GetUserByIdResponse!
-        GetAdminUserByProperties(status:String,role_id:Int,keyword:String):GetUsersResponse!
+        GetAdminUserByProperties(status:String,role_id:Int,keyword:String,page:Int,pageSize:Int):GetUsersResponse!
         
     }
 `;

@@ -146,7 +146,7 @@ export default function Products() {
   ]
 
   return (
-    <div className='bg-gray-100 h-full p-5 '>
+    <div className='bg-gray-100 p-5 '>
       {/* page title */}
       <div className='m-auto py-5'>
         <PageTitle
@@ -239,17 +239,18 @@ export default function Products() {
           <FilterButton clearFilterFn={resetFilter} FilterFn={handleFilter} />
         </div>
 
-        {productsQuery.isLoading && <Ring className='w-10 h-10 m-auto' />}
+
         {/* table */}
-        {products && (
-          <div className='rounded-t-2xl border-t border-l border-r m-auto border-gray-200 overflow-y-auto'>
-            <ProductsTable
-              products={products}
-              headers={productsTableHeaders}
-              router={router}
-            />
-          </div>
-        )}
+        
+        <div className='rounded-t-2xl border-t border-l border-r m-auto border-gray-200 overflow-y-auto'>
+          {products && <ProductsTable
+            products={products}
+            headers={productsTableHeaders}
+            router={router}
+          />}
+        </div>
+        {productsQuery.isLoading && <Ring className='w-10 h-10 mt-5 m-auto' />}
+
 
         <div className='flex justify-between items-center w-full mt-5'>
           <p className='text-lg text-gray-500 font-bold'>

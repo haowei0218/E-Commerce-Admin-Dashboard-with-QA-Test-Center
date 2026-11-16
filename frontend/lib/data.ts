@@ -72,11 +72,7 @@ export const paymentStatusList = [
 export const usersTableHeaders = [
   {
     headerName: 'User ID',
-    style: "w-80"
-  },
-  {
-    headerName: 'Name',
-    style: "w-45"
+    style: "w-60"
   },
   {
     headerName: 'Email',

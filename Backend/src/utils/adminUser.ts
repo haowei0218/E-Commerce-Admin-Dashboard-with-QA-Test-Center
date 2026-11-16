@@ -25,6 +25,7 @@ import {
 import { RoleCode, ServerContext } from '../type/admin-users/adminUsers.base..js'
 import { requestPermission, requestAuth } from '../auth.js'
 import { rolePermissions } from '../type/role-permissions/role_permissions.base.js'
+import { off } from 'node:cluster'
 
 /**email format check */
 export function emailFormatCheck(email: string) {
@@ -218,7 +219,9 @@ export async function getAdminUserByProperties(
   const keywordValue = filtersInfo.keyword || null
   const statusValue = filtersInfo.status || null
   const isRoleId = filtersInfo.role_id || null
-
+  const page = filtersInfo.page > 0 ? filtersInfo.page : 1
+  const pageSize = filtersInfo.pageSize > 0 ? filtersInfo.pageSize : 1
+  const offset = (page - 1) * filtersInfo.pageSize
   const result = await context.db.query(
     `
     SELECT
@@ -243,11 +246,33 @@ export async function getAdminUserByProperties(
       AND ($3::text IS NULL OR u.status = $3)
       AND u.role_id > $4
       AND u.id <> $5
+    Limit $6
+    OffSET $7
+  `,
+    [keywordValue, isRoleId, statusValue, context.user.role_id, context.user.id, pageSize, offset]
+  )
+
+  const totalCount = await context.db.query(
+    `
+    SELECT
+     COUNT(*) AS total_count
+    FROM users 
+    WHERE
+      ($1::text IS NULL OR (
+        users.name ILIKE '%' || $1 || '%'
+        OR users.email ILIKE '%' || $1 || '%'
+        OR users.id::text ILIKE '%' || $1 || '%'
+      ))
+      AND ($2::bigint IS NULL OR users.role_id = $2)
+      AND ($3::text IS NULL OR users.status = $3)
+      AND users.role_id > $4
+      AND users.id <> $5
   `,
     [keywordValue, isRoleId, statusValue, context.user.role_id, context.user.id]
   )
   return {
     getUsers: result.rows,
+    totalCount: Number(totalCount.rows[0].total_count)
   }
 }
 

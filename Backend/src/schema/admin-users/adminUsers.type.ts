@@ -46,6 +46,7 @@ export const UserResponse = gql`
 export const GetUsersResponse = gql`
   type GetUsersResponse {
     getUsers:[UserInformation]
+    totalCount:Int
   }
 `
 export const LogoutResponse = gql`

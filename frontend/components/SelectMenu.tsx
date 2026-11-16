@@ -36,7 +36,7 @@ export function SelectMenu({
   }))
   return (
     <div className='grid gap-2'>
-      <label className={`${!label && "hidden"} w-50 font-semibold  text-[16px] text-gray-500`}>
+      <label className={`${!label && "hidden"} w-50 font-bold  text-[16px] text-black`}>
         {label}
       </label>
       <Select

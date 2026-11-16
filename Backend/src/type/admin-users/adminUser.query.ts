@@ -25,6 +25,8 @@ export type getUserByPropertiesPayload = {
     status: accountStatus
     role_id: number
     keyword: string
+    page:number
+    pageSize:number
 }
 
 export type queryUser = {
@@ -40,4 +42,5 @@ export type queryUser = {
 
 export type GetUserByPropertiesResponse = {
     getUsers: queryUser[]
+    totalCount:number
 }

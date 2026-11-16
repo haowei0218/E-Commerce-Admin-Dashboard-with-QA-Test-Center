@@ -2,7 +2,7 @@ import { UserLoginResponse, GetUsersResponse, AdminUserLogoutResponse, GetAdminU
 import { orderEventResponse } from './order-event/base.type'
 import { getAllOrdersResponse, getOrdersResponse, getOrderByIdResponse, updateOrderStatusResponse, updatePaymentStatusResponse, updateShippingStatusResponse, updateOrderNoteResponse } from './orders/base.type'
 import { productResponse, getProductsResponse, createImageUrlToken } from './products/products.base'
-
+import { activityLogResponse } from './acitve-log/activitylog.base'
 export type Response = {
   UserLogin: UserLoginResponse
   GetUsers: GetUsersResponse
@@ -26,4 +26,5 @@ export type Response = {
   GetProducts: getProductsResponse
   CreateProduct: productResponse
   GetImageToken: createImageUrlToken
+  GetActiveLog: activityLogResponse
 }

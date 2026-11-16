@@ -79,7 +79,7 @@ export default function Orders() {
 
   return (
     <>
-      <div className='bg-gray-50 w-full h-full p-5 overflow-y-auto'>
+      <div className='bg-gray-50 p-5'>
 
         {/* page title */}
         <div className='border border-gray-200 rounded-lg p-5 bg-white m-auto'>

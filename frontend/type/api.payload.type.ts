@@ -25,4 +25,5 @@ export type APIPayload = {
   GetProducts: { input: filterProductPayload }
   CreateProduct: { input: productPayload }
   GetImageToken: { fileName: string, contentType: string }
+  GetActiveLog: { userId: string }
 }

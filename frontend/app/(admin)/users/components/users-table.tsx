@@ -3,6 +3,7 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 import { formatDate } from "@/lib/utils";
 import { BsPencil } from "react-icons/bs";
 import { CiEdit } from "react-icons/ci";
+import { TbEyeSearch } from "react-icons/tb";
 type UsersTableRowProps = {
     user: adminUserProfile;
     route: AppRouterInstance;
@@ -33,11 +34,8 @@ export function UsersTableRow(tableRowProps: UsersTableRowProps) {
             key={tableRowProps.user.id + tableRowProps.user.email}
         >
             <td className='text-left flex flex-col items-start'>
-                <p className="text-md font-medium w-80 font-stretch-condensed">{tableRowProps.user.name}</p>
+                <p className="text-md font-medium w-60 font-stretch-condensed">{tableRowProps.user.name}</p>
                 <p className="text-[12px] text-gray-600">{tableRowProps.user.id.slice(0, 28) + "..."}</p>
-            </td>
-            <td className='text-left flex items-center text-md font-medium w-45 font-stretch-condensed '>
-                {tableRowProps.user.name}
             </td>
             <td className='text-left flex items-center text-md font-medium w-60 font-stretch-condensed '>
                 {tableRowProps.user.email}
@@ -48,7 +46,7 @@ export function UsersTableRow(tableRowProps: UsersTableRowProps) {
             <td
                 className="text-left flex items-center text-md font-medium w-30 font-stretch-condensed  "
             >
-                <div className={`w-15 h-6 mt-1.5 flex justify-center items-center ${statusStyle[tableRowProps.user.status]} rounded-md`}>
+                <div className={`w-18 h-6  mt-1.5 flex justify-center items-center ${statusStyle[tableRowProps.user.status]} rounded-md`}>
                     <span >{tableRowProps.user.status}</span>
                 </div>
             </td>
@@ -63,11 +61,11 @@ export function UsersTableRow(tableRowProps: UsersTableRowProps) {
             </td>
             <td className='flex items-start gap-2 text-left text-md font-black font-stretch-condensed mb-2 '>
                 <button
-                    className='flex w-18 h-10 items-center justify-center text-white bg-amber-500 p-1 gap-2 rounded-md border border-gray-200 px-2.5 py-1.5 font-bold hover:bg-amber-600'
+                    className="w-20 h-10 flex items-center gap-2 justify-center border-blue-500 text-blue-500 border rounded-md hover:cursor-pointer hover:bg-blue-500 hover:text-white text-lg font-bold"
                     onClick={() => tableRowProps.route.push(`/users/edit-user/${tableRowProps.user.id}`)}
                 >
-                    <CiEdit />
-                    Edit
+                    <TbEyeSearch />
+                    View
                 </button>
             </td>
         </tr>)

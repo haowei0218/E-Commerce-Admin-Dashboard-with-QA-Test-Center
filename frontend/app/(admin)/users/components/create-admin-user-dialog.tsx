@@ -54,7 +54,6 @@ export default function CreateAdminUserDialog() {
             })
             toast.success('create successfully')
             setOpen(false)
-            refresh()
         } catch (error) {
             console.error(error)
         }
