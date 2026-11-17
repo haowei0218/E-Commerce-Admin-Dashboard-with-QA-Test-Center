@@ -1,4 +1,4 @@
-import { USER_LOGIN, GET_USERS, ADMIN_USER_LOGOUT, GET_ADMIN_USER_BY_PROPERTIES, CREATE_ADMIN_USER, GET_ADMIN_USER_BY_ID, UPDATE_MY_PROFILE, CHANGE_PASSWORD, SET_ADMIN_USER_ROLE, SET_ADMIN_USER_ACTIVE } from '@/graphql/user'
+import { USER_LOGIN, GET_USERS, ADMIN_USER_LOGOUT, GET_ADMIN_USER_BY_PROPERTIES, CREATE_ADMIN_USER, GET_ADMIN_USER_BY_ID, UPDATE_MY_PROFILE, CHANGE_PASSWORD, SET_ADMIN_USER_ROLE, SET_ADMIN_USER_ACTIVE, GET_ADMIN_USER_TIMELINE, GET_ADMIN_USER_STATISTICS } from '@/graphql/user'
 import { Response } from '@/type/api.response.type'
 import { CreateAdminUserPayload, GetAdminUserByPropertiesPayload, UserLoginPayload } from '@/type/admin-users/adminUser.type'
 import { fetchAPI } from '@/lib/api-hook'
@@ -62,5 +62,16 @@ export async function setAdminUserActive({ setAdminUserActiveId, status }: { set
     throw new Error('Invalid input data')
   }
   const result = await fetchAPI<'SetAdminUserActive'>(apiUrl, SET_ADMIN_USER_ACTIVE, { setAdminUserActiveId: setAdminUserActiveId, status: status })
+  return result
+}
+
+export async function getAdminUserTimeLine(userId: string): Promise<Response['GetAdminUserTimeLine']> {
+  const result = await fetchAPI<'GetAdminUserTimeLine'>(apiUrl, GET_ADMIN_USER_TIMELINE, { userId })
+  return result
+}
+
+
+export async function getAdminUserStatistics(): Promise<Response['GetAdminUserStatistics']> {
+  const result = await fetchAPI<'GetAdminUserStatistics'>(apiUrl, GET_ADMIN_USER_STATISTICS)
   return result
 }

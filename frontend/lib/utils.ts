@@ -10,18 +10,32 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function formatDate(value: string | number | Date) {
-  const date =
-    value instanceof Date
-      ? value
-      : typeof value === 'number'
-        ? new Date(value)
-        : new Date(
-          value.trim()
-            .replace(' ', 'T')
-            .replace(/(\.\d{3})\d+/, '$1')
-            .replace(/([+-]\d{2})$/, '$1:00')
-        );
+export function formatDate(value: string | number | Date | null | undefined) {
+  if (value == null) return '—';
+
+  let date: Date;
+
+  if (value instanceof Date) {
+    date = value;
+  } else if (typeof value === 'number') {
+    date = new Date(value);
+  } else {
+    const text = value.trim();
+    if (text === '') return '—';
+
+    if (/^\d+$/.test(text)) {
+      // 例如 "1794822624877"：先轉成數字，再當毫秒時間戳解析
+      date = new Date(Number(text));
+    } else {
+      // 例如 "2026-11-16 09:50:25.087445+00"：整理成 ISO 格式
+      const normalized = text
+        .replace(' ', 'T')
+        .replace(/(\.\d{3})\d+/, '$1')
+        .replace(/(T\d{2}:\d{2}:\d{2}(?:\.\d+)?)([+-]\d{2})$/, '$1$2:00');
+
+      date = new Date(normalized);
+    }
+  }
 
   if (Number.isNaN(date.getTime())) return '—';
 

@@ -356,3 +356,31 @@ export async function setAdminUserRole(id: string | undefined, role_id: RoleCode
     userProfile: result.rows[0]
   }
 }
+
+export async function getAdminUserTimeLine(userId: string, context: ServerContext) {
+  const result = await context.db.query(`
+      select create_at,update_at,last_login_at from users where id=$1
+    `, [userId])
+  return {
+    lastLoginAt: result.rows[0].last_login_at,
+    lastUpdateAt: result.rows[0].update_at,
+    createdAt: result.rows[0].create_at,
+  }
+}
+
+export async function getAdminUserStatistics(context: ServerContext) {
+  const result = await context.db.query(`
+    SELECT
+      COUNT(*) AS total_users,
+      COUNT(CASE WHEN status = 'Active' THEN 1 END) AS active_users,
+      COUNT(CASE WHEN status = 'Inactive' THEN 1 END) AS inactive_users,
+      COUNT(CASE WHEN role_id = 1 THEN 1 END) AS admin_users
+    FROM users
+`)
+  return {
+    total_users: result.rows[0].total_users,
+    active_users: result.rows[0].active_users,
+    inactive_users: result.rows[0].inactive_users,
+    admin_users: result.rows[0].admin_users
+  }
+}

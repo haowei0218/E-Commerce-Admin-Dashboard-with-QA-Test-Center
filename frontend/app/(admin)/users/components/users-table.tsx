@@ -1,100 +1,114 @@
-import { adminUserProfile } from "@/type/admin-users/adminUser.type";
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import type { adminUserProfile } from "@/type/admin-users/adminUser.type";
+import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { formatDate } from "@/lib/utils";
-import { BsPencil } from "react-icons/bs";
-import { CiEdit } from "react-icons/ci";
 import { TbEyeSearch } from "react-icons/tb";
+
 type UsersTableRowProps = {
-    user: adminUserProfile;
-    route: AppRouterInstance;
+  user: adminUserProfile;
+  route: AppRouterInstance;
+};
+
+type HeaderProps = {
+  headerName: string;
+  style: string;
 };
 
 type UserTableProps = {
-    users: adminUserProfile[]
-    route: AppRouterInstance
-    tableheaders: HeaderProps[]
-}
+  users: adminUserProfile[];
+  route: AppRouterInstance;
+  tableheaders: HeaderProps[];
+};
 
-type HeaderProps = {
-    headerName: string
-    style: string
-}
+const statusStyle: Record<string, string> = {
+  Active: "bg-green-300 text-green-700",
+  Inactive: "bg-red-300 text-red-700",
+};
 
-const statusStyle = {
-    Active: 'bg-green-100 text-green-700',
-    Inactive: 'bg-red-100 text-red-700',
-}
+const cellClass = "px-4 py-3 align-middle";
+const dateClass = "whitespace-nowrap text-sm text-gray-600";
 
+export function UsersTableRow({ user, route }: UsersTableRowProps) {
+  return (
+    <tr className="border-b border-gray-200 transition-colors hover:bg-gray-50">
+      <td className={cellClass}>
+        <p className="text-sm font-semibold text-gray-900">{user.name}</p>
+        <p className="max-w-[200px] truncate text-xs text-gray-500" title={user.id}>
+          {user.id}
+        </p>
+      </td>
 
+      <td className={cellClass}>
+        <span className="whitespace-nowrap text-sm text-gray-600">
+          {user.email}
+        </span>
+      </td>
 
-export function UsersTableRow(tableRowProps: UsersTableRowProps) {
-    return (
-        <tr
-            className='flex gap-2 p-3 border-b border-gray-200'
-            key={tableRowProps.user.id + tableRowProps.user.email}
+      <td className={cellClass}>
+        <span className="inline-block whitespace-nowrap rounded-md bg-gray-200 px-2 py-1 text-sm text-gray-600">
+          {user.code}
+        </span>
+      </td>
+
+      <td className={cellClass}>
+        <span
+          className={`inline-flex min-w-[90px] items-center justify-center rounded-md px-3 py-1 text-sm font-medium ${
+            statusStyle[user.status] ?? "bg-gray-200 text-gray-600"
+          }`}
         >
-            <td className='text-left flex flex-col items-start'>
-                <p className="text-md font-medium w-60 font-stretch-condensed">{tableRowProps.user.name}</p>
-                <p className="text-[12px] text-gray-600">{tableRowProps.user.id.slice(0, 28) + "..."}</p>
-            </td>
-            <td className='text-left flex items-center text-md font-medium w-60 font-stretch-condensed '>
-                {tableRowProps.user.email}
-            </td>
-            <td className='text-left flex items-center text-md font-medium w-40 font-stretch-condensed '>
-                {tableRowProps.user.code}
-            </td>
-            <td
-                className="text-left flex items-center text-md font-medium w-30 font-stretch-condensed  "
-            >
-                <div className={`w-18 h-6  mt-1.5 flex justify-center items-center ${statusStyle[tableRowProps.user.status]} rounded-md`}>
-                    <span >{tableRowProps.user.status}</span>
-                </div>
-            </td>
-            <td className='flex items-center text-left text-md font-medium w-50 font-stretch-condensed '>
-                {formatDate(tableRowProps.user.create_at)}
-            </td>
-            <td className='flex items-center text-left text-md font-medium w-50 font-stretch-condensed '>
-                {formatDate(tableRowProps.user.update_at)}
-            </td>
-            <td className='flex items-center text-left text-md font-medium w-40 font-stretch-condensed '>
-                {formatDate(tableRowProps.user.last_login_at)}
-            </td>
-            <td className='flex items-start gap-2 text-left text-md font-black font-stretch-condensed mb-2 '>
-                <button
-                    className="w-20 h-10 flex items-center gap-2 justify-center border-blue-500 text-blue-500 border rounded-md hover:cursor-pointer hover:bg-blue-500 hover:text-white text-lg font-bold"
-                    onClick={() => tableRowProps.route.push(`/users/edit-user/${tableRowProps.user.id}`)}
-                >
-                    <TbEyeSearch />
-                    View
-                </button>
-            </td>
-        </tr>)
+          {user.status}
+        </span>
+      </td>
+
+      <td className={cellClass}>
+        <span className={dateClass}>{formatDate(user.create_at)}</span>
+      </td>
+
+      <td className={cellClass}>
+        <span className={dateClass}>{formatDate(user.update_at)}</span>
+      </td>
+
+      <td className={cellClass}>
+        <span className={dateClass}>{formatDate(user.last_login_at)}</span>
+      </td>
+
+      <td className={cellClass}>
+        <button
+          type="button"
+          className="flex h-10 w-full min-w-20 items-center justify-center gap-2 rounded-md border border-blue-500 text-lg font-bold text-blue-500 hover:cursor-pointer hover:bg-blue-500 hover:text-white"
+          onClick={() => route.push(`/users/edit-user/${user.id}`)}
+        >
+          <TbEyeSearch aria-hidden="true" />
+          View
+        </button>
+      </td>
+    </tr>
+  );
 }
 
-export function UsersTable(tableProps: UserTableProps) {
-    return (
-        <table className='w-full '>
-            <thead className='bg-gray-200 rounded-t-2xl'>
-                <tr className='flex justify-start gap-2 p-3 '>
-                    {
-                        tableProps.tableheaders.map((header: HeaderProps) => {
-                            return (
-                                <th key={header.headerName} className={`text-left text-sm font-black font-stretch-condensed text-gray-600 ${header.style}`}>
-                                    <strong>{header.headerName}</strong>
-                                </th>
+export function UsersTable({ users, route, tableheaders }: UserTableProps) {
+  return (
+    <div className="w-full overflow-x-auto rounded-lg border border-gray-200">
+      <table className="w-full min-w-[1150px] table-auto">
+        <thead className="bg-gray-50">
+          <tr>
+            {tableheaders.map(({ headerName }) => (
+              <th
+                key={headerName}
+                scope="col"
+                className="whitespace-nowrap px-4 py-3 text-left text-sm font-bold text-gray-600"
+              >
+                {headerName}
+              </th>
+            ))}
+          </tr>
+        </thead>
 
-                            )
-                        })
-                    }
-                </tr>
-            </thead>
-            <tbody className='bg-white'>
-                {tableProps.users?.map((user) => {
-                    return (
-                        <UsersTableRow key={user.id + user.name} user={user} route={tableProps.route} />
-                    )
-                })}
-            </tbody>
-        </table>
-    )
+        <tbody className="bg-white">
+          {users?.map((user) => (
+            <UsersTableRow key={user.id} user={user} route={route} />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }

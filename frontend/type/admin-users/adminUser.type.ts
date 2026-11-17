@@ -116,6 +116,24 @@ export type SetAdminUserActiveResponse = {
     userInfo: loginUserProfile
   }
 }
+
+export type GetAdminUserTimeLineResponse = {
+  GetAdminUserTimeLine: {
+    lastLoginAt: string,
+    lastUpdateAt: string,
+    createdAt: string
+  }
+}
+
+export type GetAdminUserStatisticsResponse = {
+  GetAdminUserStatistics: {
+    total_users: number
+    active_users: number
+    inactive_users: number
+    admin_users: number
+  }
+}
+
 export type RoleMap = {
   1: "Admin",
   2: "Manager",

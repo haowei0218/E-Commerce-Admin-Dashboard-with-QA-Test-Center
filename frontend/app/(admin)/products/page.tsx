@@ -104,6 +104,7 @@ export default function Products() {
 
   const products = productsQuery.data?.products ?? []
   const totalPage = productsQuery.data?.totalPage ?? 1
+  const totalCount = productsQuery.data?.totalCount ?? 0
   const calculatePercentage = (count: number, total: number) => {
     if (total === 0) return 0
 
@@ -241,7 +242,7 @@ export default function Products() {
 
 
         {/* table */}
-        
+
         <div className='rounded-t-2xl border-t border-l border-r m-auto border-gray-200 overflow-y-auto'>
           {products && <ProductsTable
             products={products}
@@ -254,7 +255,7 @@ export default function Products() {
 
         <div className='flex justify-between items-center w-full mt-5'>
           <p className='text-lg text-gray-500 font-bold'>
-            Showing 1-6 of {productsQuery.data?.totalCount} products
+            Showing {page * PAGE_SIZE - 5}-{page * PAGE_SIZE > totalCount ? totalCount : page * PAGE_SIZE} of {totalCount} Result
           </p>
           <Pagination setPageFn={setPage} PAGE={page} totalPage={totalPage} />
         </div>

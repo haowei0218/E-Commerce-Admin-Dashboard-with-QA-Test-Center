@@ -3,7 +3,7 @@ import { CgExport } from 'react-icons/cg'
 
 import { SelectMenu } from '@/components/SelectMenu'
 import { useEffect, useState } from 'react'
-import { getAdminUserByProperties, getUsers } from '@/lib/user.api'
+import { getAdminUserByProperties, getAdminUserStatistics, getUsers } from '@/lib/user.api'
 import { Ring } from '@/components/ring'
 import { useRouter } from 'next/navigation'
 import PageTitle from '@/components/ui/PageTitle'
@@ -23,40 +23,7 @@ import { StatisticsCard } from '@/components/StatisticsCard'
 import Pagination from '@/components/Pagination'
 import { Loading } from './components/user-table-loading'
 
-const cardList = [
-  {
-    icon: <FaUserFriends />,
-    title: 'Total User',
-    data: 256,
-    percent: 100,
-    subtitle: 'all users',
-    backgroundColor: 'bg-blue-100 text-blue-600',
-  },
-  {
-    icon: <IoTimeOutline />,
-    title: 'Active User',
-    data: 198,
-    percent: calculatePercentage(198, 256),
-    subtitle: 'statistics active users',
-    backgroundColor: 'bg-green-100 text-green-500',
-  },
-  {
-    icon: <MdBlock />,
-    title: 'InActive Users',
-    data: 42,
-    percent: calculatePercentage(42, 256),
-    subtitle: 'statistics inactive users',
-    backgroundColor: 'bg-orange-100 text-orange-500',
-  },
-  {
-    icon: <GrUserManager />,
-    title: 'Manage Users',
-    data: 8,
-    percent: calculatePercentage(8, 256),
-    subtitle: 'Stock below 10',
-    backgroundColor: 'bg-red-100 text-red-500',
-  },
-]
+
 
 export default function Users() {
   const [page, setPage] = useState<number>(1)
@@ -109,7 +76,48 @@ export default function Users() {
       }),
   })
 
-  
+  const adminUserStatisticsQuery = useQuery({
+    queryKey: ['admin-user-statistics'],
+    queryFn: () => getAdminUserStatistics()
+  })
+
+  const statistics = adminUserStatisticsQuery.data?.GetAdminUserStatistics
+  const cardList = [
+    {
+      icon: <FaUserFriends />,
+      title: 'Total User',
+      data: statistics?.total_users ?? 0,
+      percent: 100,
+      subtitle: 'Statistics of users in all states',
+      backgroundColor: 'bg-blue-100 text-blue-600',
+    },
+    {
+      icon: <IoTimeOutline />,
+      title: 'Active User',
+      data: statistics?.active_users ?? 0,
+      percent: calculatePercentage(statistics?.active_users ?? 0, statistics?.total_users ?? 0),
+      subtitle: 'Statistics of all active users',
+      backgroundColor: 'bg-green-100 text-green-500',
+    },
+    {
+      icon: <MdBlock />,
+      title: 'InActive Users',
+      data: statistics?.inactive_users ?? 0,
+      percent: calculatePercentage(statistics?.inactive_users ?? 0, statistics?.total_users ?? 0),
+      subtitle: 'Statistics on all inactive users',
+      backgroundColor: 'bg-orange-100 text-orange-500',
+    },
+    {
+      icon: <GrUserManager />,
+      title: 'Manage Users',
+      data: statistics?.admin_users,
+      percent: calculatePercentage(statistics?.admin_users ?? 0, statistics?.total_users ?? 0),
+      subtitle: 'Statistics on users with management',
+      backgroundColor: 'bg-red-100 text-red-500',
+    },
+  ]
+
+
 
   const adminUsers = adminUsersQuery.data?.GetAdminUserByProperties.getUsers ?? []
   const totalCount = adminUsersQuery.data?.GetAdminUserByProperties.totalCount ?? 0
@@ -121,7 +129,7 @@ export default function Users() {
         <PageTitle
           children={
             <div className='flex gap-2'>
-              <ExportButton exportFn={() => console.log('export function')} />
+              <ExportButton exportFn={() => exportCSV(adminUsers, ['id', 'name', 'email', 'code', 'status', 'create_at'], "users")} />
               <CreateAdminUserDialog />
             </div>
           }

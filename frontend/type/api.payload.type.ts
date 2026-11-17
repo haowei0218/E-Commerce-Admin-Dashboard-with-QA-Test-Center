@@ -26,4 +26,6 @@ export type APIPayload = {
   CreateProduct: { input: productPayload }
   GetImageToken: { fileName: string, contentType: string }
   GetActiveLog: { userId: string }
+  GetAdminUserTimeLine: { userId: string }
+  GetAdminUserStatistics:{}
 }

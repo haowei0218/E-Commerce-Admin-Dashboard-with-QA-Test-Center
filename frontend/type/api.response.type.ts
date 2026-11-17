@@ -1,4 +1,4 @@
-import { UserLoginResponse, GetUsersResponse, AdminUserLogoutResponse, GetAdminUserByPropertiesResponse, CreateAdminUserResponse, GetAdminUserByIdResponse, UpdateMyProfileResponse, ChangePasswordResponse, SetAdminUserRoleResponse, SetAdminUserActiveResponse, SetAdminUserInactiveResponse } from './admin-users/adminUser.type'
+import { UserLoginResponse, GetUsersResponse, AdminUserLogoutResponse, GetAdminUserByPropertiesResponse, CreateAdminUserResponse, GetAdminUserByIdResponse, UpdateMyProfileResponse, ChangePasswordResponse, SetAdminUserRoleResponse, SetAdminUserActiveResponse, SetAdminUserInactiveResponse, GetAdminUserTimeLineResponse, GetAdminUserStatisticsResponse } from './admin-users/adminUser.type'
 import { orderEventResponse } from './order-event/base.type'
 import { getAllOrdersResponse, getOrdersResponse, getOrderByIdResponse, updateOrderStatusResponse, updatePaymentStatusResponse, updateShippingStatusResponse, updateOrderNoteResponse } from './orders/base.type'
 import { productResponse, getProductsResponse, createImageUrlToken } from './products/products.base'
@@ -27,4 +27,6 @@ export type Response = {
   CreateProduct: productResponse
   GetImageToken: createImageUrlToken
   GetActiveLog: activityLogResponse
+  GetAdminUserTimeLine: GetAdminUserTimeLineResponse
+  GetAdminUserStatistics: GetAdminUserStatisticsResponse
 }

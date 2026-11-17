@@ -80,4 +80,20 @@ export const SetAdminUserRoleResponse = gql`
   }
 `
 
-export const mergeUserTypeDefs = mergeTypeDefs([User, UserLoginResponse, UserResponse, UserInformation, GetUsersResponse, LogoutResponse, GetUserByIdResponse, ChangePasswordResponse, UpdateMyProfileResponse, SetAdminUserRoleResponse])
+export const GetAdminUserTimeLineResponse = gql`
+  type GetAdminUserTimeLineResponse {
+    lastLoginAt:String
+    lastUpdateAt:String
+    createdAt:String
+  }
+`
+export const GetAdminUserStatisticsResponse = gql`
+  type GetAdminUserStatisticsResponse{
+    total_users:Int
+    active_users:Int
+    inactive_users:Int
+    admin_users:Int
+  }
+`
+
+export const mergeUserTypeDefs = mergeTypeDefs([User, UserLoginResponse, UserResponse, UserInformation, GetUsersResponse, LogoutResponse, GetUserByIdResponse, ChangePasswordResponse, UpdateMyProfileResponse, SetAdminUserRoleResponse, GetAdminUserTimeLineResponse,GetAdminUserStatisticsResponse])

@@ -1,123 +1,145 @@
-import { formatDate } from "@/lib/utils"
-import { order } from "@/type/orders/base.type"
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
-type orderTableRowProps = {
-    order: order
-    router: AppRouterInstance
+import type { order as Order } from "@/type/orders/base.type";
+import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+
+type HeaderProps = {
+  headerName: string;
+  style: string;
+};
+
+type OrdersTableRowProps = {
+  order: Order;
+  router: AppRouterInstance;
+};
+
+type OrdersTableProps = {
+  orders: Order[];
+  router: AppRouterInstance;
+  headers: HeaderProps[];
+};
+
+const orderStatusStyle: Record<string, string> = {
+  pending: "bg-amber-100 text-amber-700",
+  processing: "bg-blue-100 text-blue-700",
+  completed: "bg-green-100 text-green-700",
+  cancelled: "bg-red-100 text-red-700",
+};
+
+const paymentStatusStyle: Record<string, string> = {
+  unpaid: "bg-amber-100 text-amber-700",
+  paid: "bg-green-100 text-green-700",
+  failed: "bg-red-100 text-red-700",
+  refunded: "bg-purple-100 text-purple-700",
+};
+
+const shippingStatusStyle: Record<string, string> = {
+  pending: "bg-amber-100 text-amber-700",
+  preparing: "bg-blue-100 text-blue-700",
+  shipped: "bg-indigo-100 text-indigo-700",
+  delivered: "bg-green-100 text-green-700",
+  returned: "bg-purple-100 text-purple-700",
+};
+
+const cellClass = "px-4 py-3 align-middle";
+const idClass = "block max-w-[180px] truncate text-xs text-gray-500";
+
+function StatusBadge({
+  status,
+  styles,
+}: {
+  status: string;
+  styles: Record<string, string>;
+}) {
+  return (
+    <span
+      className={`inline-flex min-w-[90px] items-center justify-center whitespace-nowrap rounded-md px-3 py-1 text-sm font-medium ${
+        styles[status] ?? "bg-gray-200 text-gray-600"
+      }`}
+    >
+      {status}
+    </span>
+  );
 }
 
-type ordersTableProps = {
-    orders: order[]
-    router: AppRouterInstance
-    headers: headersProps[]
-}
+export function OrdersTableRow({ order, router }: OrdersTableRowProps) {
+  return (
+    <tr className="border-b border-gray-200 transition-colors hover:bg-gray-50">
+      <td className={cellClass}>
+        <span className={idClass} title={order.id}>{order.id}</span>
+      </td>
 
-type headersProps = {
-    headerName: string
-    style: string
-}
+      <td className={cellClass}>
+        <span className="inline-block whitespace-nowrap rounded-md bg-gray-200 px-2 py-1 text-sm text-gray-600">
+          {order.order_number}
+        </span>
+      </td>
 
-const orderStatusStyle = {
-    pending: 'bg-amber-100 text-amber-700',
-    processing: 'bg-blue-100 text-blue-700',
-    completed: 'bg-green-100 text-green-700',
-    cancelled: 'bg-red-100 text-red-700',
-}
+      <td className={cellClass}>
+        <span className={idClass} title={order.customer_id ?? undefined}>
+          {order.customer_id || "—"}
+        </span>
+      </td>
 
-const paymentStatusStyle = {
-    unpaid: 'bg-amber-100 text-amber-700',
-    paid: 'bg-green-100 text-green-700',
-    failed: 'bg-red-100 text-red-700',
-    refunded: 'bg-purple-100 text-purple-700',
-}
+      <td className={cellClass}>
+        <span className="whitespace-nowrap text-sm font-semibold">
+          NTD${order.total_amount}
+        </span>
+      </td>
 
-const shippingStatusStyle = {
-    pending: 'bg-amber-100 text-amber-700',
-    preparing: 'bg-blue-100 text-blue-700',
-    shipped: 'bg-indigo-100 text-indigo-700',
-    delivered: 'bg-green-100 text-green-700',
-    returned: 'bg-purple-100 text-purple-700',
-}
+      <td className={cellClass}>
+        <StatusBadge status={order.order_status} styles={orderStatusStyle} />
+      </td>
 
+      <td className={cellClass}>
+        <StatusBadge status={order.payment_status} styles={paymentStatusStyle} />
+      </td>
 
+      <td className={cellClass}>
+        <StatusBadge status={order.shipping_status} styles={shippingStatusStyle} />
+      </td>
 
-export function OrdersTableRow(tableRowProps: orderTableRowProps) {
-    return (
-        <tr
-            className='flex gap-2 p-3 border-b border-gray-200'
-            key={tableRowProps.order.id + tableRowProps.order.order_number}
+      <td className={cellClass}>
+        <span className="whitespace-nowrap text-sm text-gray-600">
+          {order.payment_method}
+        </span>
+      </td>
+
+      <td className={cellClass}>
+        <button
+          type="button"
+          className="flex h-10 w-full items-center justify-center whitespace-nowrap rounded-md border border-blue-500 px-3 text-sm font-bold text-blue-500 hover:cursor-pointer hover:bg-blue-500 hover:text-white"
+          onClick={() => router.push(`/orders/details/${order.id}`)}
         >
-            <td className='text-left flex items-center text-md font-medium w-80 font-stretch-condensed'>
-                {tableRowProps.order.id.slice(0, 28) + "..."}
-            </td>
-            <td className='text-left flex items-center text-md font-medium w-45 font-stretch-condensed '>
-                {tableRowProps.order.order_number}
-            </td>
-            <td className='text-left flex items-center text-md font-medium w-60 font-stretch-condensed '>
-                {tableRowProps.order.customer_id ? tableRowProps.order.customer_id.slice(0, 28) + "..." : "null"}
-            </td>
-            <td className='text-left flex items-center text-md font-medium w-40 font-stretch-condensed '>
-                NTD${tableRowProps.order.total_amount}
-            </td>
-            <td
-                className="text-left flex items-center text-md font-medium w-30 font-stretch-condensed  "
-            >
-                <div className={`w-25 h-6 mt-1.5 flex justify-center items-center ${orderStatusStyle[tableRowProps.order.order_status]} rounded-md`}>
-                    <span >{tableRowProps.order.order_status}</span>
-                </div>
-            </td>
-            <td
-                className="text-left flex items-center text-md font-medium w-30 font-stretch-condensed  "
-            >
-                <div className={`w-25 h-6 mt-1.5 flex justify-center items-center ${paymentStatusStyle[tableRowProps.order.payment_status]} rounded-md`}>
-                    <span >{tableRowProps.order.payment_status}</span>
-                </div>
-            </td>
-            <td
-                className="text-left flex items-center text-md font-medium w-50 font-stretch-condensed  "
-            >
-                <div className={`w-25 h-6 mt-1.5 flex justify-center items-center ${shippingStatusStyle[tableRowProps.order.shipping_status]} rounded-md`}>
-                    <span >{tableRowProps.order.shipping_status}</span>
-                </div>
-            </td>
-            <td className='text-left flex items-center text-md font-medium w-50 font-stretch-condensed '>
-                {tableRowProps.order.payment_method}
-            </td>
-            <td className='flex items-start gap-2 text-left text-md font-black font-stretch-condensed mb-2 '>
-                <button
-                    className='flex items-center justify-center text-white bg-amber-500 p-1 gap-2 rounded-md font-normal border border-gray-200 px-2.5 py-1.5  hover:bg-amber-600'
-                    onClick={() => tableRowProps.router.push(`/orders/details/${tableRowProps.order.id}`)}
-                >
-                    Details
-                </button>
-            </td>
-        </tr>)
+          Details
+        </button>
+      </td>
+    </tr>
+  );
 }
 
-export function OrdersTable(tableProps: ordersTableProps) {
-    return (
-        <table className='w-full '>
-            <thead className='bg-gray-200 rounded-t-2xl'>
-                <tr className='flex justify-start gap-2 p-3 '>
-                    {
-                        tableProps.headers.map((header: headersProps) => {
-                            return (
-                                <th key={header.headerName} className={`text-left text-sm font-black font-stretch-condensed text-gray-600 ${header.style}`}>
-                                    <strong>{header.headerName}</strong>
-                                </th>
+export function OrdersTable({ orders, router, headers }: OrdersTableProps) {
+  return (
+    <div className="w-full overflow-x-auto rounded-lg border border-gray-200">
+      <table className="w-full min-w-[1150px] table-auto">
+        <thead className="bg-gray-50">
+          <tr>
+            {headers.map(({ headerName }) => (
+              <th
+                key={headerName}
+                scope="col"
+                className="whitespace-nowrap px-4 py-3 text-left text-sm font-bold text-gray-600"
+              >
+                {headerName}
+              </th>
+            ))}
+          </tr>
+        </thead>
 
-                            )
-                        })
-                    }
-                </tr>
-            </thead>
-            <tbody className='bg-white'>
-                {tableProps.orders?.map((order) => {
-                    return (
-                        <OrdersTableRow key={order.id + order.order_number} order={order} router={tableProps.router} />
-                    )
-                })}
-            </tbody>
-        </table>
-    )
+        <tbody className="bg-white">
+          {orders?.map((order) => (
+            <OrdersTableRow key={order.id} order={order} router={router} />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }

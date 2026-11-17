@@ -1,5 +1,5 @@
 import { accountStatus, userLoginPayload } from "../../type/admin-users/adminUser.query.js";
-import { getAdminUserById, getAdminUserByProperties, getAdminUsers, userLogin } from "../../utils/adminUser.js";
+import { getAdminUserById, getAdminUserByProperties, getAdminUsers, getAdminUserStatistics, getAdminUserTimeLine, userLogin } from "../../utils/adminUser.js";
 import { ServerContext } from "../../type/admin-users/adminUsers.base..js";
 import { createActivityLog } from "../../utils/activity-log.js";
 import { updateUserLoginAt } from "../../utils/adminUser.js";
@@ -23,6 +23,13 @@ export const UsersQueryResolvers = {
     },
     GetAdminUserByProperties: async (_parent: unknown, { keyword, role_id, status, page, pageSize }: { keyword: string, role_id: number, status: accountStatus, page: number, pageSize: number }, context: ServerContext) => {
       return await getAdminUserByProperties({ keyword, role_id, status, page, pageSize }, context)
+    },
+    GetAdminUserTimeLine: async (_parent: unknown, { userId }: { userId: string }, context: ServerContext) => {
+      return await getAdminUserTimeLine(userId, context)
+    },
+    GetAdminUserStatistics: async (_parent: unknown, { }, context: ServerContext) => {
+      return await getAdminUserStatistics(context)
     }
+
   }
 }

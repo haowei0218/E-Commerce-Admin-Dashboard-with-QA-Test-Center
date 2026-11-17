@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { RiArrowDropDownLine } from 'react-icons/ri'
 import { useEffect, useState } from "react";
 import { FaRegEyeSlash } from "react-icons/fa";
-import { changePassword, setAdminUserActive, setAdminUserRole, updateMyProfile } from "@/lib/user.api";
+import { changePassword, getAdminUserTimeLine, setAdminUserActive, setAdminUserRole, updateMyProfile } from "@/lib/user.api";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useParams } from "next/navigation";
@@ -67,6 +67,16 @@ export default function editUser() {
 
     const adminUserActiveLog = adminUserActiveLogQuery.data?.ActivityLogs
     console.log('event : ', adminUserActiveLog?.map((item) => item.create_at))
+
+    const adminUserTimeLineQuery = useQuery({
+        queryKey: ['admin-user-timeline'],
+        queryFn: () => getAdminUserTimeLine(userId),
+        enabled: Boolean(userId)
+    })
+
+    const adminUserTimeLine = adminUserTimeLineQuery.data?.GetAdminUserTimeLine
+
+    console.log('time line ', adminUserTimeLine)
 
     useEffect(() => {
         if (adminUser) {
@@ -202,7 +212,7 @@ export default function editUser() {
                 </button>
             </div>
 
-            <div className="flex gap-5 mt-10">
+            <div className="flex gap-5 mt-10 w-full">
                 <div className="p-2 rounded-xl bg-white shadow shadow-gray-400">
                     <button className="group flex h-15 w-full items-center justify-start gap-4 rounded-xl p-2 hover:bg-blue-200 hover:text-blue-500">
                         <MdOutlineManageAccounts size={24} className="text-gray-700 group-hover:text-blue-500" />
@@ -397,21 +407,24 @@ export default function editUser() {
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-xl shadow shadow-gray-400 w-100">
+                <div className="bg-white p-6 rounded-xl shadow shadow-gray-400 w-107">
                     <h1 className="text-xl font-medium ">Account OverView</h1>
 
                     <div className="border-b-2 border-b-gray-200 grid gap-5 py-5">
                         <div >
                             <span className="font-bold text-gray-500">Created On</span>
-                            <p>2026-09-01 06:34:31</p>
+                            {adminUserTimeLineQuery.isLoading && <p>載入中...</p>}
+                            {adminUserTimeLine && <p>{formatDate(adminUserTimeLine.createdAt)}</p>}
                         </div>
                         <div >
                             <span className="font-bold text-gray-500">Last Login</span>
-                            <p>2026-09-01 06:34:31</p>
+                            {adminUserTimeLineQuery.isLoading && <p>載入中...</p>}
+                            {adminUserTimeLine && <p>{formatDate(adminUserTimeLine.lastLoginAt)}</p>}
                         </div>
                         <div >
                             <span className="font-bold text-gray-500">Last Update</span>
-                            <p>2026-09-01 06:34:31</p>
+                            {adminUserTimeLineQuery.isLoading && <p>載入中...</p>}
+                            {adminUserTimeLine && <p>{formatDate(adminUserTimeLine.lastUpdateAt)}</p>}
                         </div>
                     </div>
 
@@ -419,8 +432,9 @@ export default function editUser() {
 
                     <div className="grid gap-5 py-5">
                         {adminUserActiveLogQuery.isLoading && <span className="m-auto">正在取得資料...</span>}
+                        {adminUserActiveLog && adminUserActiveLog.length === 0 && <span>無任何活動紀錄</span>}
 
-                        {adminUserActiveLog && adminUserActiveLog?.map((item) => {
+                        {adminUserActiveLog && adminUserActiveLog?.slice(0, 5).map((item) => {
                             return (
                                 <div className="font-bold " key={item.id}>
                                     <span className="text-sm line-clamp-1">{item.description}</span>

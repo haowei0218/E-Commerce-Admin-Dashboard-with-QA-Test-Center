@@ -164,3 +164,23 @@ mutation SetAdminUserInactive($setAdminUserInactiveId: String!, $status: String)
   }
 }
 `
+
+export const GET_ADMIN_USER_TIMELINE = /* GraphQL */`
+query GetAdminUserTimeLine($userId: String) {
+  GetAdminUserTimeLine(userId: $userId) {
+    lastLoginAt
+    lastUpdateAt
+    createdAt
+  }
+}
+`
+export const GET_ADMIN_USER_STATISTICS = /* GraphQL */`
+query GetAdminUserStatistics {
+  GetAdminUserStatistics {
+    total_users
+    active_users
+    inactive_users
+    admin_users
+  }
+}
+`
