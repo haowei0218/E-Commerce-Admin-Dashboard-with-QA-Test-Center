@@ -152,7 +152,7 @@ export default function OrderDetails() {
     })
 
     return (
-        <div className='bg-gray-50 w-full h-full p-10 overflow-y-auto'>
+        <div className='bg-gray-50 w-full h-full p-5 overflow-y-auto'>
             <div className="flex justify-between items-center">
                 <div className="flex flex-col justify-center items-start gap-5">
                     <h1 className='text-3xl font-bold'>
@@ -178,21 +178,85 @@ export default function OrderDetails() {
                 </button>
             </div>
 
-            {getOrderByIdQuery.isLoading ? <OrderDetailsLoading /> : <div className="flex items-start gap-4">
-                <section>
+            {getOrderByIdQuery.isLoading ? <OrderDetailsLoading /> :
+                <div className="grid grid-cols-1 gap-3 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
                     {/* order items */}
-                    <div className={`flex flex-col gap-4 mt-10 bg-white w-210 border border-gray-200 rounded-lg p-4`}>
+                    <div className={`flex flex-col gap-4 mt-5 bg-white  border border-gray-200 rounded-lg p-4`}>
                         <h1 className="font-extrabold text-lg">Items({orderDetails?.order_items.length ?? 0})</h1>
-                        <div className={`py-5 gap-5 ${orderItemsHeight} flex flex-col`}>
+
+                        <div className="p-2 gap-5 flex  bg-gray-400 rounded-md">
+                            <p  className="text-[16px] font-bold w-75 ">Item</p>
+                            <p  className="text-[16px] font-bold w-60 ">Sku</p>
+                            <p  className="text-[16px] font-bold w-30">Unit price</p>
+                            <p  className="text-[16px] font-bold w-20">Qty</p>
+                            <p  className="text-[16px] font-bold w-30">Total</p>
+                        </div>
+                        <div className={`gap-5 ${orderItemsHeight} flex flex-col`}>
                             {orderItemsDisplay ? orderItems?.map((orderItem: orderItems) => <OrderItemCard key={randomKey()} orderDetails={orderItem} />) : orderItems?.slice(0, 3).map((orderItem: orderItems) => <OrderItemCard key={String(Math.floor(Math.random() * 999999))} orderDetails={orderItem} />)}
                             <div className={`w-full ${orderItems.length > 3 ? "" : 'hidden'}`} onClick={() => setorderItemsDisplay(!orderItemsDisplay)}>
                                 <button className="w-20 h-10 rounded-lg border-2 border-gray-200 flex items-center justify-center bg-white hover:bg-gray-500 hover:text-white m-auto" >show all</button>
                             </div>
                         </div>
                     </div>
+                    {/* order summary */}
+                    <div className={`flex flex-col gap-4 mt-5 bg-white  border border-gray-200 rounded-lg p-5`}>
+                        <div className="flex justify-between items-center">
+                            <h1 className="font-extrabold text-lg">Order Summary</h1>
+                            <div className={`${orderStatusStyle[orderStatus]} rounded-2xl w-25 h-10 flex justify-center items-center text-sm font-bold`}>
+                                <span>{orderDetails?.order_status}</span>
+                            </div>
+                        </div>
+
+                        <div className="py-5 gap-3 flex flex-col border-b-2 border-b-gray-400">
+                            <div className="flex justify-between items-center">
+                                <span className="font-medium text-[15px] text-gray-500">Order Number</span>
+                                <span className="font-normal text-sm">{orderDetails?.order_number}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="font-medium text-[15px] text-gray-500">Order Date</span>
+                                <span className="font-normal text-sm">{formatDate(orderDetails?.created_at ?? '')}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="font-medium text-[15px] text-gray-500">Order Status</span>
+                                <div className={`${orderStatusStyle[orderStatus]} rounded-2xl p-2 h-6 flex justify-center items-center text-sm font-bold`}>
+                                    <span>{orderDetails?.order_status}</span>
+                                </div>
+                                <ChangeStatusDialog openControl={open} openController={setOpen} status={order_status} statusController={setOrderStatus} statusList={['pending', 'processing', 'completed', 'cancelled']} type="order" changeStatusMutation={updateOrderStatusMutation} color="text-blue-500 border-blue-500 border hover:bg-blue-500" />
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="font-medium text-[15px] text-gray-500">Payment Status</span>
+                                <div className={`${paymentStatusStyle[paymentInformation.payment_status]} rounded-2xl p-2 h-6 flex justify-center items-center text-sm font-bold`}>
+                                    <span>{paymentInformation.payment_status}</span>
+                                </div>
+                                <ChangeStatusDialog openControl={paymentStatusOpen} openController={setPaymentStatusOpen} status={payment_status} statusController={setPaymentStatus} statusList={['unpaid', 'paid', 'failed', 'refunded']} type="payment" changeStatusMutation={updatePaymentStatusMutation} color="text-green-500 border-green-500 border hover:bg-green-500" />
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="font-medium text-[15px] text-gray-500">Shipping Status</span>
+                                <div className={`${shippingStatusStyle[shippingInformation.shipping_status]} rounded-2xl p-2 h-6 flex justify-center items-center text-sm font-bold`}>
+                                    <span>{shippingInformation.shipping_status}</span>
+                                </div>
+                                <ChangeStatusDialog openControl={shippingStatusOpen} openController={setShippingStatusOpen} status={shipping_status} statusController={setShippingStatus} statusList={['pending', 'preparing', 'shipped', 'delivered', 'returned']} type="shipping" changeStatusMutation={updateShippingStatusMutation} color="text-yellow-500 border-yellow-500 border hover:bg-yellow-500" />
+                            </div>
+                        </div>
+
+                        <div className="py-5 gap-3 flex flex-col">
+                            <div className="flex justify-between items-center">
+                                <span className="font-medium text-[15px] text-gray-500">Items SubTotal</span>
+                                <span className="font-normal text-sm">NTD$ {orderTotalAmount}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="font-medium text-[15px] text-gray-500">shipping Fee</span>
+                                <span className="font-normal text-sm">NTD$ 60</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="font-bold text-lg">Total Amount</span>
+                                <span className="font-bold text-lg">NTD$ {orderDetails?.total_amount}</span>
+                            </div>
+                        </div>
+                    </div>
 
                     {/* Shipping information */}
-                    <div className="flex flex-col gap-4 mt-5 bg-white w-210 border border-gray-200 rounded-lg p-4">
+                    <div className="flex flex-col gap-4 mt-5 bg-white  border border-gray-200 rounded-lg p-4">
                         <h1 className="font-extrabold text-lg">Shipping Information</h1>
                         <div className="flex gap-4 justify-start items-start">
                             <LuMapPin size={30} />
@@ -217,126 +281,8 @@ export default function OrderDetails() {
                             </div>
                         </div>
                     </div>
-
-                    {/* Payment information */}
-                    <div className="flex flex-col gap-4 mt-5 bg-white w-210 border border-gray-200 rounded-lg p-4">
-                        <h1 className="font-extrabold text-lg">Payment Information</h1>
-                        <div className="flex gap-4 justify-start items-start">
-                            <IoWalletOutline size={30} />
-
-                            <div className="grid gap-2 w-50">
-                                <span className="text-sm font-bold">Payment method</span>
-                                <span className="text-sm font-normal">{paymentInformation.payment_method}</span>
-                            </div>
-
-                            <div className="grid gap-2 w-50">
-                                <span className="text-sm font-bold">Payment status</span>
-                                <div className={`w-25 h-8  flex justify-center items-center rounded-2xl text-sm font-bold ${paymentStatusStyle[paymentInformation.payment_status]}`}>
-                                    <span >{paymentInformation.payment_status}</span>
-                                </div>
-                            </div>
-
-                            <div className="grid gap-2 w-50">
-                                <span className="text-sm font-bold">Total</span>
-                                <span className="text-sm font-normal">NTD$ {orderTotalAmount}</span>
-                            </div>
-                        </div>
-                    </div>
-
-
-                </section>
-
-                <section>
-                    {/* quick action */}
-                    <div className={`flex flex-col gap-4 mt-10 bg-white w-full rounded-lg p-5 border border-gray-200`}>
-                        <h1 className="font-extrabold text-lg">Quick Action</h1>
-                        <div className="py-5 gap-3 flex flex-col m-auto">
-                            <ChangeStatusDialog openControl={open} openController={setOpen} status={order_status} statusController={setOrderStatus} statusList={['pending', 'processing', 'completed', 'cancelled']} type="order" changeStatusMutation={updateOrderStatusMutation} color="text-blue-500 border-blue-500 border hover:bg-blue-500" />
-                            <ChangeStatusDialog openControl={paymentStatusOpen} openController={setPaymentStatusOpen} status={payment_status} statusController={setPaymentStatus} statusList={['unpaid', 'paid', 'failed', 'refunded']} type="payment" changeStatusMutation={updatePaymentStatusMutation} color="text-green-500 border-green-500 border hover:bg-green-500" />
-                            <ChangeStatusDialog openControl={shippingStatusOpen} openController={setShippingStatusOpen} status={shipping_status} statusController={setShippingStatus} statusList={['pending', 'preparing', 'shipped', 'delivered', 'returned']} type="shipping" changeStatusMutation={updateShippingStatusMutation} color="text-yellow-500 border-yellow-500 border hover:bg-yellow-500" />
-                        </div>
-                    </div>
-                    {/* order summary */}
-                    <div className={`flex flex-col gap-4 mt-5 bg-white w-120 border border-gray-200 rounded-lg p-5`}>
-                        <div className="flex justify-between items-center">
-                            <h1 className="font-extrabold text-lg">Order Summary</h1>
-                            <div className={`${orderStatusStyle[orderStatus]} rounded-2xl w-25 h-10 flex justify-center items-center text-sm font-bold`}>
-                                <span>{orderDetails?.order_status}</span>
-                            </div>
-                        </div>
-
-                        <div className="py-5 gap-3 flex flex-col border-b-2 border-b-gray-400">
-                            <div className="flex justify-between items-center">
-                                <span className="font-medium text-[15px] text-gray-500">Order Number</span>
-                                <span className="font-normal text-sm">{orderDetails?.order_number}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="font-medium text-[15px] text-gray-500">Order Date</span>
-                                <span className="font-normal text-sm">{formatDate(orderDetails?.created_at ?? '')}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="font-medium text-[15px] text-gray-500">Order Status</span>
-                                <div className={`${orderStatusStyle[orderStatus]} rounded-2xl w-25 h-6 flex justify-center items-center text-sm font-bold`}>
-                                    <span>{orderDetails?.order_status}</span>
-                                </div>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="font-medium text-[15px] text-gray-500">Payment Status</span>
-                                <div className={`${paymentStatusStyle[paymentInformation.payment_status]} rounded-2xl w-25 h-6 flex justify-center items-center text-sm font-bold`}>
-                                    <span>{paymentInformation.payment_status}</span>
-                                </div>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="font-medium text-[15px] text-gray-500">Shipping Status</span>
-                                <div className={`${shippingStatusStyle[shippingInformation.shipping_status]} rounded-2xl w-25 h-6 flex justify-center items-center text-sm font-bold`}>
-                                    <span>{shippingInformation.shipping_status}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="py-5 gap-3 flex flex-col">
-                            <div className="flex justify-between items-center">
-                                <span className="font-medium text-[15px] text-gray-500">Items SubTotal</span>
-                                <span className="font-normal text-sm">NTD$ {orderTotalAmount}</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="font-medium text-[15px] text-gray-500">shipping Fee</span>
-                                <span className="font-normal text-sm">NTD$ 60</span>
-                            </div>
-                            <div className="flex justify-between items-center">
-                                <span className="font-bold text-lg">Total Amount</span>
-                                <span className="font-bold text-lg">NTD$ {orderDetails?.total_amount}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col gap-4 mt-5 bg-white w-120 border border-gray-200 rounded-lg p-5 ">
-                        <div className="flex justify-between items-center">
-                            <div className="flex items-center gap-2">
-                                <LuNotebook size={30} />
-                                <h1 className="font-extrabold text-lg">Edit Note</h1>
-                            </div>
-                            {editNoteOpen ? <div className="flex items-center gap-2">
-                                <button className="flex w-20 h-6 justify-center items-center border-2 border-gray-500 text-gray-600 hover:bg-gray-500 hover:text-white rounded-lg" onClick={() => setEditNoteOpen(!editNoteOpen)}>cancel</button>
-                                <button className="flex w-20 h-6 justify-center items-center border-2 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white rounded-lg" onClick={() => updateOrderNoteMutation.mutate()}> {updateOrderNoteMutation.isPending ? "saving..." : "save"}</button>
-                            </div>
-                                : <CiEdit size={30} className="hover:cursor-pointer hover:text-gray-500" onClick={() => setEditNoteOpen(!editNoteOpen)} />}
-                        </div>
-
-                        {editNoteOpen ?
-                            <div className="grid gap-2">
-                                <textarea onChange={(e) => setNote(e.target.value)} className="w-110 h-40 p-2 border-2 border-gray-300 rounded-xl" placeholder="edit note..." maxLength={250} />
-                                <div className="flex justify-end">
-                                    <p>{note.length} / 250</p>
-                                </div>
-                            </div> :
-                            <span className="m-auto font-normal text-sm">{orderDetails?.note}</span>}
-                    </div>
-                </section>
-
-                <section>
                     {/* Order TimeLine*/}
-                    <div className="flex flex-col gap-4 mt-10 bg-white w-100 border border-gray-200 rounded-lg p-4">
+                    <div className="flex flex-col gap-4 mt-5 bg-white  border border-gray-200 rounded-lg p-4">
                         <h1 className="font-extrabold text-lg">Order TimeLine</h1>
                         <div className="flex gap-4 justify-start items-start">
 
@@ -369,8 +315,63 @@ export default function OrderDetails() {
                             </div>
                         </div>
                     </div>
-                </section>
-            </div>}
+
+                    {/* Payment information */}
+                    <div className="flex flex-col gap-4 mt-5 bg-white  border border-gray-200 rounded-lg p-4">
+                        <h1 className="font-extrabold text-lg">Payment Information</h1>
+                        <div className="flex gap-4 justify-start items-start">
+                            <IoWalletOutline size={30} />
+
+                            <div className="grid gap-2 w-50">
+                                <span className="text-sm font-bold">Payment method</span>
+                                <span className="text-sm font-normal">{paymentInformation.payment_method}</span>
+                            </div>
+
+                            <div className="grid gap-2 w-50">
+                                <span className="text-sm font-bold">Payment status</span>
+                                <div className={`w-25 h-8  flex justify-center items-center rounded-2xl text-sm font-bold ${paymentStatusStyle[paymentInformation.payment_status]}`}>
+                                    <span >{paymentInformation.payment_status}</span>
+                                </div>
+                            </div>
+
+                            <div className="grid gap-2 w-50">
+                                <span className="text-sm font-bold">Total</span>
+                                <span className="text-sm font-normal">NTD$ {orderTotalAmount}</span>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    {/* note */}
+                    <div className="flex flex-col gap-4 mt-5 bg-white  border border-gray-200 rounded-lg p-5 ">
+                        <div className="flex justify-between items-center">
+                            <div className="flex items-center gap-2">
+                                <LuNotebook size={30} />
+                                <h1 className="font-extrabold text-lg">Edit Note</h1>
+                            </div>
+                            {editNoteOpen ? <div className="flex items-center gap-2">
+                                <button className="flex w-20 h-6 justify-center items-center border-2 border-gray-500 text-gray-600 hover:bg-gray-500 hover:text-white rounded-lg" onClick={() => setEditNoteOpen(!editNoteOpen)}>cancel</button>
+                                <button className="flex w-20 h-6 justify-center items-center border-2 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white rounded-lg" onClick={() => updateOrderNoteMutation.mutate()}> {updateOrderNoteMutation.isPending ? "saving..." : "save"}</button>
+                            </div>
+                                : <CiEdit size={30} className="hover:cursor-pointer hover:text-gray-500" onClick={() => setEditNoteOpen(!editNoteOpen)} />}
+                        </div>
+
+                        {editNoteOpen ?
+                            <div className="grid gap-2">
+                                <textarea onChange={(e) => setNote(e.target.value)} className="w-110 h-40 p-2 border-2 border-gray-300 rounded-xl" placeholder="edit note..." maxLength={250} />
+                                <div className="flex justify-end">
+                                    <p>{note.length} / 250</p>
+                                </div>
+                            </div> :
+                            <span className="m-auto font-normal text-sm">{orderDetails?.note}</span>}
+                    </div>
+
+
+
+
+
+                </div>}
 
         </div>
     )

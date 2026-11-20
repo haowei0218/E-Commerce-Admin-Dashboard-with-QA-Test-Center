@@ -142,7 +142,7 @@ export default function Users() {
 
       {/* filter*/}
       <div className='bg-white rounded-md p-7 mt-5 '>
-        <div className='m-auto flex justify-between items-end gap-2 mb-10'>
+        <div className='m-auto grid w-full grid-cols-[minmax(0,2fr)_minmax(0,2fr)_minmax(0,2fr)_auto] items-end gap-2 mb-10'>
           <SearchBox setKeyWords={setKeywords} keywords={keywords} onHandleSearch={() => handleAdminUserFilter()} />
           <SelectMenu
             props={Roles}

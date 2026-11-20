@@ -300,3 +300,15 @@ mutation UpdateOrderNote($input: updateOrderNoteInput) {
   }
 }
 `
+
+export const GET_ORDERS_STATISTICS = /* GraphQL */`
+query GetOrdersStatistics {
+  getOrdersStatistics {
+    total_orders
+    pending_orders
+    processing_orders
+    completed_orders
+    cancelled_orders
+  }
+}
+`

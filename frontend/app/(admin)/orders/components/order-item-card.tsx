@@ -19,24 +19,25 @@ export function OrderItemCard({
             </div>
 
             <div className="flex justify-between gap-10">
-                <div className="flex flex-col gap-4 justify-center w-70 h-25">
+                <div className="flex flex-col gap-4 justify-center w-45 h-25">
                     <h3 className="font-bold text-lg">{orderDetails?.product_name ?? "loading..."}</h3>
-                    <span className="text-gray-500 text-lg">型號 : {orderDetails?.sku ?? "loading..."}</span>
+                    
+                </div>
+
+                <div className="flex flex-col gap-4 justify-center w-53 h-25">
+                    <span className="text-gray-500 text-lg">{orderDetails?.sku ?? "loading..."}</span>
                 </div>
 
                 <div className="flex flex-col gap-4 justify-center w-25 h-25">
-                    <h3 className="font-bold text-sm">Unit Price</h3>
-                    <span className="text-gray-500 text-sm">NTD${orderDetails?.price ?? "loading..."}</span>
+                    <span className=" text-lg">NTD${orderDetails?.price ?? "loading..."}</span>
                 </div>
 
-                <div className="flex flex-col gap-4 justify-center w-25 h-25">
-                    <h3 className="font-bold text-sm">QTY</h3>
-                    <span className="text-gray-500 text-sm">{orderDetails?.purchase_quantity ?? "loading..."}</span>
+                <div className="flex flex-col gap-4 justify-center w-10 h-25">
+                    <span className=" text-lg">{orderDetails?.purchase_quantity ?? "loading..."}</span>
                 </div>
 
-                <div className="flex flex-col gap-4 justify-center pl-4 w-30 h-25 border-l-3 border-l-gray-300">
-                    <h3 className="font-bold text-sm">SubTotal</h3>
-                    <span className="text-gray-500 text-sm">NTD$ {subTotal ?? "loading..."}</span>
+                <div className="flex flex-col gap-4 justify-center pl-4 w-30 h-25">
+                    <span className=" text-lg">NTD$ {subTotal ?? "loading..."}</span>
                 </div>
             </div>
         </div>

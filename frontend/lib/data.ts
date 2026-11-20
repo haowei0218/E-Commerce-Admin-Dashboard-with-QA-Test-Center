@@ -69,6 +69,33 @@ export const paymentStatusList = [
   }
 ]
 
+export const shippingStatusList = [
+  {
+    value: 'pending',
+    optionName: "等待出貨中"
+  },
+  {
+    value: 'preparing',
+    optionName: "出貨準備中"
+  },
+  {
+    value: 'shipped',
+    optionName: "已出貨"
+  },
+  {
+    value: "delivered",
+    optionName: "已送達"
+  },
+  {
+    value: "return",
+    optionName: "退貨"
+  },
+  {
+    value: 'all',
+    optionName: '全部'
+  }
+]
+
 export const usersTableHeaders = [
   {
     headerName: 'User ID',

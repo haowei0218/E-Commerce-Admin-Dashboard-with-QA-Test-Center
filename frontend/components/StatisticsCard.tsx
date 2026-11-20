@@ -19,7 +19,7 @@ export function StatisticsCard({ cardList }: { cardList: card[] }) {
 
   return (
 
-    <div className='flex justify-between items-center'>
+    <div className='flex gap-2 justify-between items-center'>
       {cardList.map((card, index) => {
         return (
           <div

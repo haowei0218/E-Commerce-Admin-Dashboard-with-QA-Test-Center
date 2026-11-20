@@ -115,8 +115,6 @@ export type orderFilterPayload = {
     order_status?: string
     payment_status?: string
     shipping_status?: string
-    date_from?: string
-    date_to?: string
     page: number
     pageSize: number
 }
@@ -157,4 +155,15 @@ export const shippingStatusTransitions: Record<string, string[]> = {
     shipped: ['delivered'],
     delivered: ['return'],
     return: []
+}
+
+export type GetOrdersStatisticsResponse = {
+    getOrdersStatistics: {
+        total_orders: number
+        pending_orders: number
+        processing_orders: number
+        completed_orders: number
+        cancelled_orders: number
+    }
+
 }

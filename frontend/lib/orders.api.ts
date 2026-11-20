@@ -1,6 +1,6 @@
-import { getAllOrdersResponse, getOrderByIdResponse, getOrdersResponse, orderFilterPayload, orderStatus, updateOrderNotePayload, updateOrderNoteResponse, updateOrderStatusPayload, updateOrderStatusResponse, updatePaymentStatusPayload, updatePaymentStatusResponse, updateShippingStatusPayload, updateShippingStatusResponse } from "@/type/orders/base.type";
+import { getAllOrdersResponse, getOrderByIdResponse, getOrdersResponse, GetOrdersStatisticsResponse, orderFilterPayload, orderStatus, updateOrderNotePayload, updateOrderNoteResponse, updateOrderStatusPayload, updateOrderStatusResponse, updatePaymentStatusPayload, updatePaymentStatusResponse, updateShippingStatusPayload, updateShippingStatusResponse } from "@/type/orders/base.type";
 import { fetchAPI } from "./api-hook";
-import { GET_ALL_ORDERS, GET_ORDERS, GET_ORDERS_BY_ID, UPDATE_ORDER_NOTE, UPDATE_ORDER_STATUS, UPDATE_PAYMENT_STATUS, UPDATE_SHIPPING_STATUS } from "@/graphql/order";
+import { GET_ALL_ORDERS, GET_ORDERS, GET_ORDERS_BY_ID, GET_ORDERS_STATISTICS, UPDATE_ORDER_NOTE, UPDATE_ORDER_STATUS, UPDATE_PAYMENT_STATUS, UPDATE_SHIPPING_STATUS } from "@/graphql/order";
 const apiUrl = process.env.NEXT_PUBLIC_API ?? 'http://localhost:4201/graphql'
 
 export async function getAllOrders(): Promise<getAllOrdersResponse> {
@@ -37,3 +37,10 @@ export async function updateOrderNote(payload: updateOrderNotePayload): Promise<
     const result = await fetchAPI<'UpdateOrderNote'>(apiUrl, UPDATE_ORDER_NOTE, { input: payload })
     return result
 }
+
+
+export async function getOrdersStatistics(): Promise<GetOrdersStatisticsResponse> {
+    const result = await fetchAPI<'GetOrdersStatistics'>(apiUrl, GET_ORDERS_STATISTICS, {})
+    return result
+}
+

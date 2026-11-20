@@ -1,6 +1,6 @@
 import { ServerContext } from "../../type/admin-users/adminUsers.base..js";
 import { orderFilterPayload } from "../../type/orders/orders.base.js";
-import { getOrders, getOrderById, getAllOrders } from "../../utils/orders.js";
+import { getOrders, getOrderById, getAllOrders, getOrdersStatistics } from "../../utils/orders.js";
 
 export const OrdersQueryResolvers = {
     Query: {
@@ -12,6 +12,9 @@ export const OrdersQueryResolvers = {
         },
         getAllOrders: async (_parent: unknown, { }, context: ServerContext) => {
             return await getAllOrders(context)
+        },
+        getOrdersStatistics: async (_parent: unknown, { }, context: ServerContext) => {
+            return await getOrdersStatistics(context)
         }
     }
 }

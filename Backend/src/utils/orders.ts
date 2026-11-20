@@ -360,21 +360,10 @@ export async function getAllOrders(context: ServerContext) {
 }
 
 export async function getOrders(payload: orderFilterPayload, context: ServerContext): Promise<getOrdersResponse> {
-    if (payload.order_status && !Object.keys(orderStatusTransitions).includes(payload.order_status)) {
-        throwGraphqlError("Invalid order status", "INVALID_INPUT_DATA");
-    }
-
-    if (payload.payment_status && !Object.keys(paymentStatusTransitions).includes(payload.payment_status)) {
-        throwGraphqlError("Invalid payment status", "INVALID_INPUT_DATA");
-    }
-
-    if (payload.shipping_status && !Object.keys(shippingStatusTransitions).includes(payload.shipping_status)) {
-        throwGraphqlError("Invalid shipping status", "INVALID_INPUT_DATA");
-    }
 
     const page = payload?.page && payload.page > 0 ? payload.page : 1;
     const pageSize =
-        payload?.pageSize && payload.pageSize > 0 ? payload.pageSize : 10;
+        payload?.pageSize && payload.pageSize > 0 ? payload.pageSize : 6;
 
     const offset = (page - 1) * pageSize;
 
@@ -382,9 +371,7 @@ export async function getOrders(payload: orderFilterPayload, context: ServerCont
         payload.keyword ?? null,
         !payload.order_status || payload.order_status === 'all' ? null : payload.order_status,
         !payload.payment_status || payload.payment_status === 'all' ? null : payload.payment_status,
-        payload.shipping_status ?? null,
-        payload.date_from ?? null,
-        payload.date_to ?? null,
+        !payload.shipping_status || payload.shipping_status === 'all' ? null : payload.shipping_status,
         pageSize,
         offset
     ]
@@ -405,10 +392,8 @@ export async function getOrders(payload: orderFilterPayload, context: ServerCont
     AND ($2::text IS NULL OR order_status = $2)
     AND ($3::text IS NULL OR payment_status = $3)
     AND ($4::text IS NULL OR shipping_status = $4)
-    AND ($5::timestamptz IS NULL OR created_at >= $5)
-    AND ($6::timestamptz IS NULL OR created_at <= $6)
   `,
-        params.slice(0, 6)
+        params.slice(0, 4)
     );
 
     const response = await context.db.query(`
@@ -428,12 +413,9 @@ export async function getOrders(payload: orderFilterPayload, context: ServerCont
       AND ($2::text IS NULL OR order_status = $2)
       AND ($3::text IS NULL OR payment_status = $3)
       AND ($4::text IS NULL OR shipping_status = $4)
-      AND ($5::timestamptz IS NULL OR created_at >= $5)
-      AND ($6::timestamptz IS NULL OR created_at <= $6)
-
       ORDER BY created_at DESC
-    LIMIT $7
-    OFFSET $8
+    LIMIT $5
+    OFFSET $6
   `,
         params
     )
@@ -442,7 +424,7 @@ export async function getOrders(payload: orderFilterPayload, context: ServerCont
     const total_page = Math.ceil(total / pageSize)
     return {
         result: result,
-        total_count: total_page,
+        total_count: total,
         page: page,
         pageSize: pageSize
     }
@@ -463,4 +445,22 @@ export async function updateOrderNote(payload: updateOrderNotePayload, context: 
     const order_details = updateOrderNoteResponse.rows[0]
     const order_items = await getOrderItems(payload.id, context)
     return { updateOrderNoteDetails: { ...order_details, order_items: order_items } }
+}
+
+export async function getOrdersStatistics(context: ServerContext) {
+    const result = await context.db.query(`
+        SELECT 
+            COUNT(*) AS total_orders,
+            COUNT(CASE WHEN order_status='pending' THEN 1 END) AS pending_orders,
+            COUNT(CASE WHEN order_status='processing' THEN 1 END) AS processing_orders,
+            COUNT(CASE WHEN order_status='completed' THEN 1 END) AS completed_orders,
+            COUNT(CASE WHEN order_status='cancelled' THEN 1 END) AS cancelled_orders
+        FROM orders;`)
+    return {
+        total_orders: result.rows[0].total_orders,
+        pending_orders: result.rows[0].pending_orders,
+        processing_orders:result.rows[0].processing_orders,
+        completed_orders: result.rows[0].completed_orders,
+        cancelled_orders: result.rows[0].cancelled_orders
+    }
 }

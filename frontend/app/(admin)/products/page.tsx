@@ -189,50 +189,47 @@ export default function Products() {
       {/* filter  */}
 
       <div className='bg-white rounded-md p-7 mt-5 '>
-        <div className='flex justify-between items-end m-auto mb-10 '>
-          <SearchBox
-            setKeyWords={setKeywords}
-            keywords={keywords}
-            onHandleSearch={handleSerachParams}
-            placeholder='Search by product name 、sku or color....'
-          />
-          <SelectMenu
-            props={productStatusList}
-            value={status}
-            onSelectMenuValueChange={setStatus}
-            label='Product status'
-            selectMenuStyle={{ width: '200px', borderColor: 'text-gray-300' }}
-          />
+        <div className='mb-10 grid w-full grid-cols-1 items-end gap-4 sm:grid-cols-2 xl:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,2fr)_auto]'>
+          <div className="min-w-0">
+            <SearchBox
+              setKeyWords={setKeywords}
+              keywords={keywords}
+              onHandleSearch={handleSerachParams}
+              placeholder="Search by product name, SKU or color..."
+            />
+          </div>
 
-          <div className='flex flex-col gap-2'>
-            <h1 className='w-50 font-semibold text-[16px] text-gray-500'>
-              Price range
-            </h1>
+          <div className="min-w-0">
+            <SelectMenu
+              props={productStatusList}
+              value={status}
+              onSelectMenuValueChange={setStatus}
+              label="Product status"
+            />
+          </div>
 
-            <div className='flex items-center gap-2'>
-              <div className='flex items-center gap-2'>
-                <p className='text-lg font-normal text-gray-700'>NTD$</p>
-                <Input
-                  type='number'
-                  min={0}
-                  placeholder='0'
-                  value={lowPrice}
-                  className={'w-45 h-10 border border-gray-300 rounded-md p-5'}
-                  onChange={(e) =>
-                    handlePriceRange('low', Number(e.target.value))
-                  }
-                />
-              </div>
-              <div className='w-10 h-0.5 bg-gray-300'></div>
+          <div className="grid min-w-0 gap-2 sm:col-span-2 xl:col-span-1">
+            <span className="font-semibold text-gray-500">Price range (NTD)</span>
+
+            <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
               <Input
-                type='number'
+                type="number"
                 min={0}
-                placeholder='0'
+                aria-label="Minimum price in NTD"
+                placeholder="Min"
+                value={lowPrice}
+                className="h-10 w-full min-w-0 rounded-md border border-gray-300 px-3"
+                onChange={(e) => handlePriceRange("low", Number(e.target.value))}
+              />
+              <span aria-hidden="true" className="text-gray-400">–</span>
+              <Input
+                type="number"
+                min={0}
+                aria-label="Maximum price in NTD"
+                placeholder="Max"
                 value={highPrice}
-                className={'w-45 h-10 border border-gray-300 rounded-md p-5'}
-                onChange={(e) =>
-                  handlePriceRange('high', Number(e.target.value))
-                }
+                className="h-10 w-full min-w-0 rounded-md border border-gray-300 px-3"
+                onChange={(e) => handlePriceRange("high", Number(e.target.value))}
               />
             </div>
           </div>

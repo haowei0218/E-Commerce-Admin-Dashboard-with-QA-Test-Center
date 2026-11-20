@@ -177,6 +177,17 @@ export const getAllOrdersResponse = gql`
     }
 `
 
+export const getOrdersStatisticsResponse = gql`
+    type getOrdersStatisticsResponse{
+        total_orders:Int
+        pending_orders:Int
+        processing_orders:Int
+        completed_orders:Int
+        cancelled_orders:Int
+    }
+
+`
+
 export const mergeOrderTypeSchema = mergeTypeDefs([
     OrderSchema,
     OrderInput,
@@ -194,5 +205,6 @@ export const mergeOrderTypeSchema = mergeTypeDefs([
     ordersFilterInput,
     updateOrderNoteInput,
     updateOrderNoteResponse,
-    getAllOrdersResponse
+    getAllOrdersResponse,
+    getOrdersStatisticsResponse
 ])
