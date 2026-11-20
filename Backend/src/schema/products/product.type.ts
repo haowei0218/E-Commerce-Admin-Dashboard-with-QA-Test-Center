@@ -74,6 +74,7 @@ export const updateProductDetailsPayload = gql`
         product_price:String
         stock_quantity:Int
         status:String
+        color:String
     }
 `
 
@@ -109,4 +110,4 @@ export const ProductImageTokenResponse = gql`
 `
 
 
-export const mergeProductTypeDefs = mergeTypeDefs([product, productPayload, filterProductsPayload, getProductsResponse, createProductResponse, updateProductDetailsPayload, updateProductDetailsResponse, updateProductStatusPayload, updateProductStatusResponse, deleteProductResponse,ProductImageTokenResponse])
+export const mergeProductTypeDefs = mergeTypeDefs([product, productPayload, filterProductsPayload, getProductsResponse, createProductResponse, updateProductDetailsPayload, updateProductDetailsResponse, updateProductStatusPayload, updateProductStatusResponse, deleteProductResponse, ProductImageTokenResponse])

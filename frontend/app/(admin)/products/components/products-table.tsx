@@ -1,3 +1,4 @@
+'use client'
 import { productStatus } from "@/type/products/products.base"
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { formatDate } from "@/lib/utils";
@@ -6,6 +7,18 @@ import { FaCircle } from "react-icons/fa";
 import Image from "next/image";
 import { MdEdit } from "react-icons/md";
 import { HiDotsVertical } from "react-icons/hi"
+import { BiSolidArchiveIn } from "react-icons/bi";
+import { FaArchive } from "react-icons/fa";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogClose
+} from "@/components/ui/dialog"
+import Link from "next/link";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -16,6 +29,10 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { MdDelete } from "react-icons/md";
 import { IoArchiveOutline } from "react-icons/io5";
+import { Dispatch, SetStateAction } from "react";
+import { useState } from "react";
+import { updateProductStatus } from "@/lib/products.api";
+import { toast } from "sonner";
 export const statusStyle = {
     draft: 'text-gray-700 bg-gray-300',
     published: 'text-green-700 bg-green-300',
@@ -60,23 +77,71 @@ export const checkStock = (stock: number) => {
     }
 }
 
-export function ProductQuickAction() {
-    return (
-        <DropdownMenu>
-            <DropdownMenuTrigger
-                aria-label="Product actions"
-                className="flex h-9 w-9 items-center justify-center rounded-lg hover:bg-gray-100"
-            >
-                <HiDotsVertical className="text-xl text-gray-600" />
-            </DropdownMenuTrigger>
+export function ProductQuickAction({ id, productImage, productName, productSku }: { id: string, productImage: string, productName: string, productSku: string }) {
+    const [open, setOpen] = useState(false)
+    const [submitting, setSubmitStatus] = useState(false)
 
-            <DropdownMenuContent align="start" className={"bg-white rounded-lg p-1 shadow-lg "}>
-                <DropdownMenuItem className="hover:bg-gray-200 text-red-500 text-[16px] font-medium"><MdDelete />Delete</DropdownMenuItem>
-                <DropdownMenuItem className="hover:bg-gray-200 text-[16px] font-medium"><IoArchiveOutline /> Archive</DropdownMenuItem>
-            </DropdownMenuContent>
-        </DropdownMenu>
+    async function onSubmit() {
+        setSubmitStatus(true)
+        const result = await updateProductStatus({ id: id, status: 'archived' })
+        if (result) { toast.success('下架產品成功'); setOpen(false); setSubmitStatus(false) }
+    }
+    return (
+        <Dialog open={open} onOpenChange={(value) => {
+            setOpen(value)
+
+        }}>
+            <DialogTrigger
+                type="button"
+                aria-label="Archive product"
+                className="rounded-lg border border-red-500 p-2 text-xl text-red-500 hover:bg-red-500 hover:text-white"
+            >
+                <BiSolidArchiveIn aria-hidden="true" />
+            </DialogTrigger>
+
+            <DialogContent style={{
+                width: "500px",
+                maxWidth: "90vw",
+                background: "white",
+                border: 0
+            }}>
+                <DialogHeader>
+                    <DialogTitle className='text-2xl'>
+                        <button className="bg-orange-200 text-orange-500 p-2 rounded-xl w-10 h-10">
+                            <FaArchive />
+                        </button>
+                    </DialogTitle>
+                </DialogHeader>
+
+                <div className="">
+                    <h2 className="text-2xl font-normal">archive product</h2>
+                    <p className="text-md font-normal m-auto text-gray-500">Confrim that you want to archive this product?</p>
+
+                    <div className="flex bg-gray-200 rounded-lg w-full justify-start gap-2 items-start p-3 mt-5">
+                        <Image src={productImage} alt={productName}
+                            width={40}
+                            height={40}
+                            className="line-clamp-1" />
+                        <div className="grid">
+                            <p className="font-normal text-black text-lg">{productName}</p>
+                            <p className="font-normal text-gray-500 text-sm">{productSku}</p>
+                        </div>
+                    </div>
+                    <div className="flex justify-end items-center gap-2 mt-5">
+                        <button className="p-2 border rounded-lg border-gray-500 text-gray-500 font-medium hover:bg-gray-500 hover:text-white" type="button" onClick={() => setOpen(false)}>
+                            Cancel
+                        </button>
+                        <button className="p-2 border rounded-lg border-blue-500 text-blue-500 font-medium hover:bg-blue-500 hover:text-white" type="button" onClick={() => onSubmit()}>
+                            {submitting ? "Submitting..." : "Submit"}
+                        </button>
+                    </div>
+                </div>
+            </DialogContent>
+        </Dialog>
+
     )
 }
+
 
 export function ProductsTableRow(tableRowProps: productTableRowProps) {
     const product = tableRowProps.product
@@ -166,12 +231,12 @@ export function ProductsTableRow(tableRowProps: productTableRowProps) {
 
             {/* Actions */}
             <td className="px-4 py-3 align-middle">
-                <div className="flex items-center justify-center w-full">
+                <div className="flex items-center w-full gap-2">
 
-                    <button className="w-full h-10 flex items-center gap-2 justify-center border-blue-500 text-blue-500 border rounded-md hover:cursor-pointer hover:bg-blue-500 hover:text-white text-lg font-bold">
-                        <MdEdit />{" "}Edit
-                    </button>
-                    <ProductQuickAction />
+                    <Link href={`/products/edit/${product.id}`} className="p-2 flex items-center gap-2 justify-center border-blue-500 text-blue-500 border rounded-lg hover:cursor-pointer hover:bg-blue-500 hover:text-white text-lg font-bold">
+                        <MdEdit />
+                    </Link>
+                    <ProductQuickAction id={product.id} productImage={product.product_image_url} productName={product.product_name} productSku={product.product_sku} />
                 </div>
             </td>
 

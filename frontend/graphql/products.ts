@@ -49,3 +49,63 @@ mutation CreateProductImageUploadUrl($fileName: String!, $contentType: String!) 
   }
 }
 `
+
+export const UPDATE_PRODUCT_DETAILS = /* GraphQL */`
+mutation Mutation($input: updateProductDetailsPayload) {
+  updateProductDetails(input: $input) {
+    result {
+      id
+      product_name
+      product_description
+      product_image_url
+      product_sku
+      product_price
+      color
+      stock_quantity
+      status
+      created_at
+      updated_at
+    }
+  }
+}
+`
+
+export const GET_PRODUCT_BY_ID = /* GraphQL */`
+query GetProductById($productId: String) {
+  getProductById(id: $productId) {
+    result {
+      id
+      product_name
+      product_description
+      product_image_url
+      product_sku
+      product_price
+      color
+      stock_quantity
+      status
+      created_at
+      updated_at
+    }
+  }
+}
+`
+
+export const UPDATE_PRODUCT_STATUS = /* GraphQL */`
+mutation UpdateProductStatus($input: updateProductStatusPayload) {
+  updateProductStatus(input: $input) {
+    result {
+      id
+      product_name
+      product_description
+      product_image_url
+      product_sku
+      product_price
+      color
+      stock_quantity
+      status
+      created_at
+      updated_at
+    }
+  }
+}
+`

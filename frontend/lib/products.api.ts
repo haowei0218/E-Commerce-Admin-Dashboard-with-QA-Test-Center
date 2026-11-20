@@ -1,8 +1,8 @@
-import { filterProductPayload, productPayload } from "@/type/products/products.base"
+import { filterProductPayload, getProductByIdResponse, productPayload, updateProductDetailsPayload, updateProductDetailsResponse, updateProductStatusPayload, updateProductStatusResponse } from "@/type/products/products.base"
 import { supabaseClient } from "./supabaseClient"
 import { fetchAPI } from "./api-hook"
 import { apiUrl } from "./utils"
-import { GET_PRODUCTS, CREATE_PRODUCT, CREATE_IMAGE_TOKEN } from "@/graphql/products"
+import { GET_PRODUCTS, CREATE_PRODUCT, CREATE_IMAGE_TOKEN, UPDATE_PRODUCT_DETAILS, GET_PRODUCT_BY_ID, UPDATE_PRODUCT_STATUS } from "@/graphql/products"
 
 
 
@@ -28,7 +28,7 @@ export async function getProductImageToken(fileName: string, contentType: string
 }
 export async function uploadProductImage(imageFile: File | null) {
     if (!imageFile) return
-    const { createProductImageUploadUrl} = await getProductImageToken(imageFile.name, imageFile?.type)
+    const { createProductImageUploadUrl } = await getProductImageToken(imageFile.name, imageFile?.type)
 
     console.log('path:', createProductImageUploadUrl.path)
     console.log('token exists:', !!createProductImageUploadUrl.token)
@@ -42,4 +42,20 @@ export async function uploadProductImage(imageFile: File | null) {
         throw error
     }
     return data.path
+}
+
+
+export async function updateProductDetails(details: updateProductDetailsPayload): Promise<updateProductDetailsResponse> {
+    const result = await fetchAPI<"UpdateProductDetails">(apiUrl, UPDATE_PRODUCT_DETAILS, { input: details })
+    return result
+}
+
+export async function getProductById(productId: string): Promise<getProductByIdResponse> {
+    const result = await fetchAPI<'GetProductById'>(apiUrl, GET_PRODUCT_BY_ID, { productId: productId })
+    return result
+}
+
+export async function updateProductStatus(input: updateProductStatusPayload): Promise<updateProductStatusResponse> {
+    const result = await fetchAPI<'UpdateProductStatus'>(apiUrl, UPDATE_PRODUCT_STATUS, { input: input })
+    return result
 }

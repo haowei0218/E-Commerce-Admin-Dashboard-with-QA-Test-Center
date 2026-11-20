@@ -112,28 +112,28 @@ export async function updateProductDetails(
     const old_product = await fetchProductById(payload.id, context);
 
     const name =
-        payload.product_name ?? old_product.result.product_name;
+        !payload.product_name || payload.product_name.length === 0 ? old_product.result.product_name : payload.product_name;
 
     const description =
-        payload.product_description ?? old_product.result.product_description;
+        !payload.product_description || payload.product_description.length === 0 ? old_product.result.product_description : payload.product_description;
 
     const image_url =
-        payload.product_image_url ?? old_product.result.product_image_url;
+        !payload.product_image_url || payload.product_image_url.length === 0 ? old_product.result.product_image_url : payload.product_image_url;
 
     const sku =
-        payload.product_sku ?? old_product.result.product_sku;
+        !payload.product_sku || payload.product_sku.length === 0 ? old_product.result.product_sku : payload.product_sku;
 
     const price =
-        payload.product_price ?? old_product.result.product_price;
+        !payload.product_price ? old_product.result.product_price : payload.product_price;
 
     const color =
-        payload.color ?? old_product.result.color;
+        !payload.color || payload.color.length === 0 ? old_product.result.color : payload.color;
 
     const stock_quantity =
         payload.stock_quantity ?? old_product.result.stock_quantity;
 
     const status =
-        payload.status ?? old_product.result.status;
+        !payload.status || payload.status.length === 0 ? old_product.result.status : payload.status;
 
     const response = await context.db.query(
         `
@@ -174,6 +174,9 @@ export async function updateProductDetails(
 export async function updateProductStatus(id: string, status: productStatus, context: ServerContext) {
     const response = await context.db.query('UPDATE products SET status=$2 WHERE id=$1 RETURNING *', [id, status])
     const result = response.rows[0] ?? null
+    if (!result) {
+        throw new Error("找不到指定商品，無法更新狀態");
+    }
     return { result: result }
 }
 import { randomUUID } from "node:crypto"

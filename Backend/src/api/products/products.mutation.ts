@@ -20,6 +20,7 @@ export const ProductsMutationResolvers = {
         },
         updateProductStatus: async (_parent: unknown, { input }: { input: updateProductStatusPayload }, context: ServerContext) => {
             const product = await fetchProductById(input.id, context)
+            console.log([input.id, input.status])
             const update_status = await updateProductStatus(input.id, input.status, context)
 
             if (update_status) await createActivityLog({ user_id: context.user.id, action: 'UPDATE', description: `使用者${context.user.name} 更新產品狀態:${product.result.status} => ${input.status} 產品編號:${input.id}`, module: "products" }, context)

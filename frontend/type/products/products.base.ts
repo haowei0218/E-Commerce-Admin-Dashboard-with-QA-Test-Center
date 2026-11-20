@@ -34,12 +34,29 @@ export type updateProductStatusPayload = {
     id: string
     status: productStatus
 }
+export type updateProductStatusResponse = {
+    updateProductStatus: {
+        result: product
+    }
+}
+
 export type createImageUrlToken = {
     createProductImageUploadUrl: {
         path: string
         token: string
     }
 
+}
+export type updateProductDetailsResponse = {
+    updateProductDetails: {
+        result: product
+    }
+}
+
+export type getProductByIdResponse = {
+    getProductById: {
+        result: product
+    }
 }
 
 export type productResponse = { result: product }
