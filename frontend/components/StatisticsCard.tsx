@@ -50,7 +50,7 @@ export function StatisticsCard({ cardList }: { cardList: card[] }) {
                 </p>
               </div>
 
-              <p className='text-sm font-bold text-slate-500'>
+              <p className='text-sm font-bold text-slate-500 line-clamp-1'>
                 {card.subtitle}
               </p>
             </div>

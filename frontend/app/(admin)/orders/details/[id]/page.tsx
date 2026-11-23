@@ -19,7 +19,7 @@ import { CiEdit } from "react-icons/ci";
 import { LuNotebook } from "react-icons/lu";
 import { getOrderEvent } from "@/lib/order-event.api";
 import { Fragment } from "react";
-import OrderDetailsLoading from "../../components/loading";
+import OrderDetailsLoading from "../../components/order-details-loading";
 
 
 
@@ -185,11 +185,11 @@ export default function OrderDetails() {
                         <h1 className="font-extrabold text-lg">Items({orderDetails?.order_items.length ?? 0})</h1>
 
                         <div className="p-2 gap-5 flex  bg-gray-400 rounded-md">
-                            <p  className="text-[16px] font-bold w-75 ">Item</p>
-                            <p  className="text-[16px] font-bold w-60 ">Sku</p>
-                            <p  className="text-[16px] font-bold w-30">Unit price</p>
-                            <p  className="text-[16px] font-bold w-20">Qty</p>
-                            <p  className="text-[16px] font-bold w-30">Total</p>
+                            <p className="text-[16px] font-bold w-75 ">Item</p>
+                            <p className="text-[16px] font-bold w-60 ">Sku</p>
+                            <p className="text-[16px] font-bold w-30">Unit price</p>
+                            <p className="text-[16px] font-bold w-20">Qty</p>
+                            <p className="text-[16px] font-bold w-30">Total</p>
                         </div>
                         <div className={`gap-5 ${orderItemsHeight} flex flex-col`}>
                             {orderItemsDisplay ? orderItems?.map((orderItem: orderItems) => <OrderItemCard key={randomKey()} orderDetails={orderItem} />) : orderItems?.slice(0, 3).map((orderItem: orderItems) => <OrderItemCard key={String(Math.floor(Math.random() * 999999))} orderDetails={orderItem} />)}
@@ -254,7 +254,6 @@ export default function OrderDetails() {
                             </div>
                         </div>
                     </div>
-
                     {/* Shipping information */}
                     <div className="flex flex-col gap-4 mt-5 bg-white  border border-gray-200 rounded-lg p-4">
                         <h1 className="font-extrabold text-lg">Shipping Information</h1>
@@ -315,7 +314,6 @@ export default function OrderDetails() {
                             </div>
                         </div>
                     </div>
-
                     {/* Payment information */}
                     <div className="flex flex-col gap-4 mt-5 bg-white  border border-gray-200 rounded-lg p-4">
                         <h1 className="font-extrabold text-lg">Payment Information</h1>
@@ -340,9 +338,6 @@ export default function OrderDetails() {
                             </div>
                         </div>
                     </div>
-
-
-
                     {/* note */}
                     <div className="flex flex-col gap-4 mt-5 bg-white  border border-gray-200 rounded-lg p-5 ">
                         <div className="flex justify-between items-center">
@@ -366,13 +361,7 @@ export default function OrderDetails() {
                             </div> :
                             <span className="m-auto font-normal text-sm">{orderDetails?.note}</span>}
                     </div>
-
-
-
-
-
                 </div>}
-
         </div>
     )
 

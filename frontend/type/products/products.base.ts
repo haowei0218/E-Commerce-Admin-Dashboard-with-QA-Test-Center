@@ -59,4 +59,14 @@ export type getProductByIdResponse = {
     }
 }
 
+export type getProductsStatisticsResponse = {
+    getProductsStatistics: {
+        archived_products: number,
+        draft_products: number,
+        total_products: number,
+        published_products: number,
+        unpublished_products: number
+    }
+}
+
 export type productResponse = { result: product }

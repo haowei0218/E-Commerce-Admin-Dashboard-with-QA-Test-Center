@@ -1,8 +1,8 @@
-import { filterProductPayload, getProductByIdResponse, productPayload, updateProductDetailsPayload, updateProductDetailsResponse, updateProductStatusPayload, updateProductStatusResponse } from "@/type/products/products.base"
+import { filterProductPayload, getProductByIdResponse, getProductsStatisticsResponse, productPayload, updateProductDetailsPayload, updateProductDetailsResponse, updateProductStatusPayload, updateProductStatusResponse } from "@/type/products/products.base"
 import { supabaseClient } from "./supabaseClient"
 import { fetchAPI } from "./api-hook"
 import { apiUrl } from "./utils"
-import { GET_PRODUCTS, CREATE_PRODUCT, CREATE_IMAGE_TOKEN, UPDATE_PRODUCT_DETAILS, GET_PRODUCT_BY_ID, UPDATE_PRODUCT_STATUS } from "@/graphql/products"
+import { GET_PRODUCTS, CREATE_PRODUCT, CREATE_IMAGE_TOKEN, UPDATE_PRODUCT_DETAILS, GET_PRODUCT_BY_ID, UPDATE_PRODUCT_STATUS, GET_PRODUCTS_STATISTICS } from "@/graphql/products"
 
 
 
@@ -57,5 +57,10 @@ export async function getProductById(productId: string): Promise<getProductByIdR
 
 export async function updateProductStatus(input: updateProductStatusPayload): Promise<updateProductStatusResponse> {
     const result = await fetchAPI<'UpdateProductStatus'>(apiUrl, UPDATE_PRODUCT_STATUS, { input: input })
+    return result
+}
+
+export async function getProductsStatistics(): Promise<getProductsStatisticsResponse> {
+    const result = await fetchAPI<'GetProductsStatistics'>(apiUrl, GET_PRODUCTS_STATISTICS, {})
     return result
 }

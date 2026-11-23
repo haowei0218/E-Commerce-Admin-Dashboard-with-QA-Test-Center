@@ -3,6 +3,7 @@ import { ServerContext } from "../type/admin-users/adminUsers.base..js";
 import { filterProductPayload, productPayload, productResponse, productStatus, updateProductDetailsPayload } from "../type/products/products.base.js";
 import { throwGraphqlError } from "./error.js";
 import { supabaseClient } from '../supabaseClient.js'
+import { randomUUID } from "node:crypto"
 
 export async function fetchProducts(payload: filterProductPayload, context: ServerContext) {
     const keywords = !payload.keywords || payload.keywords?.length === 0 ? null : payload.keywords
@@ -179,7 +180,6 @@ export async function updateProductStatus(id: string, status: productStatus, con
     }
     return { result: result }
 }
-import { randomUUID } from "node:crypto"
 
 export async function createProductImageUploadUrl(
     _: unknown,
@@ -216,5 +216,30 @@ export async function createProductImageUploadUrl(
     return {
         path: data.path,
         token: data.token,
+    }
+}
+
+export async function fetchProductsStatistics(context: ServerContext) {
+
+    try {
+        const result = await context.db.query(`
+        SELECT 
+  COUNT(*) AS total_products,
+  COUNT(CASE WHEN status='draft' THEN 1 END) AS draft_products,
+  COUNT(CASE WHEN status='published' THEN 1 END) AS published_products,
+  COUNT(CASE WHEN status='unpublished' THEN 1 END) AS unpublished_products,
+  COUNT(CASE WHEN status='archived' THEN 1 END) AS archived_products
+FROM products;
+        `)
+        const statistics = result.rows[0]
+        return {
+            total_products: statistics.total_products,
+            draft_products: statistics.draft_products,
+            published_products: statistics.published_products,
+            unpublished_products: statistics.unpublished_products,
+            archived_products: statistics.archived_products
+        }
+    } catch (error) {
+        throw new Error('fetch products statistics fail ', { cause: error })
     }
 }

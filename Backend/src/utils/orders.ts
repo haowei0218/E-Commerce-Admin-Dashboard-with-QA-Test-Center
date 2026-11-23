@@ -11,12 +11,12 @@ export function createParameters(count: number) {
     return Array.from({ length: count }, (_, index) => `$${index + 1}`).join(",");
 }
 
-export async function getOrderStatus(orderId: string, context: ServerContext): Promise<getOrderStatusResposne> {
+export async function fetchOrderStatus(orderId: string, context: ServerContext): Promise<getOrderStatusResposne> {
     const response = await context.db.query(`SELECT id,payment_status,order_status,shipping_status FROM orders WHERE id=$1`, [orderId])
     return response.rows[0]
 }
 
-export async function getOrderItems(orderId: string, context: ServerContext) {
+export async function  fetchOrderItems(orderId: string, context: ServerContext) {
     const order_items_response = await context.db.query(
         `
     SELECT *
@@ -35,7 +35,7 @@ export async function checkStatusValidity(context: ServerContext, payload: any, 
     if (!allowStatus.includes(payload.shipping_status)) {
         throwGraphqlError("Invalid shipping status", "INVALID_INPUT_DATA");
     }
-    const orderStatus = await getOrderStatus(payload.id, context)
+    const orderStatus = await fetchOrderStatus(payload.id, context)
     const nextStatus = nextStatusTransitions[orderStatus[statusName]] ?? []
 
     if (!nextStatus.includes(payload[statusName])) {
@@ -176,7 +176,7 @@ export async function updateOrderStatus(payload: updateOrderStatusPayload, conte
 
 
     /**先驗證訂單狀態 才可以更改狀態 */
-    const checkOrderStatus = await getOrderStatus(payload.id, context)
+    const checkOrderStatus = await fetchOrderStatus(payload.id, context)
 
     /**檢查狀態 */
     const allow_status = ['pending', 'processing', 'cancelled', 'completed']
@@ -260,7 +260,7 @@ export async function updateOrderStatus(payload: updateOrderStatusPayload, conte
     if (!order_update_details) {
         throwGraphqlError("Order not found", "ORDER_NOT_FOUND");
     }
-    const order_item = await getOrderItems(payload.id, context)
+    const order_item = await fetchOrderItems(payload.id, context)
     return { updateDetails: { ...order_update_details, order_items: order_item } }
 }
 
@@ -270,7 +270,7 @@ export async function updatePaymentStatus(payload: updatePaymentStatusPayload, c
     if (!allowPaymentStatus.includes(payload.payment_status)) {
         throwGraphqlError("Invalid payment status", "INVALID_INPUT_DATA");
     }
-    const orderStatus = await getOrderStatus(payload.id, context)
+    const orderStatus = await fetchOrderStatus(payload.id, context)
     const nextPaymentStatus = paymentStatusTransitions[orderStatus.payment_status] ?? []
     if (!nextPaymentStatus.includes(payload.payment_status)) {
         throwGraphqlError(`Cannot change payment status from ${orderStatus.payment_status} to ${payload.payment_status}`, 'INVALID_INPUT_DATA')
@@ -309,7 +309,7 @@ export async function updatePaymentStatus(payload: updatePaymentStatusPayload, c
     if (!update_payment_status_details) {
         throwGraphqlError('Order not found', 'ORDER_NOT_FOUND')
     }
-    const order_item = await getOrderItems(payload.id, context)
+    const order_item = await fetchOrderItems(payload.id, context)
     return {
         updatePaymentDetails: {
             ...update_payment_status_details, order_items: order_item
@@ -331,7 +331,7 @@ export async function updateShippingStatus(payload: updateShippingStatusPayload,
     if (!update_shipping_status_response) {
         throwGraphqlError('Order not found', 'ORDER_NOT_FOUND')
     }
-    const order_items = await getOrderItems(payload.id, context)
+    const order_items = await fetchOrderItems(payload.id, context)
 
     return {
         updateShippingDetails: { ...update_shipping_status_response.rows[0], order_items: order_items }
@@ -348,18 +348,18 @@ export async function updateOrderRecipient(payload: updateOrderRecipientPayload,
     if (!update_order_recipient_result) {
         throwGraphqlError('Order not found', 'ORDER_NOT_FOUND')
     }
-    const order_items = await getOrderItems(payload.id, context)
+    const order_items = await fetchOrderItems(payload.id, context)
     return {
         updateOrderRecipientDetails: { ...update_order_recipient_result, order_items: order_items }
     }
 }
 
-export async function getAllOrders(context: ServerContext) {
+export async function fetchAllOrders(context: ServerContext) {
     const response = await context.db.query('SELECT * FROM orders')
     return { all: response.rows, total_count: response.rowCount }
 }
 
-export async function getOrders(payload: orderFilterPayload, context: ServerContext): Promise<getOrdersResponse> {
+export async function fetchOrders(payload: orderFilterPayload, context: ServerContext): Promise<getOrdersResponse> {
 
     const page = payload?.page && payload.page > 0 ? payload.page : 1;
     const pageSize =
@@ -430,10 +430,10 @@ export async function getOrders(payload: orderFilterPayload, context: ServerCont
     }
 }
 
-export async function getOrderById(id: string, context: ServerContext) {
+export async function fetchOrderById(id: string, context: ServerContext) {
     const response = await context.db.query(`SELECT id,order_number,customer_id,shipping_fee,total_amount,order_status,payment_status,shipping_status,recipient_name,recipient_phone,shipping_city,shipping_district,shipping_address,shipping_zip_code,note,paid_at,completed_at,cancelled_at,cancel_reason,created_at,updated_at,payment_method FROM orders WHERE id=$1`, [id])
     const result = response.rows
-    const order_items = await getOrderItems(id, context)
+    const order_items = await fetchOrderItems(id, context)
 
     return {
         result: { ...result[0], order_items: order_items }
@@ -443,11 +443,11 @@ export async function getOrderById(id: string, context: ServerContext) {
 export async function updateOrderNote(payload: updateOrderNotePayload, context: ServerContext): Promise<updateOrderNoteResponse> {
     const updateOrderNoteResponse = await context.db.query(`UPDATE orders SET note=$2 WHERE id=$1 RETURNING *`, [payload.id, payload.note])
     const order_details = updateOrderNoteResponse.rows[0]
-    const order_items = await getOrderItems(payload.id, context)
+    const order_items = await fetchOrderItems(payload.id, context)
     return { updateOrderNoteDetails: { ...order_details, order_items: order_items } }
 }
 
-export async function getOrdersStatistics(context: ServerContext) {
+export async function fetchOrdersStatistics(context: ServerContext) {
     const result = await context.db.query(`
         SELECT 
             COUNT(*) AS total_orders,

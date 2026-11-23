@@ -32,6 +32,7 @@ export type APIPayload = {
   GetAdminUserTimeLine: { userId: string }
   GetAdminUserStatistics: {}
   GetOrdersStatistics: {}
+  GetProductsStatistics: {}
 
 
 }

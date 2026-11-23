@@ -109,5 +109,15 @@ export const ProductImageTokenResponse = gql`
     }
 `
 
+export const productsStatisticsResponse = gql`
+    type productsStatisticsResponse {
+        total_products:Int
+        draft_products:Int
+        published_products:Int
+        unpublished_products:Int
+        archived_products:Int
+    }
+`
 
-export const mergeProductTypeDefs = mergeTypeDefs([product, productPayload, filterProductsPayload, getProductsResponse, createProductResponse, updateProductDetailsPayload, updateProductDetailsResponse, updateProductStatusPayload, updateProductStatusResponse, deleteProductResponse, ProductImageTokenResponse])
+
+export const mergeProductTypeDefs = mergeTypeDefs([product, productPayload, filterProductsPayload, getProductsResponse, createProductResponse, updateProductDetailsPayload, updateProductDetailsResponse, updateProductStatusPayload, updateProductStatusResponse, deleteProductResponse, ProductImageTokenResponse, productsStatisticsResponse])
