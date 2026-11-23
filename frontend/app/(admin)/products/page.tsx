@@ -7,7 +7,7 @@ import { Slider } from '@/components/ui/slider'
 import { SearchBox } from '@/components/Filter'
 import { SelectMenu } from '@/components/SelectMenu'
 import { useQuery } from '@tanstack/react-query'
-import { fetchProducts } from '@/lib/products.api'
+import { fetchProducts, getProductsStatistics } from '@/lib/products.api'
 import { productStatusList } from '@/lib/data'
 import { FilterButton } from '@/components/Filter'
 import { ProductsTable } from './components/products-table'
@@ -23,6 +23,8 @@ import { IoTimeOutline } from 'react-icons/io5'
 import { AiOutlineStock } from 'react-icons/ai'
 import { Input } from '@base-ui/react'
 import { StatisticsCard } from '@/components/StatisticsCard'
+import { MdUnpublished } from "react-icons/md";
+import { Loading } from './components/products-table-loading'
 
 export default function Products() {
   const [keywords, setKeywords] = useState<string>('')
@@ -111,37 +113,52 @@ export default function Products() {
     return Number(((count / total) * 100).toFixed(1))
   }
 
+  const productsStatisticsQuery = useQuery({
+    queryKey: ['product-statistics'],
+    queryFn: () => getProductsStatistics()
+  })
+
+  const statistics = productsStatisticsQuery.data?.getProductsStatistics
+
   const cardList = [
     {
       icon: <FiBox />,
       title: 'Total Products',
-      data: 256,
+      data: statistics?.total_products ?? 0,
       percent: 100,
       subtitle: 'all products',
       backgroundColor: 'bg-blue-100 text-blue-600',
     },
     {
+      icon: <IoTimeOutline />,
+      title: 'Draft Products',
+      data: statistics?.draft_products ?? 0,
+      percent: calculatePercentage(statistics?.draft_products ?? 0, statistics?.total_products ?? 0),
+      subtitle: 'Products in preparation',
+      backgroundColor: 'bg-gray-100 text-gray-500',
+    },
+    {
       icon: <MdOutlineShoppingCart />,
       title: 'Published Products',
-      data: 198,
-      percent: calculatePercentage(198, 256),
+      data: statistics?.published_products ?? 0,
+      percent: calculatePercentage(statistics?.published_products ?? 0, statistics?.total_products ?? 0),
       subtitle: 'Available for purchase',
       backgroundColor: 'bg-green-100 text-green-500',
     },
     {
-      icon: <IoTimeOutline />,
-      title: 'Draft Products',
-      data: 42,
-      percent: calculatePercentage(42, 256),
-      subtitle: 'Not published yet',
+      icon: <MdUnpublished />,
+      title: 'Unpublished Products',
+      data: statistics?.unpublished_products ?? 0,
+      percent: calculatePercentage(statistics?.unpublished_products ?? 0, statistics?.total_products ?? 0),
+      subtitle: 'Out-of-stock or sold-out products',
       backgroundColor: 'bg-orange-100 text-orange-500',
     },
     {
       icon: <AiOutlineStock />,
-      title: 'Low Stock Products',
-      data: 8,
-      percent: calculatePercentage(8, 256),
-      subtitle: 'Stock below 10',
+      title: 'Archived Products',
+      data: statistics?.archived_products ?? 0,
+      percent: calculatePercentage(statistics?.archived_products ?? 0, statistics?.total_products ?? 0),
+      subtitle: 'The problematic items have been set aside.',
       backgroundColor: 'bg-red-100 text-red-500',
     },
   ]
@@ -240,14 +257,13 @@ export default function Products() {
 
         {/* table */}
 
-        <div className='rounded-t-2xl border-t border-l border-r m-auto border-gray-200 overflow-y-auto'>
-          {products && <ProductsTable
-            products={products}
-            headers={productsTableHeaders}
-            router={router}
-          />}
-        </div>
-        {productsQuery.isLoading && <Ring className='w-10 h-10 mt-5 m-auto' />}
+        {productsQuery.isLoading && <div className='rounded-t-2xl border-t border-l border-r m-auto border-gray-200 overflow-y-auto'><Loading headerList={productsTableHeaders} parameterNumber={productsTableHeaders.length} /></div>}
+
+        {!productsQuery.isLoading && <div className='rounded-t-2xl border-t border-l border-r m-auto border-gray-200 overflow-y-auto'><ProductsTable
+          products={products}
+          headers={productsTableHeaders}
+          router={router}
+        /></div>}
 
 
         <div className='flex justify-between items-center w-full mt-5'>

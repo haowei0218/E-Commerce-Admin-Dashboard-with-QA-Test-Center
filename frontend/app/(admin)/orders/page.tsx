@@ -26,6 +26,7 @@ import { FaRegCheckCircle } from "react-icons/fa";
 import { GiCancel } from "react-icons/gi";
 import { StatisticsCard } from "@/components/StatisticsCard"
 import { FcProcess } from "react-icons/fc";
+import { Loading } from "./components/order-table-loading"
 export default function Orders() {
 
   const [keywords, setKeywords] = useState<string>('')
@@ -183,8 +184,12 @@ export default function Orders() {
           </div>
 
           {/* table*/}
-          {!orders && <Ring className='w-10 h-10 m-auto' />}
-          {orders &&
+          {ordersQuery.isLoading &&
+            <div className='rounded-t-2xl border-t border-l border-r m-auto border-gray-200 overflow-y-auto'>
+              <Loading headerList={ordersTableHeaders} parameterNumber={ordersTableHeaders.length} />
+            </div>}
+
+          {!ordersQuery.isLoading &&
             <div className='rounded-t-2xl border-t border-l border-r m-auto border-gray-200 overflow-y-auto'>
               <OrdersTable orders={orders} headers={ordersTableHeaders} router={router} />
             </div>

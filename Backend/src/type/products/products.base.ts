@@ -37,4 +37,7 @@ export type createImageUrlToken = {
     path: string
     token: string
 }
+
+
+
 export type productResponse = { result: product }

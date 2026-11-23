@@ -2,7 +2,7 @@ import { create } from "node:domain";
 import { ServerContext } from "../../type/admin-users/adminUsers.base..js";
 import { orderPayload, updateOrderNotePayload, updateOrderRecipientPayload, updateOrderStatusPayload, updatePaymentStatusPayload, updateShippingStatusPayload } from "../../type/orders/orders.base.js";
 import { createActivityLog } from "../../utils/activity-log.js";
-import { createOrder, updateOrderRecipient, updateOrderStatus, updatePaymentStatus, updateShippingStatus, updateOrderNote, getOrderById } from "../../utils/orders.js";
+import { createOrder, updateOrderRecipient, updateOrderStatus, updatePaymentStatus, updateShippingStatus, updateOrderNote, fetchOrderById } from "../../utils/orders.js";
 import { createOrderEvent } from "../../utils/order-event.js";
 import { OrderEventMap, OrderPaymentEventMap, OrderShippingEventMap } from "../../type/order-event/orderEvent.base.type.js";
 
@@ -25,7 +25,7 @@ export const OrdersMutationResolvers = {
         },
         updateOrderStatus: async (_parent: unknown, { input }: { input: updateOrderStatusPayload }, context: ServerContext) => {
             try {
-                const order = await getOrderById(input.id, context)
+                const order = await fetchOrderById(input.id, context)
                 const prev_status = order.result.order_status ?? null
                 const result = await updateOrderStatus(input, context)
                 if (result) {
@@ -47,7 +47,7 @@ export const OrdersMutationResolvers = {
         },
         updatePaymentStatus: async (_parent: unknown, { input }: { input: updatePaymentStatusPayload }, context: ServerContext) => {
             try {
-                const order = await getOrderById(input.id, context)
+                const order = await fetchOrderById(input.id, context)
                 const prev_status = order.result.payment_status ?? null
                 const result = await updatePaymentStatus(input, context)
                 if (result) {
@@ -69,7 +69,7 @@ export const OrdersMutationResolvers = {
         },
         updateShippingStatus: async (_parent: unknown, { input }: { input: updateShippingStatusPayload }, context: ServerContext) => {
             try {
-                const order = await getOrderById(input.id, context)
+                const order = await fetchOrderById(input.id, context)
                 const prev_status = order.result.shipping_status ?? null
                 const result = await updateShippingStatus(input, context)
                 if (result) {

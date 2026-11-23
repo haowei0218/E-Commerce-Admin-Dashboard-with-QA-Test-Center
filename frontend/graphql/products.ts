@@ -109,3 +109,15 @@ mutation UpdateProductStatus($input: updateProductStatusPayload) {
   }
 }
 `
+
+export const GET_PRODUCTS_STATISTICS = /* GraphQL */`
+query GetProductsStatistics {
+  getProductsStatistics {
+    archived_products
+    draft_products
+    total_products
+    published_products
+    unpublished_products
+  }
+}
+`

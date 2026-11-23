@@ -1,7 +1,7 @@
 import { UserLoginResponse, GetUsersResponse, AdminUserLogoutResponse, GetAdminUserByPropertiesResponse, CreateAdminUserResponse, GetAdminUserByIdResponse, UpdateMyProfileResponse, ChangePasswordResponse, SetAdminUserRoleResponse, SetAdminUserActiveResponse, SetAdminUserInactiveResponse, GetAdminUserTimeLineResponse, GetAdminUserStatisticsResponse } from './admin-users/adminUser.type'
 import { orderEventResponse, } from './order-event/base.type'
 import { getAllOrdersResponse, getOrdersResponse, getOrderByIdResponse, updateOrderStatusResponse, updatePaymentStatusResponse, updateShippingStatusResponse, updateOrderNoteResponse, GetOrdersStatisticsResponse } from './orders/base.type'
-import { productResponse, getProductsResponse, createImageUrlToken, updateProductDetailsResponse, getProductByIdResponse, updateProductStatusResponse } from './products/products.base'
+import { productResponse, getProductsResponse, createImageUrlToken, updateProductDetailsResponse, getProductByIdResponse, updateProductStatusResponse, getProductsStatisticsResponse } from './products/products.base'
 import { activityLogResponse } from './acitve-log/activitylog.base'
 export type Response = {
   UserLogin: UserLoginResponse
@@ -33,6 +33,6 @@ export type Response = {
   GetAdminUserTimeLine: GetAdminUserTimeLineResponse
   GetAdminUserStatistics: GetAdminUserStatisticsResponse
   GetOrdersStatistics: GetOrdersStatisticsResponse
-
+  GetProductsStatistics: getProductsStatisticsResponse
 
 }
