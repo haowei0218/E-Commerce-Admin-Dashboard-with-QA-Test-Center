@@ -70,9 +70,9 @@ export type GetAdminUserByPropertiesPayload = {
 export type CreateAdminUserPayload = {
   name: string
   email: string
-  roleId: number
+  password_hash: string
+  role_id: number
   status: string
-  passwordHash: string
 }
 
 export type CreateAdminUserResponse = {

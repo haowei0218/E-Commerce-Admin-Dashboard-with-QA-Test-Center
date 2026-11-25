@@ -25,7 +25,7 @@ import {
 import { RoleCode, ServerContext } from '../type/admin-users/adminUsers.base..js'
 import { requestPermission, requestAuth } from '../auth.js'
 import { rolePermissions } from '../type/role-permissions/role_permissions.base.js'
-import { off } from 'node:cluster'
+
 
 /**email format check */
 export function emailFormatCheck(email: string) {
@@ -154,18 +154,19 @@ export async function userLogin(
 }
 
 export async function createAdminUser(
-  { name, email, password_hash, role_id, status }: Omit<UserInformation, "id">,
+  payload: Omit<UserInformation, "id">,
   context: ServerContext
 ): Promise<RegisterUserResponse> {
   try {
-    requestAuth(context, rolePermissions.USERS_CREATE)
-    const hashPassword = await bcrypt.hash(password_hash, 10)
+
+    
+    const hashPassword = await bcrypt.hash(payload.password_hash, 10)
     const result = await context.db.query(
       `
             INSERT INTO users (name,email,password_hash,role_id,status,create_at) values ($1,$2,$3,$4,$5,NOW()) 
             RETURNING id, name, email, role_id, status, create_at
             `,
-      [name, email, hashPassword, role_id, status]
+      [payload.name, payload.email, hashPassword, payload.role_id, payload.status]
     )
     return { userInfo: result.rows[0] }
   } catch (error: any) {
@@ -180,7 +181,6 @@ export async function setAdminUserStatus(
   { id, status }: StatusPayload,
   context: ServerContext
 ): Promise<SetUserStatusResponse> {
-  await requestAuth(context, rolePermissions.USERS_UPDATE)
   const result = await context.db.query(
     `UPDATE users SET status=$2 WHERE id=$1 RETURNING id,name,email,role_id,status`,
     [id, status]
@@ -191,7 +191,6 @@ export async function setAdminUserStatus(
 export async function getAdminUsers(
   context: ServerContext
 ): Promise<GetUsersResponse> {
-  await requestAuth(context, rolePermissions.USERS_READ)
   const result = await context.db.query(
     'SELECT users.id,users.name,users.email,users.status,users.create_at,roles.code,users.update_at,users.last_login_at FROM users INNER JOIN roles ON roles.id = users.role_id WHERE roles.manage_level < $1 OR users.id = $2',
     [context.user.manage_level, context.user.id]
@@ -203,7 +202,6 @@ export async function getAdminUserById(
   userId: string,
   context: ServerContext
 ): Promise<GetUserByIdResponse> {
-  await requestAuth(context, rolePermissions.USERS_READ)
   const result = await context.db.query(
     `SELECT users.id,users.name,users.email,users.status,users.create_at,users.role_id,users.update_at,users.last_login_at FROM users WHERE users.id=$1`,
     [userId]
@@ -215,7 +213,6 @@ export async function getAdminUserByProperties(
   filtersInfo: getUserByPropertiesPayload,
   context: ServerContext
 ): Promise<GetUserByPropertiesResponse> {
-  await requestAuth(context, rolePermissions.USERS_READ)
   const keywordValue = filtersInfo.keyword || null
   const statusValue = filtersInfo.status || null
   const isRoleId = filtersInfo.role_id || null
@@ -291,7 +288,6 @@ export async function adminUserLogout(context: ServerContext) {
 }
 
 export async function changePassword(id: string, newPassword: string, context: ServerContext): Promise<changePasswordResponse> {
-  await requestAuth(context, rolePermissions.USERS_UPDATE)
   if (id.length === 0 || newPassword.length === 0) {
     throwGraphqlError('Invalid input data', "INVALID_INPUT_DATA")
   }
@@ -316,25 +312,9 @@ export async function changePassword(id: string, newPassword: string, context: S
 }
 
 export async function updateMyProfile(myProfile: updateMyProfilePayload, context: ServerContext): Promise<updateMyProfileResponse> {
-  await requestAuth(context, rolePermissions.USERS_UPDATE)
   const { email, name } = myProfile
   if (email.length === 0 && name.length === 0) {
     throwGraphqlError('Invalid input data', "INVALID_INPUT_DATA")
-  }
-
-  const isSelf = myProfile.id === context.user.id
-  const currentManageLevel = Number(context.user.manage_level)
-  const currentRoleId = Number(context.user.role_id)
-  const canManageOtherUser = [1, 2, 6].includes(currentRoleId)
-
-  /**如果不是自己且又不是高權限帳號  要驗證權限是否比較高*/
-  if (!isSelf && !canManageOtherUser) {
-    const result = await context.db.query(`SELECT id,manage_level FROM users WHERE id=$1`, [myProfile.id])
-    const targetUser = result.rows[0]
-
-    if ((Number(targetUser.manage_level) >= currentManageLevel)) {
-      throwGraphqlError("You don't have any permission to change admin user password", "FORBIDDEN")
-    }
   }
   const result = await context.db.query(`UPDATE users AS u SET name=$1,email=$2 FROM roles AS r WHERE u.id=$3 AND u.role_id=r.id RETURNING u.id,u.name,u.email,u.status,u.create_at,r.code`, [myProfile.name, myProfile.email, myProfile.id])
   const updateMyProfile = result.rows[0]
@@ -345,7 +325,6 @@ export async function updateMyProfile(myProfile: updateMyProfilePayload, context
 
 /**更新使用者帳號的狀態 */
 export async function setAdminUserRole(id: string | undefined, role_id: RoleCode, context: ServerContext): Promise<setAdminUserRoleResponse> {
-  await requestAuth(context, rolePermissions.USERS_UPDATE)
   const requestPermissions = requestPermission(id, context)
   if (!requestPermissions) {
     throwGraphqlError("You don't have any permission to change admin user password", "FORBIDDEN")

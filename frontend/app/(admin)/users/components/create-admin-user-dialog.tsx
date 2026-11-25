@@ -30,9 +30,9 @@ export default function CreateAdminUserDialog() {
     const router = useRouter()
     const userInfo = z.object({
         name: z.string().min(1).max(30),
-        roleId: z.number(),
+        role_id: z.number(),
         email: z.email(),
-        passwordHash: z.string().min(1).max(30),
+        password_hash: z.string().min(1).max(30),
         status: z.string()
     })
 
@@ -41,23 +41,23 @@ export default function CreateAdminUserDialog() {
     const { register, handleSubmit, watch, formState: { errors, isSubmitting, isSubmitted }, reset } = useForm<UserInformation>({
         defaultValues: {
             name: "",
-            roleId: 0,
+            role_id: 0,
             email: "",
-            passwordHash: "",
+            password_hash: "",
             status: ""
         }
     })
 
 
-    const password = watch('passwordHash')
+    const password = watch('password_hash')
     const isPasswordMisMatch = confirmPassword.length !== 0 && password !== confirmPassword ? "密碼不一致 請重新輸入" : ""
-    const submitDisable = watch('name').length === 0 || watch('roleId') === 0 || watch('email').length === 0 || watch('passwordHash').length === 0 || watch('status').length === 0
+    const submitDisable = watch('name').length === 0 || watch('role_id') === 0 || watch('email').length === 0 || watch('password_hash').length === 0 || watch('status').length === 0
     async function onSubmit(data: UserInformation) {
         try {
             if (submitDisable) { toast.info('有必要欄位未填寫'); return }
             await createAdminUser({
                 ...data,
-                roleId: Number(data.roleId),
+                role_id: Number(data.role_id),
             })
             toast.success('create successfully')
             setOpen(false)
@@ -157,7 +157,7 @@ export default function CreateAdminUserDialog() {
                                 </label>
 
                                 <div className="relative w-full">
-                                    <select {...register('roleId')} className="h-10 w-full rounded-md border-2 appearance-none border-gray-200 px-3 text-gray-400 text-md font-normal focus:outline-none">
+                                    <select {...register('role_id')} className="h-10 w-full rounded-md border-2 appearance-none border-gray-200 px-3 text-gray-400 text-md font-normal focus:outline-none">
                                         <option value={0} className="">Select Role</option>
                                         <option value={2}>營運主管</option>
                                         <option value={3}>客服／營運人員</option>
@@ -222,7 +222,7 @@ export default function CreateAdminUserDialog() {
 
                                 <div className="w-full flex items-center">
                                     <input
-                                        {...register('passwordHash')}
+                                        {...register('password_hash')}
                                         className="h-10 w-[95%] border-l-2 border-t-2 border-b-2 rounded-l-md border-gray-200 px-3"
                                         type={`${passwordDisable ? "password" : 'text'}`}
                                         placeholder="Enter password"
@@ -232,9 +232,9 @@ export default function CreateAdminUserDialog() {
                                     </button>
                                 </div>
 
-                                {errors.passwordHash && (
+                                {errors.password_hash && (
                                     <p className="text-sm text-red-500">
-                                        {errors.passwordHash.message}
+                                        {errors.password_hash.message}
                                     </p>
                                 )}
                             </div>

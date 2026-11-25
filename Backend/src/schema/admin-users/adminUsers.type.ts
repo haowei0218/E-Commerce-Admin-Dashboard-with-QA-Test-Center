@@ -26,7 +26,16 @@ export const UserInformation = gql`
     create_at:String!
     last_login_at:String
     update_at:String
-    
+  }
+`
+
+export const UserInput = gql`
+  input UserInput {
+    name:String!
+    email:String!
+    password_hash:String!
+    role_id:Int
+    status:String!
   }
 `
 
@@ -96,4 +105,4 @@ export const GetAdminUserStatisticsResponse = gql`
   }
 `
 
-export const mergeUserTypeDefs = mergeTypeDefs([User, UserLoginResponse, UserResponse, UserInformation, GetUsersResponse, LogoutResponse, GetUserByIdResponse, ChangePasswordResponse, UpdateMyProfileResponse, SetAdminUserRoleResponse, GetAdminUserTimeLineResponse,GetAdminUserStatisticsResponse])
+export const mergeUserTypeDefs = mergeTypeDefs([User, UserLoginResponse, UserResponse, UserInformation, GetUsersResponse, LogoutResponse, GetUserByIdResponse, ChangePasswordResponse, UpdateMyProfileResponse, SetAdminUserRoleResponse, GetAdminUserTimeLineResponse, GetAdminUserStatisticsResponse, UserInput])

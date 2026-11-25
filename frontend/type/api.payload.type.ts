@@ -7,7 +7,7 @@ export type APIPayload = {
   GetUsers: null,
   AdminUserLogout: null
   GetAdminUserByProperties: GetAdminUserByPropertiesPayload
-  CreateAdminUser: CreateAdminUserPayload
+  CreateAdminUser: { input: CreateAdminUserPayload }
   GetAdminUserById: { userId: string }
   UpdateMyProfile: Pick<adminUserProfile, "email" | "name"> & { updateMyProfileId: string }
   ChangePassword: { changePasswordId: string, newPassword: string }

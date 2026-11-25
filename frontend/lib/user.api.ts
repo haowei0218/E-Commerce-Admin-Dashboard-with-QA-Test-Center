@@ -23,7 +23,6 @@ export async function getUsers(): Promise<Response['GetUsers']> {
 
 export async function adminUserLogout(): Promise<Response['AdminUserLogout']> {
   const result = await fetchAPI<'AdminUserLogout'>(apiUrl, ADMIN_USER_LOGOUT)
-  console.log('logout result: ', result)
   return result
 }
 
@@ -33,7 +32,7 @@ export async function getAdminUserByProperties(filter: GetAdminUserByPropertiesP
 }
 
 export async function createAdminUser(adminUserInfo: CreateAdminUserPayload): Promise<Response['CreateAdminUser']> {
-  const result = await fetchAPI<'CreateAdminUser'>(apiUrl, CREATE_ADMIN_USER, adminUserInfo)
+  const result = await fetchAPI<'CreateAdminUser'>(apiUrl, CREATE_ADMIN_USER, { input: adminUserInfo })
   return result
 }
 
