@@ -3,6 +3,7 @@ import { ServerContext } from './type/admin-users/adminUsers.base..js'
 import { ContextUserInfo } from './type/admin-users/adminUser.mutation.js'
 import { errorMap, throwGraphqlError } from './utils/error.js'
 import { RolePermission } from './type/role-permissions/role_permissions.base.js'
+import { ZodType } from 'zod'
 export function verifyToken(token: string): JwtPayload | null {
   try {
     return jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload
@@ -47,4 +48,16 @@ export async function requestAuth(context: ServerContext, target_user_permission
       'FORBIDDEN'
     )
   }
+}
+
+export function VaildateInput<T>(payload: unknown, schema: ZodType<T>) {
+  const result = schema.safeParse(payload)
+  if (!result.success) {
+    throwGraphqlError(
+      result.error.issues[0]?.message ?? "Invalid input",
+      "INVALID_INPUT_DATA"
+    )
+  }
+
+  return result.data
 }

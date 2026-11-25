@@ -1,5 +1,5 @@
 import { gql } from 'graphql-tag'
-import { UserResponse, LogoutResponse, ChangePasswordResponse, UpdateMyProfileResponse, SetAdminUserRoleResponse } from './adminUsers.type.js'
+import { UserResponse, LogoutResponse, ChangePasswordResponse, UpdateMyProfileResponse, SetAdminUserRoleResponse, UserInput } from './adminUsers.type.js'
 
 export const UsersMutationDefs = gql`
     ${UserResponse}
@@ -7,8 +7,9 @@ export const UsersMutationDefs = gql`
     ${ChangePasswordResponse}
     ${UpdateMyProfileResponse}
     ${SetAdminUserRoleResponse}
+    ${UserInput}
     type Mutation {
-        CreateAdminUser(name:String!,email:String,password_hash:String,role_id:Int,status:String!):UserResponse!
+        CreateAdminUser(input:UserInput):UserResponse!
         SetAdminUserInactive(id:String!,status:String):UserResponse!
         SetAdminUserActive(id:String!,status:String):UserResponse!
         AdminUserLogout:LogoutResponse!

@@ -56,8 +56,8 @@ query GetAdminUserByProperties($status: String, $roleId: Int, $keyword: String, 
 `
 
 export const CREATE_ADMIN_USER = /* GraphQL */`
-mutation CreateAdminUser($name: String!, $status: String!, $email: String, $passwordHash: String, $roleId: Int) {
-  CreateAdminUser(name: $name, status: $status, email: $email, password_hash: $passwordHash, role_id: $roleId) {
+mutation CreateAdminUser($input: UserInput) {
+  CreateAdminUser(input: $input) {
     userInfo {
       id
       name
@@ -65,6 +65,10 @@ mutation CreateAdminUser($name: String!, $status: String!, $email: String, $pass
       role_id
       status
       create_at
+      manage_level
+      permissions
+      last_login_at
+      update_at
     }
   }
 }

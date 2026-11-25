@@ -412,7 +412,7 @@ export default function CreateProduct() {
                             Cancel
                         </button>
                         <button onClick={() => onSubmit(productForm.getValues())} type="submit" className="w-full h-10 p-2 border-blue-500 border-2 text-blue-500 font-bold text-[16px] hover:text-white hover:bg-blue-500 rounded-md">
-                            {productForm.formState.isSubmitting ? "submitting" : "Submit"}
+                            {productForm.formState.isSubmitting ? "Submitting" : "Submit"}
                         </button>
                     </div>
                 </div>
